@@ -16,6 +16,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   NSURL *jsCodeLocation;
+  [NSThread sleepForTimeInterval:3];
 
   /**
    * Loading JavaScript code - uncomment the one you want.

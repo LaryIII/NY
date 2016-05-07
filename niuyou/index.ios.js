@@ -54,6 +54,7 @@
 'use strict';
 
 import React, { Component } from 'react';
+import Home from './views/home';
 import {
   AppRegistry,
   StyleSheet,
@@ -61,6 +62,7 @@ import {
   Text,
   View,
   Image,
+  NavigatorIOS,
 } from 'react-native';
 
 var niuyou = React.createClass({
@@ -76,6 +78,9 @@ var niuyou = React.createClass({
       selectedTab: 0,
       notifCount: 0,
       presses: 0,
+      data:{
+
+      }
     };
   },
 
@@ -86,6 +91,27 @@ var niuyou = React.createClass({
         <Text style={styles.tabText}>{num} re-renders of the {pageText}</Text>
       </View>
     );
+  },
+
+  _addNavigator: function(component, title){
+    var data = null;
+    if(title === '主页'){
+      data = this.state.data;
+    }
+    return <NavigatorIOS
+      style={{flex:1}}
+      barTintColor='#007AFF'
+      titleTextColor="#fff"
+      tintColor="#fff"
+      translucent={false}
+      initialRoute={{
+          component: component,
+          title: title,
+          passProps:{
+            data: data
+          }
+        }}
+      />;
   },
 
   render: function() {
@@ -103,7 +129,7 @@ var niuyou = React.createClass({
               selectedTab: 0,
             });
           }}>
-          {this._renderContent('#414A8C', 'Blue Tab')}
+          {this._addNavigator(Home, '主页')}
         </TabBarIOS.Item>
         <TabBarIOS.Item
           icon={require('image!jrw_nor')}
