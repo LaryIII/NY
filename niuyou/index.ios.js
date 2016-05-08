@@ -57,6 +57,7 @@ import React, { Component } from 'react';
 import Home from './views/home';
 import Jrw from './views/jrw';
 import Phb from './views/phb';
+import Mine from './views/mine';
 import {
   AppRegistry,
   StyleSheet,
@@ -111,11 +112,17 @@ var niuyou = React.createClass({
     if(title === '排行榜'){
       barTintColor = '#fff';
     }
+    if(title === '我的'){
+      display = true;
+      title = '';
+      barTintColor = '#f9f9f9';
+    }
     return <NavigatorIOS
+      ref='nav'
       style={{flex:1}}
       barTintColor={barTintColor}
       titleTextColor="#333"
-      tintColor="#fff"
+      tintColor="#333"
       translucent={false}
       navigationBarHidden={display}
       initialRoute={{
@@ -123,7 +130,12 @@ var niuyou = React.createClass({
           title: title,
           passProps:{
             data: data
-          }
+          },
+          // backButtonTitle: "返回",
+          // backButtonIcon: require('image!back'),
+          leftButtonTitle: "返回",
+          leftButtonIcon:require('image!back'),
+          onLeftButtonPress: ()=>this.refs.nav.pop(),
         }}
       />;
   },
@@ -176,7 +188,7 @@ var niuyou = React.createClass({
               selectedTab: 3,
             });
           }}>
-          {this._renderContent('#21551C', 'Green Tab', this.state.presses)}
+          {this._addNavigator(Mine, '我的')}
         </TabBarIOS.Item>
       </TabBarIOS>
     );
