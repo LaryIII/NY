@@ -63,30 +63,53 @@ var Jrw = React.createClass({
     var items = this.state.items;
 
     return (
+      <View style={styles.bigcontainer}>
+      <View style={styles.navigatorx}>
+        <View style={styles.tabs}>
+          <View style={styles.placeholder}></View>
+          <View style={styles.btn}>
+            <Text>所有任务</Text>
+            <View style={styles.btnborder}></View>
+          </View>
+          <View style={styles.btn}>
+            <Text>可接任务</Text>
+            <View style={styles.btnborder}></View>
+          </View>
+          <View style={styles.placeholder}></View>
+        </View>
+        <View style={styles.borderbottom}></View>
+      </View>
       <ScrollView style={styles.container}>
         <View style={styles.tasklist}>
-          <View style={styles.tasktitlebox}>
-            <Text style={styles.titleline}>—————  热门任务  —————</Text>
-          </View>
           <View>
             <View style={styles.item}>
               <Image resizeMode={'contain'} style={styles.itemimg} source={require('./../res/home/banner.jpg')}></Image>
               <View style={styles.itemtext}>
+                <Image resizeMode={'contain'} style={styles.avater} source={require('./../res/paihang/ico_ph_nv@3x.png')}></Image>
+                <Text style={styles.avatername}>窦窦</Text>
+                <Text style={styles.statusx}>发布了任务</Text>
                 <Text style={styles.itemtitle}>丽江一米阳光宾馆照片转发朋友圈任务</Text>
-                <Text style={styles.itemprice}>30元/次</Text>
+                <Text style={styles.itemprice}>30元/次  性别限制:女</Text>
+                <Text style={styles.itemdesc}>地区限制:南京/上海/北京/深圳</Text>
+                <Text style={styles.itemdesc}>2016-03-15 18:00</Text>
                 <Text style={styles.itemnum}>已接受任务自媒体：<Text style={styles.em}>132人</Text></Text>
               </View>
             </View>
           </View>
         </View>
       </ScrollView>
+      </View>
     );
   }
 });
 
 var styles = StyleSheet.create({
+  bigcontainer:{
+    flex:1,
+  },
   container:{
     flex:1,
+    marginTop:-20,
   },
   itemRow:{
     flexDirection:'row',
@@ -175,7 +198,8 @@ var styles = StyleSheet.create({
     fontSize:15,
     color:'#fff',
     textAlign:'center',
-    marginTop:70,
+    marginTop:50,
+    fontWeight:'bold',
   },
   itemprice:{
     fontSize:12,
@@ -183,14 +207,73 @@ var styles = StyleSheet.create({
     textAlign:'center',
     marginTop:10,
   },
+  itemdesc:{
+    fontSize:12,
+    color:'#fff',
+    textAlign:'center',
+    marginTop:5,
+  },
   itemnum:{
     fontSize:12,
     color:'#fff',
     textAlign:'center',
-    marginTop:45,
+    marginTop:25,
   },
   em:{
     color:'#f0e983',
+  },
+  avater:{
+    position:'absolute',
+    top:10,
+    left:10,
+    width:22,
+    height:22,
+    borderRadius:11
+  },
+  avatername:{
+    position:'absolute',
+    top:15,
+    left:40,
+    fontSize:12,
+    color:'#fff',
+  },
+  statusx:{
+    position:'absolute',
+    top:15,
+    right:15,
+    color:'#f0e983',
+    fontSize:12,
+  },
+  navigatorx:{
+    backgroundColor:'#f9f9f9',
+    height:64,
+    paddingTop:20,
+  },
+  tabs:{
+    flexDirection:'row',
+    height:44,
+    backgroundColor:'#f9f9f9',
+  },
+  borderbottom:{
+    backgroundColor:'#cecece',
+    height:0.5,
+  },
+  placeholder:{
+    flex:1,
+  },
+  btn:{
+    flex:1,
+    width:82,
+    justifyContent:'center',
+    alignItems:'center',
+  },
+  btnborder:{
+    position:'absolute',
+    bottom:0,
+    left:0,
+    width:Dimensions.get('window').width/4,
+    height:2,
+    backgroundColor:'#51a7ff',
   }
 });
 

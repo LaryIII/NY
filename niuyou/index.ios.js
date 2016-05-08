@@ -56,6 +56,7 @@
 import React, { Component } from 'react';
 import Home from './views/home';
 import Jrw from './views/jrw';
+import Phb from './views/phb';
 import {
   AppRegistry,
   StyleSheet,
@@ -97,15 +98,22 @@ var niuyou = React.createClass({
   _addNavigator: function(component, title){
     var data = null;
     var display = false;
+    var barTintColor = '#f9f9f9';
     if(title === '主页'){
       data = this.state.data;
+      barTintColor = '#f3ea85';
     }
     if(title === '接任务'){
       display = true;
+      title = '';
+      barTintColor = '#f9f9f9';
+    }
+    if(title === '排行榜'){
+      barTintColor = '#fff';
     }
     return <NavigatorIOS
       style={{flex:1}}
-      barTintColor='#f3ea85'
+      barTintColor={barTintColor}
       titleTextColor="#333"
       tintColor="#fff"
       translucent={false}
@@ -157,7 +165,7 @@ var niuyou = React.createClass({
               selectedTab: 2,
             });
           }}>
-          {this._renderContent('#783E33', 'Red Tab')}
+          {this._addNavigator(Phb, '排行榜')}
         </TabBarIOS.Item>
         <TabBarIOS.Item
           icon={require('image!wo_nor')}
