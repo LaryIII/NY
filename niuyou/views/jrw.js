@@ -13,7 +13,7 @@ import {
   Dimensions,
 } from 'react-native';
 
-var Home = React.createClass({
+var Jrw = React.createClass({
   getInitialState: function(){
     var items = [
       {
@@ -64,17 +64,6 @@ var Home = React.createClass({
 
     return (
       <ScrollView style={styles.container}>
-        <Swiper style={styles.wrapper} showsButtons={false} height={195}>
-          <View style={styles.slide1}>
-            <Image resizeMode={'contain'} style={styles.banner} source={require('./../res/home/banner.jpg')}></Image>
-          </View>
-          <View style={styles.slide2}>
-            <Text style={styles.text}>Beautiful</Text>
-          </View>
-          <View style={styles.slide3}>
-            <Text style={styles.text}>And simple</Text>
-          </View>
-        </Swiper>
         <View style={styles.tasklist}>
           <View style={styles.tasktitlebox}>
             <Text style={styles.titleline}>—————  热门任务  —————</Text>
@@ -205,4 +194,4 @@ var styles = StyleSheet.create({
   }
 });
 
-module.exports = Home;
+module.exports = Jrw;

@@ -55,6 +55,7 @@
 
 import React, { Component } from 'react';
 import Home from './views/home';
+import Jrw from './views/jrw';
 import {
   AppRegistry,
   StyleSheet,
@@ -95,15 +96,20 @@ var niuyou = React.createClass({
 
   _addNavigator: function(component, title){
     var data = null;
+    var display = false;
     if(title === '主页'){
       data = this.state.data;
     }
+    if(title === '接任务'){
+      display = true;
+    }
     return <NavigatorIOS
       style={{flex:1}}
-      barTintColor='#007AFF'
-      titleTextColor="#fff"
+      barTintColor='#f3ea85'
+      titleTextColor="#333"
       tintColor="#fff"
       translucent={false}
+      navigationBarHidden={display}
       initialRoute={{
           component: component,
           title: title,
@@ -140,7 +146,7 @@ var niuyou = React.createClass({
               selectedTab: 1,
             });
           }}>
-          {this._renderContent('#414A8C', 'Blue Tab')}
+          {this._addNavigator(Jrw, '接任务')}
         </TabBarIOS.Item>
         <TabBarIOS.Item
           icon={require('image!phb_nor')}
