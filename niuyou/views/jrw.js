@@ -3,6 +3,7 @@
  */
 
 import React, { Component } from 'react';
+import TaskDetail from './jrw/taskdetail';
 import {
   View,
   Text,
@@ -10,6 +11,7 @@ import {
   StyleSheet,
   Image,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 
 var Jrw = React.createClass({
@@ -19,7 +21,18 @@ var Jrw = React.createClass({
       items: items,
     };
   },
-
+  _gotoTaskDetail: function(){
+    this.props.navigator.push({
+      title: '任务详情',
+      component: TaskDetail,
+      navigationBarHidden:false,
+      // backButtonTitle: "返回",
+      // backButtonIcon: require('image!back'),
+      leftButtonTitle: "返回",
+      leftButtonIcon:require('image!back'),
+      onLeftButtonPress: ()=>this.props.navigator.pop(),
+    });
+  },
   render: function(){
     var items = this.state.items;
 
@@ -43,19 +56,21 @@ var Jrw = React.createClass({
       <ScrollView style={styles.container}>
         <View style={styles.tasklist}>
           <View>
-            <View style={styles.item}>
-              <Image resizeMode={'contain'} style={styles.itemimg} source={require('./../res/home/banner.jpg')}></Image>
-              <View style={styles.itemtext}>
-                <Image resizeMode={'contain'} style={styles.avater} source={require('./../res/paihang/ico_ph_nv@3x.png')}></Image>
-                <Text style={styles.avatername}>窦窦</Text>
-                <Text style={styles.statusx}>发布了任务</Text>
-                <Text style={styles.itemtitle}>丽江一米阳光宾馆照片转发朋友圈任务</Text>
-                <Text style={styles.itemprice}>30元/次  性别限制:女</Text>
-                <Text style={styles.itemdesc}>地区限制:南京/上海/北京/深圳</Text>
-                <Text style={styles.itemdesc}>2016-03-15 18:00</Text>
-                <Text style={styles.itemnum}>已接受任务自媒体：<Text style={styles.em}>132人</Text></Text>
+            <TouchableOpacity onPress={this._gotoTaskDetail}>
+              <View style={styles.item}>
+                <Image resizeMode={'contain'} style={styles.itemimg} source={require('./../res/home/banner.jpg')}></Image>
+                <View style={styles.itemtext}>
+                  <Image resizeMode={'contain'} style={styles.avater} source={require('./../res/paihang/ico_ph_nv@3x.png')}></Image>
+                  <Text style={styles.avatername}>窦窦</Text>
+                  <Text style={styles.statusx}>发布了任务</Text>
+                  <Text style={styles.itemtitle}>丽江一米阳光宾馆照片转发朋友圈任务</Text>
+                  <Text style={styles.itemprice}>30元/次  性别限制:女</Text>
+                  <Text style={styles.itemdesc}>地区限制:南京/上海/北京/深圳</Text>
+                  <Text style={styles.itemdesc}>2016-03-15 18:00</Text>
+                  <Text style={styles.itemnum}>已接受任务自媒体：<Text style={styles.em}>132人</Text></Text>
+                </View>
               </View>
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
