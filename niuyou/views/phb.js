@@ -4,6 +4,7 @@
 
 import React, { Component } from 'react';
 import Swiper from 'react-native-swiper';
+import UserHome from './phb/userhome';
 import {
   View,
   Text,
@@ -11,6 +12,7 @@ import {
   StyleSheet,
   Image,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 
 var Phb = React.createClass({
@@ -21,6 +23,18 @@ var Phb = React.createClass({
       items: items,
     };
   },
+  _gotoUserHome: function(){
+    this.props.navigator.push({
+      title: '个人主页',
+      component: UserHome,
+      navigationBarHidden:false,
+      // backButtonTitle: "返回",
+      // backButtonIcon: require('image!back'),
+      leftButtonTitle: "返回",
+      leftButtonIcon:require('image!back'),
+      onLeftButtonPress: ()=>this.props.navigator.pop(),
+    });
+  },
 
   render: function(){
     var items = this.state.items;
@@ -30,36 +44,44 @@ var Phb = React.createClass({
         <View style={styles.userlist}>
           <View>
             <View style={styles.item}>
-              <View style={styles.inneritem}>
-                <Image style={styles.itemimg} source={require('./../res/paihang/face.jpg')}></Image>
-                <View style={styles.itemtext}>
-                  <Text style={styles.avatername}>萌萌</Text>
-                  <Text style={styles.statusx}>￥25870</Text>
+              <TouchableOpacity onPress={this._gotoUserHome}>
+                <View style={styles.inneritem}>
+                  <Image style={styles.itemimg} source={require('./../res/paihang/face.jpg')}></Image>
+                  <View style={styles.itemtext}>
+                    <Text style={styles.avatername}>萌萌</Text>
+                    <Text style={styles.statusx}>￥25870</Text>
+                  </View>
                 </View>
-              </View>
-              <View style={styles.inneritem}>
-                <Image style={styles.itemimg} source={require('./../res/paihang/face.jpg')}></Image>
-                <View style={styles.itemtext}>
-                  <Text style={styles.avatername}>萌萌</Text>
-                  <Text style={styles.statusx}>￥25870</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this._gotoUserHome}>
+                <View style={styles.inneritem}>
+                  <Image style={styles.itemimg} source={require('./../res/paihang/face.jpg')}></Image>
+                  <View style={styles.itemtext}>
+                    <Text style={styles.avatername}>萌萌</Text>
+                    <Text style={styles.statusx}>￥25870</Text>
+                  </View>
                 </View>
-              </View>
+              </TouchableOpacity>
             </View>
             <View style={styles.item}>
-              <View style={styles.inneritem}>
-                <Image style={styles.itemimg} source={require('./../res/paihang/face.jpg')}></Image>
-                <View style={styles.itemtext}>
-                  <Text style={styles.avatername}>萌萌</Text>
-                  <Text style={styles.statusx}>￥25870</Text>
+              <TouchableOpacity onPress={this._gotoUserHome}>
+                <View style={styles.inneritem}>
+                  <Image style={styles.itemimg} source={require('./../res/paihang/face.jpg')}></Image>
+                  <View style={styles.itemtext}>
+                    <Text style={styles.avatername}>萌萌</Text>
+                    <Text style={styles.statusx}>￥25870</Text>
+                  </View>
                 </View>
-              </View>
-              <View style={styles.inneritem}>
-                <Image style={styles.itemimg} source={require('./../res/paihang/face.jpg')}></Image>
-                <View style={styles.itemtext}>
-                  <Text style={styles.avatername}>萌萌</Text>
-                  <Text style={styles.statusx}>￥25870</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this._gotoUserHome}>
+                <View style={styles.inneritem}>
+                  <Image style={styles.itemimg} source={require('./../res/paihang/face.jpg')}></Image>
+                  <View style={styles.itemtext}>
+                    <Text style={styles.avatername}>萌萌</Text>
+                    <Text style={styles.statusx}>￥25870</Text>
+                  </View>
                 </View>
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -76,6 +98,8 @@ var styles = StyleSheet.create({
   userlist:{
     marginTop:10,
     marginBottom:10,
+    marginLeft:5,
+    marginRight:5,
   },
   item:{
     flex:1,
