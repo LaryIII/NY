@@ -9,6 +9,8 @@ import Tasking from './mine/tasking';
 import Tasked from './mine/tasked';
 import Datedtask from './mine/datedtask';
 import Feedback from './mine/feedback';
+import Setting from './mine/setting';
+import Login from './mine/login';
 import {
   View,
   Text,
@@ -25,6 +27,31 @@ var Mine = React.createClass({
     return {
       items: items,
     };
+  },
+  _gotoSetting: function(){
+    this.props.navigator.push({
+      title: '设置',
+      component: Setting,
+      navigationBarHidden:false,
+      // backButtonTitle: "返回",
+      // backButtonIcon: require('image!back'),
+      leftButtonTitle: "返回",
+      leftButtonIcon:require('image!back'),
+      onLeftButtonPress: ()=>this.props.navigator.pop(),
+    });
+  },
+
+  _gotoLogin: function(){
+    this.props.navigator.push({
+      title: '设置',
+      component: Login,
+      navigationBarHidden:false,
+      // backButtonTitle: "返回",
+      // backButtonIcon: require('image!back'),
+      leftButtonTitle: "返回",
+      leftButtonIcon:require('image!back'),
+      onLeftButtonPress: ()=>this.props.navigator.pop(),
+    });
   },
 
   render: function(){
@@ -51,7 +78,9 @@ var Mine = React.createClass({
       <View style={styles.bigcontainer}>
       <View style={styles.navigatorx}>
         <View style={styles.settingbox}>
-          <Image resizeMode={'contain'} style={styles.setting} source={require('./../res/mine/ico_wo_setting@3x.png')}></Image>
+          <TouchableOpacity onPress={this._gotoSetting}>
+            <Image resizeMode={'contain'} style={styles.setting} source={require('./../res/mine/ico_wo_setting@3x.png')}></Image>
+          </TouchableOpacity>
         </View>
         <View style={styles.infos}>
           <Image resizeMode={'contain'} style={styles.avatar} source={require('./../res/mine/pic_wo_moren@3x.png')}></Image>
@@ -63,6 +92,13 @@ var Mine = React.createClass({
         <View style={styles.wrapper}>
           {JSXDOM}
         </View>
+        <TouchableOpacity onPress={this._gotoLogin}>
+          <View style={styles.applybtn}>
+            <View style={styles.bluebtn}>
+              <Text style={styles.bluebtntext}>登录</Text>
+            </View>
+          </View>
+        </TouchableOpacity>
       </ScrollView>
       </View>
     );
@@ -180,6 +216,27 @@ var styles = StyleSheet.create({
     right:15,
     width:6,
     height:11,
+  },
+  applybtn:{
+    width:Dimensions.get('window').width,
+    height:68,
+    borderTopWidth:0.5,
+    borderTopColor:'#dfdfdf',
+    backgroundColor:'#fff',
+  },
+  bluebtn:{
+    backgroundColor:'#51a7ff',
+    borderRadius:5,
+    marginTop:15,
+    marginLeft:15,
+    marginRight:15,
+    height:40,
+    justifyContent:'center',
+    alignItems:'center',
+  },
+  bluebtntext:{
+    color:'#fff',
+    fontSize:17,
   }
 });
 
