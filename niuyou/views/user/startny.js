@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import Util from './../utils';
-import Startny from './startny';
 
 import {
   View,
@@ -12,26 +11,18 @@ import {
   TouchableOpacity,
   Image,
   Text,
-  AsyncStorage
+  AsyncStorage,
+  Dimensions,
 } from 'react-native';
 
-var Register = React.createClass({
-  _gotoStartny:function(){
-    this.props.navigator.push({
-      title: '开启牛友之旅',
-      component: Startny,
-      navigationBarHidden:false,
-      // backButtonTitle: "返回",
-      // backButtonIcon: require('image!back'),
-      leftButtonTitle: "返回",
-      leftButtonIcon:require('image!back'),
-      onLeftButtonPress: ()=>this.props.navigator.pop(),
-    });
-  },
-  render: function(){
+var Startny = React.createClass({
 
+  render: function(){
     return (
       <ScrollView >
+        <View style={styles.avatar}>
+          <Image style={styles.avatarimg} resizeMode={'contain'} source={require('image!paishe')}></Image>
+        </View>
         <View style={styles.form}>
         <GiftedForm
           formName='signupForm' // GiftedForm instances that use the same name will also share the same states
@@ -50,7 +41,7 @@ var Register = React.createClass({
           }}
           validators={{
             username: {
-              title: '账号',
+              title: '昵称',
               validate: [{
                 validator: 'isLength',
                 arguments: [3, 16],
@@ -62,7 +53,7 @@ var Register = React.createClass({
               }]
             },
             password: {
-              title: '密码',
+              title: '性别',
               validate: [{
                 validator: 'isLength',
                 arguments: [6, 16],
@@ -73,8 +64,8 @@ var Register = React.createClass({
         >
           <GiftedForm.TextInputWidget
             name='username'
-            title='账号'
-            placeholder='请输入手机号码'
+            title='昵称'
+            placeholder='请输入昵称，最长10个字符'
             clearButtonMode='while-editing'
             onTextInputFocus={(currentText = '') => {
               if (!currentText) {
@@ -88,47 +79,30 @@ var Register = React.createClass({
           />
           <GiftedForm.TextInputWidget
             name='verifycode' // mandatory
-            title='验证码'
-            placeholder='请输入验证码'
+            title='性别'
+            placeholder=''
             clearButtonMode='while-editing'
-            secureTextEntry={true}
           />
-
-          <GiftedForm.TextInputWidget
-            name='password' // mandatory
-            title='密码'
-            placeholder='请输入密码'
-            clearButtonMode='while-editing'
-            secureTextEntry={true}
-          />
-          <GiftedForm.TextInputWidget
-            name='confirmpassword' // mandatory
-            title='确认密码'
-            placeholder='请再次输入密码'
-            clearButtonMode='while-editing'
-            secureTextEntry={true}
-          />
-          <GiftedForm.SubmitWidget
-            title='注册'
-            widgetStyles={{
-              submitButton: {
-                backgroundColor: '#51a7ff',
-              }
-            }}
-            onSubmit={(isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
-              // if (isValid === true) {
-              //   // prepare object
-              //   values.gender = values.gender[0];
-              //   values.birthday = moment(values.birthday).format('YYYY-MM-DD');
-              // }
-              this._gotoStartny();
-            }}
-          />
-          <GiftedForm.HiddenWidget name='tos' value={true} />
         </GiftedForm>
         </View>
-        <View style={styles.yanzheng}>
-          <Text style={styles.yanzhengbtn}>验证</Text>
+        <View style={styles.warning}>
+          <Image resizeMode={'contain'} style={styles.warningimg} source={require('image!log_tip')}></Image>
+          <Text style={styles.warningtext}>性别选择之后将无法修改~</Text>
+        </View>
+        <View style={styles.applybtn}>
+          <View style={styles.bluebtn}>
+            <Text style={styles.bluebtntext}>完成</Text>
+          </View>
+        </View>
+        <View style={styles.selectsex}>
+          <View style={styles.selectsexnan}>
+          <Image resizeMode={'contain'} style={styles.selectsexnanimg} source={require('image!log_nan')}></Image>
+          <Text style={styles.selectsexnantext}>男</Text>
+          </View>
+          <View style={styles.selectsexnv}>
+          <Image resizeMode={'contain'} style={styles.selectsexnvimg} source={require('image!log_nv')}></Image>
+          <Text style={styles.selectsexnvtext}>女</Text>
+          </View>
         </View>
       </ScrollView>
     );
@@ -188,21 +162,101 @@ var styles = StyleSheet.create({
     marginRight:20,
     borderRadius:4,
   },
-  yanzheng:{
-    position:'absolute',
-    top:9,
-    right:15,
-    backgroundColor:'#eedd1b',
-    borderRadius:15,
-    paddingTop:5,
+  avatar:{
+    flex:1,
+    alignItems:'center',
+    justifyContent:'center',
+    borderBottomWidth:0.5,
+    borderBottomColor:'#dfdfdf',
+  },
+  avatarimg:{
+    marginTop:24,
+    marginBottom:24,
+    width:87,
+    height:86,
+  },
+  applybtn:{
+    width:Dimensions.get('window').width,
+    height:68,
+    backgroundColor:'#fff',
+  },
+  bluebtn:{
+    backgroundColor:'#51a7ff',
+    borderRadius:5,
+    marginTop:15,
+    marginLeft:15,
+    marginRight:15,
+    height:40,
+    justifyContent:'center',
+    alignItems:'center',
+  },
+  bluebtntext:{
+    color:'#fff',
+    fontSize:17,
+  },
+  warning:{
+    flex:1,
+    flexDirection:'row',
     paddingLeft:15,
     paddingRight:15,
-    paddingBottom:5,
+    height:44,
   },
-  yanzhengbtn:{
-    color:'#fff',
-    fontSize:15
+  warningimg:{
+    width:16,
+    height:16,
+    marginRight:4,
+    marginTop:12,
+  },
+  warningtext:{
+    marginTop:12,
+    color:'#333',
+    fontSize:15,
+  },
+  selectsex:{
+    position:'absolute',
+    top:180,
+    left:110,
+    width:Dimensions.get('window').width-110,
+    height:44,
+    flex:1,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+  },
+  selectsexnan:{
+    flex:1,
+    borderRightWidth:0.5,
+    borderRightColor:'#dfdfdf',
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+  },
+  selectsexnanimg:{
+    width:16,
+    height:16,
+    marginRight:4,
+  },
+  selectsexnantext:{
+    color:'#333',
+    fontSize:15,
+  },
+  selectsexnv:{
+    flex:1,
+    borderRightWidth:0.5,
+    borderRightColor:'#dfdfdf',
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+  },
+  selectsexnvimg:{
+    width:16,
+    height:16,
+    marginRight:4,
+  },
+  selectsexnvtext:{
+    color:'#333',
+    fontSize:15,
   }
 });
 
-module.exports = Register;
+module.exports = Startny;
