@@ -10,7 +10,7 @@ import Tasked from './mine/tasked';
 import Datedtask from './mine/datedtask';
 import Feedback from './mine/feedback';
 import Setting from './mine/setting';
-import Login from './mine/login';
+import Login from './user/login';
 import {
   View,
   Text,
@@ -43,7 +43,7 @@ var Mine = React.createClass({
 
   _gotoLogin: function(){
     this.props.navigator.push({
-      title: '设置',
+      title: '登录',
       component: Login,
       navigationBarHidden:false,
       // backButtonTitle: "返回",
