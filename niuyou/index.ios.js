@@ -48,6 +48,8 @@ var niuyou = React.createClass({
     var display = false;
     var barTintColor = '#f9f9f9';
     if(title === '主页'){
+      title = '';
+      display = true;
       data = this.state.data;
       barTintColor = '#f3ea85';
     }

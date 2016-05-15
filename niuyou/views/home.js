@@ -4,6 +4,7 @@
 
 import React, { Component } from 'react';
 import Swiper from 'react-native-swiper';
+import SelectCity from './home/selectcity';
 import {
   View,
   Text,
@@ -11,58 +12,45 @@ import {
   StyleSheet,
   Image,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 
 var Home = React.createClass({
   getInitialState: function(){
-    var items = [
-      {
-        id:1,
-        title: '研发',
-        partment: '框架研发',
-        color: '#126AFF',
-      },
-      {
-        id:2,
-        title: '研发',
-        partment: 'BU研发',
-        color: '#FFD600',
-      },
-      {
-        id:3,
-        title: '产品',
-        partment: '公共产品',
-        color: '#F80728',
-      },
-      {
-        id:4,
-        title: '产品',
-        partment: 'BU产品',
-        color: '#05C147',
-      },
-      {
-        id:5,
-        title: '产品',
-        partment: '启明星',
-        color: '#FF4EB9',
-      },
-      {
-        id:6,
-        title: '项目',
-        partment: '项目管理',
-        color: '#EE810D',
-      }
-    ];
+    var items = [];
 
     return {
       items: items,
     };
+  },
+  _gotoSelectCity:function(){
+    this.props.navigator.push({
+      title: '请选择城市',
+      component: SelectCity,
+      navigationBarHidden:false,
+      barTintColor:'#f9f9f9',
+      // backButtonTitle: "返回",
+      // backButtonIcon: require('image!back'),
+      leftButtonTitle: "返回",
+      leftButtonIcon:require('image!back'),
+      onLeftButtonPress: ()=>this.props.navigator.pop(),
+    });
   },
 
   render: function(){
     var items = this.state.items;
 
     return (
+      <View style={styles.bigcontainer}>
+      <View style={styles.navigatorx}>
+        <TouchableOpacity onPress={this._gotoSelectCity}>
+          <View style={styles.city}>
+            <Text style={styles.citytext}>南京</Text>
+            <Image resizeMode={'contain'} style={styles.down} source={require('image!home_down')}></Image>
+          </View>
+        </TouchableOpacity>
+        <View style={styles.borderbottom}></View>
+      </View>
       <ScrollView style={styles.container}>
         <Swiper style={styles.wrapper} showsButtons={false} height={195}>
           <View style={styles.slide1}>
@@ -91,13 +79,40 @@ var Home = React.createClass({
           </View>
         </View>
       </ScrollView>
+      </View>
     );
   }
 });
 
 var styles = StyleSheet.create({
+  bigcontainer:{
+    flex:1,
+  },
   container:{
     flex:1,
+    marginTop:-5,
+  },
+  navigatorx:{
+    backgroundColor:'#f3ea85',
+    height:64,
+    paddingTop:20,
+  },
+  city:{
+    flex:1,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+    marginTop:10,
+  },
+  citytext:{
+    fontSize:17,
+    fontWeight:'bold',
+    textAlign:'center',
+    marginRight:6,
+  },
+  down:{
+    width:4,
+    height:5,
   },
   itemRow:{
     flexDirection:'row',
