@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import Util from './../utils';
+import ApplyTask from './applytask';
 
 import {
   View,
@@ -15,7 +16,24 @@ import {
 } from 'react-native';
 
 var TaskDetail = React.createClass({
-
+  getInitialState: function(){
+    var items = [];
+    return {
+      items: items,
+    };
+  },
+  _gotoApplyTask: function(){
+    this.props.navigator.push({
+      title: '接任务',
+      component: ApplyTask,
+      navigationBarHidden:false,
+      // backButtonTitle: "返回",
+      // backButtonIcon: require('image!back'),
+      leftButtonTitle: "返回",
+      leftButtonIcon:require('image!back'),
+      onLeftButtonPress: ()=>this.props.navigator.pop(),
+    });
+  },
   render: function(){
     return (
       <View style={styles.container}>
@@ -125,9 +143,11 @@ var TaskDetail = React.createClass({
           </View>
         </ScrollView>
         <View style={styles.applybtn}>
-          <View style={styles.bluebtn}>
-            <Text style={styles.bluebtntext}>申请任务</Text>
-          </View>
+          <TouchableOpacity onPress={this._gotoApplyTask}>
+            <View style={styles.bluebtn}>
+              <Text style={styles.bluebtntext}>申请任务</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
     );
