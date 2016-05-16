@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import Util from './../utils';
-import Authinfo2 from './authinfo2';
+import Authinfo3 from './authinfo3';
 import {
   View,
   TextInput,
@@ -15,17 +15,17 @@ import {
   Dimensions,
 } from 'react-native';
 
-var Authinfo = React.createClass({
+var Authinfo2 = React.createClass({
   getInitialState: function(){
     var items = [];
     return {
       items: items,
     };
   },
-  _gotoAuthinfo2: function(){
+  _gotoAuthinfo3: function(){
     this.props.navigator.push({
       title: '图片认证',
-      component: Authinfo2,
+      component: Authinfo3,
       navigationBarHidden:false,
       // backButtonTitle: "返回",
       // backButtonIcon: require('image!back'),
@@ -40,7 +40,7 @@ var Authinfo = React.createClass({
       <ScrollView style={styles.scrollbox}>
         <View style={styles.warning}>
           <Image resizeMode={'contain'} style={styles.warningimg} source={require('image!log_tip')}></Image>
-          <Text style={styles.warningtext}>请上传单手持证照片</Text>
+          <Text style={styles.warningtext}>请上传联系人数量照片</Text>
         </View>
         <View style={styles.beizhu}>
           <View style={styles.bz_header}>
@@ -62,7 +62,7 @@ var Authinfo = React.createClass({
         </View>
       </ScrollView>
       <View style={styles.applybtn}>
-        <TouchableOpacity onPress={this._gotoAuthinfo2}>
+        <TouchableOpacity onPress={this._gotoAuthinfo3}>
           <View style={styles.bluebtn}>
             <Text style={styles.bluebtntext}>下一步</Text>
           </View>
@@ -190,4 +190,4 @@ var styles = StyleSheet.create({
   }
 });
 
-module.exports = Authinfo;
+module.exports = Authinfo2;

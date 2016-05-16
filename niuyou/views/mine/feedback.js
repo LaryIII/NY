@@ -22,12 +22,18 @@ var Feedback = React.createClass({
           <TextInput multiline={true}
                      onChangeText={this._onChange}
                      style={styles.textinput}
-                     placeholder="请输入公告内容"/>
+                     placeholder="感谢你的宝贵意见, 收到反馈后我们会尽快与你联系。"/>
+        </View>
+        <View style={styles.inputs}>
+          <TextInput multiline={true}
+                     onChangeText={this._onChange2}
+                     style={styles.textinput2}
+                     placeholder="你的手机号码或邮箱(选填)"/>
         </View>
         <View style={{marginTop:20}}>
           <TouchableOpacity onPress={this._postMessage}>
             <View style={styles.btn}>
-              <Text style={{color:'#fff'}}>发布公告</Text>
+              <Text style={{color:'#fff'}}>提交</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -69,24 +75,39 @@ var Feedback = React.createClass({
 var styles = StyleSheet.create({
   textinput:{
     flex:1,
-    height:100,
-    borderWidth:1,
-    borderColor:'#ddd',
-    marginTop:30,
-    marginLeft:20,
-    marginRight:20,
-    paddingLeft:8,
-    fontSize:13,
-    borderRadius:4
+    height:180,
+    borderBottomWidth:0.5,
+    borderBottomColor:'#dfdfdf',
+    paddingTop:10,
+    paddingLeft:15,
+    paddingRight:15,
+    paddingBottom:10,
+    fontSize:15,
+  },
+  inputs:{
+    marginTop:15,
+    flex:1,
+  },
+  textinput2:{
+    flex:1,
+    height:44,
+    borderBottomWidth:0.5,
+    borderBottomColor:'#dfdfdf',
+    borderTopWidth:0.5,
+    borderTopColor:'#dfdfdf',
+    paddingLeft:15,
+    paddingRight:15,
+    paddingTop:8,
+    fontSize:15,
   },
   btn:{
     flex:1,
     justifyContent:'center',
     alignItems:'center',
-    backgroundColor:'#1DB8FF',
-    height:38,
-    marginLeft:20,
-    marginRight:20,
+    backgroundColor:'#399bff',
+    height:44,
+    marginLeft:15,
+    marginRight:15,
     borderRadius:4,
   }
 });

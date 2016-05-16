@@ -96,6 +96,9 @@ var styles = StyleSheet.create({
     paddingLeft:15,
     paddingRight:15,
     height:44,
+    backgroundColor:'#fff',
+    borderBottomWidth:0.5,
+    borderBottomColor:'#dfdfdf',
   },
   warningimg:{
     width:16,
@@ -113,7 +116,6 @@ var styles = StyleSheet.create({
     backgroundColor:'#fff',
     borderBottomWidth:0.5,
     borderBottomColor:'#dfdfdf',
-    marginBottom:15,
   },
   bz_header:{
     flex:1,
