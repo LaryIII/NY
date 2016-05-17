@@ -4,6 +4,8 @@
 
 import React, { Component } from 'react';
 import TaskDetail from './jrw/taskdetail';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
+import JRWTabBar from './jrw/jrwtabbar';
 import {
   View,
   Text,
@@ -38,22 +40,8 @@ var Jrw = React.createClass({
 
     return (
       <View style={styles.bigcontainer}>
-      <View style={styles.navigatorx}>
-        <View style={styles.tabs}>
-          <View style={styles.placeholder}></View>
-          <View style={styles.btn}>
-            <Text>所有任务</Text>
-            <View style={styles.btnborder}></View>
-          </View>
-          <View style={styles.btn}>
-            <Text>可接任务</Text>
-            <View style={styles.btnborder}></View>
-          </View>
-          <View style={styles.placeholder}></View>
-        </View>
-        <View style={styles.borderbottom}></View>
-      </View>
-      <ScrollView style={styles.container}>
+      <ScrollableTabView style={styles.container} renderTabBar={() =><JRWTabBar />}>
+      <ScrollView style={styles.innercontainer} tabLabel="所有任务">
         <View style={styles.tasklist}>
           <View>
             <TouchableOpacity onPress={this._gotoTaskDetail}>
@@ -74,6 +62,28 @@ var Jrw = React.createClass({
           </View>
         </View>
       </ScrollView>
+      <ScrollView style={styles.innercontainer} tabLabel="可接任务">
+        <View style={styles.tasklist}>
+          <View>
+            <TouchableOpacity onPress={this._gotoTaskDetail}>
+              <View style={styles.item}>
+                <Image resizeMode={'contain'} style={styles.itemimg} source={require('./../res/home/banner.jpg')}></Image>
+                <View style={styles.itemtext}>
+                  <Image resizeMode={'contain'} style={styles.avater} source={require('./../res/paihang/ico_ph_nv@3x.png')}></Image>
+                  <Text style={styles.avatername}>窦窦</Text>
+                  <Text style={styles.statusx}>发布了任务</Text>
+                  <Text style={styles.itemtitle}>丽江一米阳光宾馆照片转发朋友圈任务</Text>
+                  <Text style={styles.itemprice}>30元/次  性别限制:女</Text>
+                  <Text style={styles.itemdesc}>地区限制:南京/上海/北京/深圳</Text>
+                  <Text style={styles.itemdesc}>2016-03-15 18:00</Text>
+                  <Text style={styles.itemnum}>已接受任务自媒体：<Text style={styles.em}>132人</Text></Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+      </ScrollableTabView>
       </View>
     );
   }
@@ -82,54 +92,20 @@ var Jrw = React.createClass({
 var styles = StyleSheet.create({
   bigcontainer:{
     flex:1,
+    paddingTop:20,
+    backgroundColor:'#f9f9f9',
   },
   container:{
+    flex:1,
+    backgroundColor:'#fff',
+  },
+  innercontainer:{
     flex:1,
     marginTop:-20,
   },
   itemRow:{
     flexDirection:'row',
     marginBottom:20,
-  },
-  banner:{
-    flex:1,
-    borderRadius:4,
-  },
-  wrapper: {
-    height:180,
-  },
-  slide1: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#9DD6EB',
-    borderRadius:4,
-    marginTop:15,
-    marginLeft:15,
-    marginRight:15,
-    marginBottom:15,
-    height:180,
-  },
-  slide2: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#97CAE5',
-    borderRadius:4,
-    marginTop:15,
-    marginLeft:15,
-    marginRight:15,
-    marginBottom:15,
-    height:180,
-  },
-  slide3: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#92BBD9',
-    borderRadius:4,
-    marginTop:15,
-    marginLeft:15,
-    marginRight:15,
-    marginBottom:15,
-    height:180,
   },
   text: {
     color: '#fff',

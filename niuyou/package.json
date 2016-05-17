@@ -11,6 +11,7 @@
     "react-native-gifted-form": "0.0.6",
     "react-native-gifted-listview": "0.0.15",
     "react-native-refreshable-listview": "^2.0.0-beta4",
+    "react-native-scrollable-tab-view": "^0.4.2",
     "react-native-swiper": "^1.4.3"
   }
 }

@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import Util from './../utils';
+import Service from './../service';
 
 import {
   View,
@@ -15,7 +16,27 @@ import {
 } from 'react-native';
 
 var UserHome = React.createClass({
+  getInitialState: function(){
+    return {
+      idx:null
+    };
+  },
+  // 接受由上个页面传来的idx
+  componentDidMount() {
+    this.setState({
+      idx:this.props.idx,
+    });
 
+    Util.get(Service.host + Service.rankingDetail, {idx:this.state.idx}, function(data){
+      console.log(data);
+      if(data.code == 200){
+
+
+      }else{
+
+      }
+    });
+  },
   render: function(){
     return (
       <View style={styles.container}>

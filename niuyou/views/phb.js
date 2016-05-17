@@ -30,7 +30,7 @@ var Phb = React.createClass({
       items: items,
     };
   },
-  _gotoUserHome: function(){
+  _gotoUserHome: function(idx){
     this.props.navigator.push({
       title: '个人主页',
       component: UserHome,
@@ -40,6 +40,9 @@ var Phb = React.createClass({
       leftButtonTitle: "返回",
       leftButtonIcon:require('image!back'),
       onLeftButtonPress: ()=>this.props.navigator.pop(),
+      passProps: {
+        idx:idx,
+      }
     });
   },
 
@@ -78,15 +81,17 @@ var Phb = React.createClass({
 
   _renderRowView(rowData) {
     return (
-      <View style={styles.inneritem} data-id={rowData.id} data-userid={rowData.userId}>
-        <View style={styles.itemimgbox}>
-          <Image resizeMode="contain" style={styles.itemimg} source={{uri: rowData.photoUrl}}></Image>
+      <TouchableOpacity onPress={()=>{this._gotoUserHome(rowData.userId)}}>
+        <View style={styles.inneritem} data-id={rowData.id} data-userid={rowData.userId}>
+          <View style={styles.itemimgbox}>
+            <Image resizeMode="contain" style={styles.itemimg} source={{uri: rowData.photoUrl}}></Image>
+          </View>
+          <View style={styles.itemtext}>
+            <Text style={styles.avatername}>{rowData.name}</Text>
+            <Text style={styles.statusx}>￥{rowData.price}</Text>
+          </View>
         </View>
-        <View style={styles.itemtext}>
-          <Text style={styles.avatername}>{rowData.name}</Text>
-          <Text style={styles.statusx}>￥{rowData.price}</Text>
-        </View>
-      </View>
+      </TouchableOpacity>
     );
   },
   /**
