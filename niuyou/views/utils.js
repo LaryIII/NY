@@ -47,7 +47,7 @@ var Util = {
         .join('&');
       temp+='?'+querystring;
     }
-
+    console.log(temp);
     fetch(temp, fetchOptions)
     .then((response) => response.text())
     .then((responseText) => {

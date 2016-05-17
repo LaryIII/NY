@@ -1,60 +1,49 @@
-/**
- * Created by vczero on 15/7/12.
- */
+'use strict'
 
 import React, { Component } from 'react';
-import Swiper from 'react-native-swiper';
-import UserHome from './phb/userhome';
-import Service from './service';
 import Util from './utils';
+import Service from './service';
 import GiftedListView from 'react-native-gifted-listview';
 import GiftedSpinner from 'react-native-gifted-spinner';
+
 import {
   View,
   Text,
-  ScrollView,
   StyleSheet,
   Image,
   Dimensions,
   TouchableOpacity,
-  TouchableHighlight,
   ListView,
 } from 'react-native';
 
-
-var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}) // assumes immutable objects
-var Phb = React.createClass({
+var ReceiveTask = React.createClass({
   getInitialState: function(){
     var items = [];
     return {
       items: items,
     };
   },
-  _gotoUserHome: function(idx){
+  _gotoTaskDetail: function(){
     this.props.navigator.push({
-      title: '个人主页',
-      component: UserHome,
+      title: '任务详情',
+      component: TaskDetail,
       navigationBarHidden:false,
       // backButtonTitle: "返回",
       // backButtonIcon: require('image!back'),
       leftButtonTitle: "返回",
       leftButtonIcon:require('image!back'),
       onLeftButtonPress: ()=>this.props.navigator.pop(),
-      passProps: {
-        idx:idx,
-      }
     });
   },
-
   _onFetch(page = 1, callback, options) {
     Util.get(Service.host + Service.rankingList, {}, function(data){
       console.log(data);
       if(data.code == 200){
         var rows = data.data.response.list;
         if(rows.length==10){
-          callback(rows);
+          callback([1,2,3]);
         }else if(rows.length<10){
-          callback(rows, {
+          callback([1,2,3], {
             allLoaded: true, // the end of the list is reached
           });
         }
@@ -71,14 +60,18 @@ var Phb = React.createClass({
 
   _renderRowView(rowData) {
     return (
-      <TouchableOpacity onPress={()=>{this._gotoUserHome(rowData.idx)}}>
-        <View style={styles.inneritem} data-id={rowData.id} data-userid={rowData.userId}>
-          <View style={styles.itemimgbox}>
-            <Image resizeMode="contain" style={styles.itemimg} source={{uri: rowData.photoUrl}}></Image>
-          </View>
+      <TouchableOpacity onPress={this._gotoTaskDetail}>
+        <View style={styles.item}>
+          <Image resizeMode={'contain'} style={styles.itemimg} source={require('./../res/home/banner.jpg')}></Image>
           <View style={styles.itemtext}>
-            <Text style={styles.avatername}>{rowData.name}</Text>
-            <Text style={styles.statusx}>￥{rowData.price}</Text>
+            <Image resizeMode={'contain'} style={styles.avater} source={require('./../res/paihang/ico_ph_nv@3x.png')}></Image>
+            <Text style={styles.avatername}>窦窦</Text>
+            <Text style={styles.statusx}>发布了任务</Text>
+            <Text style={styles.itemtitle}>丽江一米阳光宾馆照片转发朋友圈任务</Text>
+            <Text style={styles.itemprice}>30元/次  性别限制:女</Text>
+            <Text style={styles.itemdesc}>地区限制:南京/上海/北京/深圳</Text>
+            <Text style={styles.itemdesc}>2016-03-15 18:00</Text>
+            <Text style={styles.itemnum}>已接受任务自媒体：<Text style={styles.em}>132人</Text></Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -211,124 +204,189 @@ _renderSeparatorView() {
     <View style={customStyles.separator} />
   );
 },
-
-  render: function(){
-    var items = this.state.items;
-    var spinner = this.state.isLoading ?
-      ( <ActivityIndicatorIOS
-        hidden='true'
-        style={{backgroundColor:'#efefef',}}
-        size='large'/> ) :
-      ( <View/>);
+  render() {
     return (
-        <View style={styles.userlist}>
-          <GiftedListView
-            contentContainerStyle = {styles.list}
-            rowView={this._renderRowView}
-            onFetch={this._onFetch}
-            firstLoader={true} // display a loader for the first fetching
-            pagination={false} // enable infinite scrolling using touch to load more
-            refreshable={true} // enable pull-to-refresh for iOS and touch-to-refresh for Android
-            withSections={false} // enable sections
-            customStyles={{
-              paginationView: {
-                //backgroundColor: '#f9f9f9',
-              },
-            }}
+      // <View>
+      //   {this._getSpinner()}
+      // </View>
+      <GiftedListView
+        contentContainerStyle = {styles.innercontainer}
+        rowView={this._renderRowView}
+        onFetch={this._onFetch}
+        firstLoader={true} // display a loader for the first fetching
+        pagination={false} // enable infinite scrolling using touch to load more
+        refreshable={true} // enable pull-to-refresh for iOS and touch-to-refresh for Android
+        withSections={false} // enable sections
+        customStyles={{
+          paginationView: {
+            //backgroundColor: '#f9f9f9',
+          },
+        }}
 
-            refreshableTintColor="blue"
-            pagination={true} // enable infinite scrolling using touch to load more
-            paginationFetchigView={this._renderPaginationFetchigView}
-            paginationAllLoadedView={this._renderPaginationAllLoadedView}
-            paginationWaitingView={this._renderPaginationWaitingView}
+        refreshableTintColor="blue"
+        pagination={true} // enable infinite scrolling using touch to load more
+        paginationFetchigView={this._renderPaginationFetchigView}
+        paginationAllLoadedView={this._renderPaginationAllLoadedView}
+        paginationWaitingView={this._renderPaginationWaitingView}
 
-            refreshable={true} // enable pull-to-refresh for iOS and touch-to-refresh for Android
-            refreshableViewHeight={50} // correct height is mandatory
-            refreshableDistance={40} // the distance to trigger the pull-to-refresh - better to have it lower than refreshableViewHeight
-            refreshableFetchingView={this._renderRefreshableFetchingView}
-            refreshableWillRefreshView={this._renderRefreshableWillRefreshView}
-            refreshableWaitingView={this._renderRefreshableWaitingView}
+        refreshable={true} // enable pull-to-refresh for iOS and touch-to-refresh for Android
+        refreshableViewHeight={50} // correct height is mandatory
+        refreshableDistance={40} // the distance to trigger the pull-to-refresh - better to have it lower than refreshableViewHeight
+        refreshableFetchingView={this._renderRefreshableFetchingView}
+        refreshableWillRefreshView={this._renderRefreshableWillRefreshView}
+        refreshableWaitingView={this._renderRefreshableWaitingView}
 
-            emptyView={this._renderEmptyView}
+        emptyView={this._renderEmptyView}
 
-            renderSeparator={this._renderSeparatorView}
-            PullToRefreshViewAndroidProps={{
-              colors: ['#efefef'],
-              progressBackgroundColor: '#003e82',
-            }}
-          />
-        </View>
+        renderSeparator={this._renderSeparatorView}
+        PullToRefreshViewAndroidProps={{
+          colors: ['#efefef'],
+          progressBackgroundColor: '#003e82',
+        }}
+        {...this.props}
+      />
     );
-  }
+  },
+
 });
 
 var styles = StyleSheet.create({
-  userlist:{
+  bigcontainer:{
     flex:1,
-    paddingTop:10,
-    paddingBottom:10,
-    paddingLeft:5,
-    paddingRight:5,
-    backgroundColor:'#efefef',
+    paddingTop:20,
+    backgroundColor:'#f9f9f9',
   },
-  list:{
-    justifyContent: 'space-around',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+  container:{
+    flex:1,
+    backgroundColor:'#fff',
+  },
+  innercontainer:{
+    flex:1,
+  },
+  itemRow:{
+    flexDirection:'row',
+    marginBottom:20,
+  },
+  text: {
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+  tasklist:{
+    marginTop:15,
+    marginLeft:15,
+    marginRight:15,
+    marginBottom:15,
+  },
+  tasktitlebox:{
+    flex:1,
+  },
+  titleline:{
+    flex:1,
+    color:'#c0c0c0',
+    textAlign:'center',
+    fontSize:12
   },
   item:{
     flex:1,
-    flexDirection:'row',
-    justifyContent:'space-between',
-    marginBottom:10,
-    height:(Dimensions.get('window').width-30)/2+37,
-    marginLeft:5,
-    marginRight:5,
-  },
-  inneritem:{
-    width:(Dimensions.get('window').width-30)/2,
-    height:(Dimensions.get('window').width-30)/2+37,
-    borderRadius:4,
-    // backgroundColor:'#fff',
+    height:180,
+    marginTop:15,
     alignItems:'center',
-    justifyContent:'center',
   },
-  itemimgbox:{
-    flex:1,
-    width:(Dimensions.get('window').width-30)/2,
-    height:(Dimensions.get('window').width-30)/2,
-    borderTopLeftRadius:4,
-    borderTopRightRadius:4,
-    backgroundColor:'#fff',
+  itemtext:{
+    position:'absolute',
+    top:0,
+    left:0,
+    backgroundColor:'rgba(0,0,0,0)',
+    width:Dimensions.get('window').width-30,
+    height:180,
+    alignItems:'center',
   },
   itemimg:{
     flex:1,
-    width:(Dimensions.get('window').width-30)/2,
-    height:(Dimensions.get('window').width-30)/2,
-    borderTopLeftRadius:4,
-    borderTopRightRadius:4,
+    borderRadius:4,
   },
-  itemtext:{
-    height:37,
-    backgroundColor:'#fff',
-    width:(Dimensions.get('window').width-30)/2,
-    borderBottomLeftRadius:4,
-    borderBottomRightRadius:4,
+  itemtitle:{
+    fontSize:15,
+    color:'#fff',
+    textAlign:'center',
+    marginTop:50,
+    fontWeight:'bold',
+  },
+  itemprice:{
+    fontSize:12,
+    color:'#fff',
+    textAlign:'center',
+    marginTop:10,
+  },
+  itemdesc:{
+    fontSize:12,
+    color:'#fff',
+    textAlign:'center',
+    marginTop:5,
+  },
+  itemnum:{
+    fontSize:12,
+    color:'#fff',
+    textAlign:'center',
+    marginTop:25,
+  },
+  em:{
+    color:'#f0e983',
+  },
+  avater:{
+    position:'absolute',
+    top:10,
+    left:10,
+    width:22,
+    height:22,
+    borderRadius:11
   },
   avatername:{
     position:'absolute',
-    bottom:12,
-    left:12,
-    fontSize:15,
-    color:'#333',
+    top:15,
+    left:40,
+    fontSize:12,
+    color:'#fff',
   },
   statusx:{
     position:'absolute',
-    bottom:12,
-    right:12,
+    top:15,
+    right:15,
     color:'#f0e983',
-    fontSize:15,
+    fontSize:12,
   },
+  navigatorx:{
+    backgroundColor:'#f9f9f9',
+    height:64,
+    paddingTop:20,
+  },
+  tabs:{
+    flexDirection:'row',
+    height:44,
+    backgroundColor:'#f9f9f9',
+  },
+  borderbottom:{
+    backgroundColor:'#ececec',
+    height:0.5,
+  },
+  placeholder:{
+    flex:1,
+  },
+  btn:{
+    flex:1,
+    width:82,
+    justifyContent:'center',
+    alignItems:'center',
+  },
+  btnborder:{
+    position:'absolute',
+    bottom:0,
+    left:0,
+    width:Dimensions.get('window').width/4,
+    height:2,
+    backgroundColor:'#51a7ff',
+  }
 });
 var customStyles = {
   separator: {
@@ -380,4 +438,5 @@ var customStyles = {
   },
 };
 
-module.exports = Phb;
+
+module.exports = ReceiveTask;

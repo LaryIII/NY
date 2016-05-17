@@ -26,7 +26,8 @@ var UserHome = React.createClass({
     this.setState({
       idx:this.props.idx,
     });
-
+  },
+  render: function(){
     Util.get(Service.host + Service.rankingDetail, {idx:this.state.idx}, function(data){
       console.log(data);
       if(data.code == 200){
@@ -36,8 +37,6 @@ var UserHome = React.createClass({
 
       }
     });
-  },
-  render: function(){
     return (
       <View style={styles.container}>
         <ScrollView style={styles.scrollbox}>
