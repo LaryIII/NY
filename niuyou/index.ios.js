@@ -80,11 +80,6 @@ var niuyou = React.createClass({
           passProps:{
             data: data
           },
-          // backButtonTitle: "返回",
-          // backButtonIcon: require('image!back'),
-          leftButtonTitle: "返回",
-          leftButtonIcon:require('image!back'),
-          onLeftButtonPress: ()=>this.refs.nav.pop(),
         }}
       />;
   },

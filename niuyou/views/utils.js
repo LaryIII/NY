@@ -34,6 +34,26 @@ var Util = {
       callback(JSON.parse(responseText));
     });
   },
+  //get请求
+  get: function (url, data, callback) {
+    var fetchOptions = {
+      method: 'GET',
+      body: ''
+    };
+    var temp = url;
+    if(data){
+      var querystring = Object.keys(data)
+        .map(key => key + '=' + encodeURIComponent(data[key]))
+        .join('&');
+      temp+='?'+querystring;
+    }
+
+    fetch(temp, fetchOptions)
+    .then((response) => response.text())
+    .then((responseText) => {
+      callback(JSON.parse(responseText));
+    });
+  },
   //Key
   key: 'HSHHSGSGGSTWSYWSYUSUWSHWBS-REACT-NATIVE'
 
