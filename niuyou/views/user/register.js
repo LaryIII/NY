@@ -24,7 +24,8 @@ var Register = React.createClass({
       open: false,
       offset:150,
       verifycodeimg:'',
-
+      mobile:'',
+      token:'',
     };
   },
   _gotoStartny:function(){
@@ -35,11 +36,12 @@ var Register = React.createClass({
       // backButtonTitle: "返回",
       // backButtonIcon: require('image!back'),
       leftButtonTitle: "返回",
-      leftButtonIcon:require('image!back'),
+      leftButtonIcon:require('image!back1'),
       onLeftButtonPress: ()=>this.props.navigator.pop(),
     });
   },
   _register:function(mobile,verifycode,password,confirmpassword){
+    var that = this;
     Util.get(Service.host + Service.regMobile, {
       mobile:mobile,
       password:password,
@@ -56,13 +58,23 @@ var Register = React.createClass({
       console.log(data);
       // 如果成功，跳转到开启牛友之旅页面
       if(data.code == 200){
-        this._gotoStartny();
+        // 保存sessionKey
+        AsyncStorage.setItem('userinfo',JSON.stringify(data.data.response),function(err){
+          if(!err){
+            that._gotoStartny();
+          }
+        })
+
+      }else{
+        AlertIOS.alert('提醒',data.messages[0].message);
       }
 
     });
   },
-  _checkMobile:function(mobile){
+  _checkMobile:function(){
+    var that  = this;
     // 1.检查手机号是否可注册
+    var mobile = GiftedFormManager.getValue('signupForm', 'username');
     Util.get(Service.host + Service.checkMobile, {
       mobile:mobile,
     }, function(data){
@@ -75,8 +87,9 @@ var Register = React.createClass({
             var token = data.data.response.token;
             // 弹出图形验证码让用户填写
             var verifyCodeImg = Service.host+Service.verifyCode+'?token='+token;
-            // TODO:
-            this.setState({open: true,offset:150,verifycodeimg:verifyCodeImg,mobile:mobile,token:token});
+            console.log(verifyCodeImg);
+            //
+            that.setState({open: true,offset:150,verifycodeimg:verifyCodeImg,mobile:mobile,token:token});
           }
         });
       }
@@ -84,13 +97,11 @@ var Register = React.createClass({
     });
   },
   _sendverifycode:function(){
+    var that = this;
     // 先校验图形验证码是否填写
     if(this.state.verifyCode == ''){
-      AlertIOS.alert(
-            '提醒',
-            '请填写图形验证码!'
-          )>
-      return false;
+      AlertIOS.alert('提醒','请填写图形验证码!');
+      return;
     }
     // 发送手机验证码
     Util.get(Service.host + Service.sendVerifyCode, {
@@ -100,9 +111,9 @@ var Register = React.createClass({
     }, function(data){
       console.log(data);
       if(data.code == 200){
-
+        that.setState({open: false});
       }else{
-
+        AlertIOS.alert('提醒',data.messages[0].message);
       }
 
     });
@@ -112,6 +123,14 @@ var Register = React.createClass({
     if(val){
       this.setState({
         verifyCode: val
+      });
+    }
+  },
+  _onChangeMobile: function(val){
+    console.log(val);
+    if(val){
+      this.setState({
+        mobile: val
       });
     }
   },
@@ -178,9 +197,10 @@ var Register = React.createClass({
             title='账号'
             placeholder='请输入手机号码'
             clearButtonMode='while-editing'
+            onChangeText = {this._onChangeMobile}
             onTextInputFocus={(currentText = '') => {
               if (!currentText) {
-                let fullName = GiftedFormManager.getValue('signupForm', 'fullName');
+                let fullName = GiftedFormManager.getValue('signupForm', 'username');
                 if (fullName) {
                   return fullName.replace(/[^a-zA-Z0-9-_]/g, '');
                 }
@@ -193,7 +213,7 @@ var Register = React.createClass({
             title='验证码'
             placeholder='请输入验证码'
             clearButtonMode='while-editing'
-            secureTextEntry={true}
+            secureTextEntry={false}
           />
 
           <GiftedForm.TextInputWidget
@@ -223,7 +243,10 @@ var Register = React.createClass({
               //   values.gender = values.gender[0];
               //   values.birthday = moment(values.birthday).format('YYYY-MM-DD');
               // }
-              this._register(values.username, values.verifycode, values.password, values.confirmpassword);
+              if(isValid === true){
+                this._register(values.username, values.verifycode, values.password, values.confirmpassword);
+              }
+
             }}
           />
           <GiftedForm.HiddenWidget name='tos' value={true} />
@@ -247,7 +270,7 @@ var Register = React.createClass({
               <View style={styles.modaltitlebox}><Text style={styles.modaltitle}>请输入四位数字验证码</Text></View>
               <View style={styles.modalcontent}>
                 <TextInput ref="verifycodeinput" style={styles.modalinput} placeholder="输入右侧数字" onChangeText={this._onChange} />
-                <Image resizeMode="contain" style={styles.modalimg} source={uri:{this.state.verifycodeimg}}></Image>
+                <Image resizeMode="contain" style={styles.modalimg} source={{uri:this.state.verifycodeimg}}></Image>
               </View>
               <TouchableOpacity onPress={this._sendverifycode}>
                 <View style={styles.modalbtn}>

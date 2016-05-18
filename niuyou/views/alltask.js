@@ -31,7 +31,7 @@ var AllTask = React.createClass({
       // backButtonTitle: "返回",
       // backButtonIcon: require('image!back'),
       leftButtonTitle: "返回",
-      leftButtonIcon:require('image!back'),
+      leftButtonIcon:require('image!back1'),
       onLeftButtonPress: ()=>this.props.navigator.pop(),
     });
   },

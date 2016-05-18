@@ -26,7 +26,7 @@ var Login = React.createClass({
       // backButtonTitle: "返回",
       // backButtonIcon: require('image!back'),
       leftButtonTitle: "返回",
-      leftButtonIcon:require('image!back'),
+      leftButtonIcon:require('image!back1'),
       onLeftButtonPress: ()=>this.props.navigator.pop(),
     });
   },
@@ -36,11 +36,12 @@ var Login = React.createClass({
       component: Findback,
       navigationBarHidden:false,
       leftButtonTitle: "返回",
-      leftButtonIcon:require('image!back'),
+      leftButtonIcon:require('image!back1'),
       onLeftButtonPress: ()=>this.props.navigator.pop(),
     });
   },
   _login:function(mobile,password){
+    var that = this;
     Util.get(Service.host + Service.login, {
       mobile:mobile,
       password:password,
@@ -52,7 +53,15 @@ var Login = React.createClass({
     }, function(data){
       console.log(data);
       // 如果成功，返回原页面，且刷新页面
-
+      if(data.code == 200){
+        AsyncStorage.setItem('userinfo',JSON.stringify(data.data.response),function(err){
+          if(!err){
+            that.props.navigator.pop();
+          }
+        })
+      }else{
+        AlertIOS.alert('提醒',data.messages[0].message);
+      }
     });
   },
   render: function(){
