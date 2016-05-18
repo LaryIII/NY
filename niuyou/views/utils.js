@@ -52,6 +52,9 @@ var Util = {
     .then((response) => response.text())
     .then((responseText) => {
       callback(JSON.parse(responseText));
+    })
+    .catch(function(e) {
+        console.log('error');
     });
   },
   //Key

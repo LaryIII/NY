@@ -37,6 +37,8 @@ var Service = {
   uploadPersonalPhoto:'/c/personalInfo/uploadPersonalPhoto',// 上传生活照
   getPersonalPhoto:'/c/personalInfo/getPersonalPhoto',// 获取生活照
   submitVerify:'/c/personalInfo/submitVerify',// 提交认证
+
+  feedback:'/system/feedback/add',// 意见反馈
 };
 
 module.exports = Service;

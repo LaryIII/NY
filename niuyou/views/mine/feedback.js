@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import Util from './../utils';
-
+import Service from './../service';
 import {
   View,
   TextInput,
@@ -42,9 +42,18 @@ var Feedback = React.createClass({
   },
 
   _onChange: function(val){
+    console.log(val);
     if(val){
       this.setState({
         message: val
+      });
+    }
+  },
+  _onChange2: function(val){
+    console.log(val);
+    if(val){
+      this.setState({
+        mobile: val
       });
     }
   },
@@ -55,16 +64,12 @@ var Feedback = React.createClass({
     //   if(err){
     //     alert('权限失效，请退出APP，重新登录');
     //   }else{
-    //     Util.post(Service.host + Service.addMessage, {
-    //       token: token,
-    //       message: that.state.message
-    //     }, function(data){
-    //       if(data.status){
-    //         alert('添加成功！');
-    //       }else{
-    //         alert('添加失败！');
-    //       }
-    //     });
+        Util.get(Service.host + Service.feedback, {
+          content: that.state.message,
+          mobile:that.state.mobile
+        }, function(data){
+          console.log(data);
+        });
     //   }
 
     // });
