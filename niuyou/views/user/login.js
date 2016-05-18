@@ -4,6 +4,7 @@ import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import Util from './../utils';
 import Register from './register';
 import Findback from './findback';
+import Service from './../service';
 
 import {
   View,
@@ -34,14 +35,28 @@ var Login = React.createClass({
       title: '找回密码',
       component: Findback,
       navigationBarHidden:false,
-      // backButtonTitle: "返回",
-      // backButtonIcon: require('image!back'),
       leftButtonTitle: "返回",
       leftButtonIcon:require('image!back'),
       onLeftButtonPress: ()=>this.props.navigator.pop(),
     });
   },
+  _login:function(mobile,password){
+    Util.get(Service.host + Service.login, {
+      mobile:mobile,
+      password:password,
+      // account:'',// 非必填
+      // loginType:'',//登录类型：1手机号2用户名
+      // devKey:'', 设备码
+      // appVersion:'',//版本信息
+      // p:'',// 渠道号
+    }, function(data){
+      console.log(data);
+      // 如果成功，返回原页面，且刷新页面
+
+    });
+  },
   render: function(){
+    var that = this;
     return (
       <ScrollView >
         <View style={styles.logo}>
@@ -119,8 +134,8 @@ var Login = React.createClass({
             onSubmit={(isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
               if (isValid === true) {
                 // prepare object
-                values.gender = values.gender[0];
-                values.birthday = moment(values.birthday).format('YYYY-MM-DD');
+                // 登录
+                this._login(values.username,values.password);
               }
             }}
           />
