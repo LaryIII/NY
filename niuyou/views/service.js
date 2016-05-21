@@ -39,6 +39,7 @@ var Service = {
   submitVerify:'/c/personalInfo/submitVerify',// 提交认证
 
   feedback:'/system/feedback/add',// 意见反馈
+  upload:'http://cs-test.jcc1.cn/admin/get_token',// 上传
 };
 
 module.exports = Service;

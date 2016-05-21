@@ -71,6 +71,35 @@ var ApplyTask = React.createClass({
   },
   render: function(){
     // 需要增加数量的显示，对照UI
+    var imgdom = [];
+    if(this.state.imgs.length>=3){
+      imgdom.push(
+        <View style={styles.bz_content2}>
+        <View style={styles.bbox}>
+          <Image resizeMode={'contain'} style={styles.bimg} source={{uri:this.state.imgs[0].photoUrl}}></Image>
+        </View>
+        <View style={styles.sbox}>
+          <Image resizeMode={'contain'} style={styles.simg} source={{uri:this.state.imgs[1].photoUrl}}></Image>
+          <Image resizeMode={'contain'} style={styles.simg} source={{uri:this.state.imgs[2].photoUrl}}></Image>
+        </View>
+        </View>
+      );
+    }else if(this.state.imgs.length == 2){
+      <View style={styles.bz_content2}>
+      <View style={styles.bbox}>
+        <Image resizeMode={'contain'} style={styles.bimg} source={{uri:this.state.imgs[0].photoUrl}}></Image>
+      </View>
+      <View style={styles.sbox}>
+        <Image resizeMode={'contain'} style={styles.simg} source={{uri:this.state.imgs[1].photoUrl}}></Image>
+      </View>
+      </View>
+    }else if(this.state.imgs.length == 1){
+      <View style={styles.bbox}>
+        <Image resizeMode={'contain'} style={styles.bimg} source={{uri:this.state.imgs[0].photoUrl}}></Image>
+      </View>
+    }else{
+      <View style={styles.bz_content2}></View>
+    }
     return (
       <ScrollView style={styles.container}>
         <View style={styles.warning}>
@@ -84,15 +113,7 @@ var ApplyTask = React.createClass({
               <Text style={styles.box_title_text}>图片</Text>
             </View>
           </View>
-          <View style={styles.bz_content2}>
-            <View style={styles.bbox}>
-              <Image resizeMode={'contain'} style={styles.bimg} source={{uri:this.state.imgs[0].photoUrl}}></Image>
-            </View>
-            <View style={styles.sbox}>
-              <Image resizeMode={'contain'} style={styles.simg} source={{uri:this.state.imgs[1].photoUrl}}></Image>
-              <Image resizeMode={'contain'} style={styles.simg} source={{uri:this.state.imgs[2].photoUrl}}></Image>
-            </View>
-          </View>
+          {imgdom}
           <TouchableOpacity onPress={this._download}>
             <View style={styles.circle}>
               <Image resizeMode={'contain'} style={styles.circleimg} source={require('image!download')}></Image>
