@@ -2,7 +2,8 @@
 import React, { Component } from 'react';
 import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import Util from './../utils';
-
+import FileDownload from 'react-native-file-download';
+import RNFS from 'react-native-fs';
 import {
   View,
   TextInput,
@@ -14,6 +15,7 @@ import {
   AsyncStorage,
   Dimensions,
   Clipboard,
+  Alert,
 } from 'react-native';
 
 var ApplyTask = React.createClass({
@@ -38,6 +40,33 @@ var ApplyTask = React.createClass({
     }
   },
   _download:function(){
+    for(var i=0;i<this.props.imgs.length;i++){
+      var URL = this.props.imgs[i].photoUrl;
+      var DEST = RNFS.DocumentDirectoryPath;
+      var arrs = URL.split('.');
+      var fileName = new Date().getTime()+i*10000+'.'+arrs[arrs.length-1];
+      console.log(fileName);
+      var headers = {
+        'Accept-Language':'zh-CN'
+      };
+      (function(URL,DEST,fileName,headers,n,length){
+        var flag = false;
+        console.log(n,length);
+        if(n==length-1){
+          flag = true;
+        }
+        FileDownload.download(URL, DEST, fileName, headers)
+        .then((response) => {
+          if(flag){
+            Alert.alert('下载成功');
+          }
+          console.log(`downloaded! file saved to: ${response}`)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+      })(URL,DEST,fileName,headers,i,this.props.imgs.length)
+    }
 
   },
   render: function(){
