@@ -5,7 +5,6 @@ import Util from './utils';
 import Service from './service';
 import GiftedListView from 'react-native-gifted-listview';
 import GiftedSpinner from 'react-native-gifted-spinner';
-
 import {
   View,
   Text,
@@ -23,27 +22,15 @@ var AllTask = React.createClass({
       items: items,
     };
   },
-  _gotoTaskDetail: function(){
-    this.props.navigator.push({
-      title: '任务详情',
-      component: TaskDetail,
-      navigationBarHidden:false,
-      // backButtonTitle: "返回",
-      // backButtonIcon: require('image!back'),
-      leftButtonTitle: "返回",
-      leftButtonIcon:require('image!back1'),
-      onLeftButtonPress: ()=>this.props.navigator.pop(),
-    });
-  },
   _onFetch(page = 1, callback, options) {
-    Util.get(Service.host + Service.rankingList, {}, function(data){
+    Util.get(Service.host + Service.taskList, {}, function(data){
       console.log(data);
       if(data.code == 200){
-        var rows = data.data.response.list;
+        var rows = data.data.response.taskList;
         if(rows.length==10){
-          callback([1,2,3]);
+          callback(rows);
         }else if(rows.length<10){
-          callback([1,2,3], {
+          callback(rows, {
             allLoaded: true, // the end of the list is reached
           });
         }
@@ -59,19 +46,20 @@ var AllTask = React.createClass({
   },
 
   _renderRowView(rowData) {
+    var genderimg = rowData.gender==1?require('image!ph_nan'):require('image!ph_nv');
     return (
-      <TouchableOpacity onPress={this._gotoTaskDetail}>
+      <TouchableOpacity onPress={()=>this.props.onRowPress(rowData.id)}>
         <View style={styles.item}>
           <Image resizeMode={'contain'} style={styles.itemimg} source={require('./../res/home/banner.jpg')}></Image>
           <View style={styles.itemtext}>
-            <Image resizeMode={'contain'} style={styles.avater} source={require('./../res/paihang/ico_ph_nv@3x.png')}></Image>
-            <Text style={styles.avatername}>窦窦</Text>
+            <Image resizeMode={'contain'} style={styles.avater} source={genderimg}></Image>
+            <Text style={styles.avatername}>{rowData.merchantName}</Text>
             <Text style={styles.statusx}>发布了任务</Text>
-            <Text style={styles.itemtitle}>丽江一米阳光宾馆照片转发朋友圈任务</Text>
-            <Text style={styles.itemprice}>30元/次  性别限制:女</Text>
-            <Text style={styles.itemdesc}>地区限制:南京/上海/北京/深圳</Text>
-            <Text style={styles.itemdesc}>2016-03-15 18:00</Text>
-            <Text style={styles.itemnum}>已接受任务自媒体：<Text style={styles.em}>132人</Text></Text>
+            <Text style={styles.itemtitle}>{rowData.taskName}</Text>
+            <Text style={styles.itemprice}>{rowData.price}元/次  性别限制:{rowData.gender==1?'男':'女'}</Text>
+            <Text style={styles.itemdesc}>地区限制:{rowData.publicCity}</Text>
+            <Text style={styles.itemdesc}>{rowData.showEndTime}</Text>
+            <Text style={styles.itemnum}>已接受任务自媒体：<Text style={styles.em}>{rowData.peopleNum}人</Text></Text>
           </View>
         </View>
       </TouchableOpacity>

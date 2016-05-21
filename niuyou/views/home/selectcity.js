@@ -5,6 +5,10 @@
 import React, { Component } from 'react';
 import Util from './../utils';
 import City from './city';
+import SQLite from 'react-native-sqlite-storage';
+SQLite.DEBUG(true);
+// SQLite.enablePromise(true);
+SQLite.enablePromise(false);
 import {
   View,
   Text,
@@ -36,6 +40,8 @@ var SelectCity = React.createClass({
     var dataBlob = {};
     var sectionIDs = [];
     var rowIDs = [];
+
+
     // for (var ii = 0; ii < NUM_SECTIONS; ii++) {
     //   var sectionName = 'Section ' + ii;
     //   sectionIDs.push(sectionName);
@@ -66,12 +72,79 @@ var SelectCity = React.createClass({
     console.log(sectionIDs);
     console.log(rowIDs);
     return {
-      dataSource: dataSource.cloneWithRowsAndSections(dataBlob, sectionIDs, rowIDs),
+      dataSource:dataSource.cloneWithRowsAndSections(dataBlob, sectionIDs, rowIDs),
       headerPressCount: 0,
+      letters:[],
+      cities:[]
     };
   },
+
+  componentDidMount:function(){
+    var that = this;
+    function errorCB(err) {
+      console.log("SQL Error: " + err);
+    };
+
+    function successCB() {
+      console.log("SQL executed fine");
+    };
+
+    function openCB() {
+      console.log("Database OPENED");
+    };
+    var db = SQLite.openDatabase("resource.db", "1.0", "resource", 200000, openCB, errorCB);
+    db.transaction((tx) => {
+        console.log(tx);
+      tx.executeSql('SELECT * FROM sys_city ORDER BY word', [], (tx, results) => {
+          console.log("Query completed");
+          var getSectionData = (dataBlob, sectionID) => {
+            return dataBlob[sectionID];
+          };
+          var getRowData = (dataBlob, sectionID, rowID) => {
+            return dataBlob[rowID];
+          };
+
+          var dataSource = new ListView.DataSource({
+            getRowData: getRowData,
+            getSectionHeaderData: getSectionData,
+            rowHasChanged: (row1, row2) => row1 !== row2,
+            sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
+          });
+
+          var dataBlob = {};
+          var sectionIDs = [];
+          var rowIDs = [];
+
+          var len = results.rows.length;
+          console.log(len);
+          for (let i = 0; i < len; i++) {
+            let row = results.rows.item(i);
+            var letter = `${row.word}`.toUpperCase();
+            if(!sectionIDs.includes(letter)){
+              sectionIDs.push(letter);
+              dataBlob[letter] = letter;
+              rowIDs.push([]);
+            }
+            rowIDs[rowIDs.length-1].push(`${row.city_id};${row.city};${row.py}`);
+            dataBlob[`${row.city_id}`] = `${row.city_id};${row.city};${row.py}`;
+          }
+          that.setState({
+            dataSource:dataSource.cloneWithRowsAndSections(dataBlob, sectionIDs, rowIDs),
+            letters:sectionIDs,
+            cities:rowIDs,
+          });
+
+          db.close(closeCB,errorCB);
+
+        });
+    },
+    this.errorCB,function() {
+        console.log("Transaction is now finished");
+    });
+  },
+
   _renderHotCities:function(){
-    var hotcities = [['上海','北京','苏州'],['杭州','郑州','广州'],['深圳','重庆','成都']];
+    var hotcities = [['北京','上海','广州'],['深圳','南京','杭州']];
     var citydoms = [];
     for(var i in hotcities){
       citydoms.push(
@@ -98,10 +171,10 @@ var SelectCity = React.createClass({
   },
 
 
-  renderRow: function(rowData: string, sectionID: string, rowID: string): ReactElement {
+  renderRow: function(rowData:string, sectionID: string, rowID: string): ReactElement {
     return (
       <View style={styles.row}>
-        <Text style={styles.rowtext}>{rowData}</Text>
+        <Text style={styles.rowtext}>{rowID.split(';')[1]}</Text>
       </View>
     );
   },
@@ -117,13 +190,13 @@ var SelectCity = React.createClass({
   },
 
   _renderSidebar:function(){
-    var letters = City.letter;
-    var cities = City.cities;
+    var letters = this.state.letters;
+    var cities = this.state.cities;
     var letterdom = [];
-    var top = 286;
+    var top = 230;
     for(var i = 0; i<letters.length; i++){
       if(i>=1){
-        top += cities[letters[i-1]].length*44+28;
+        top += cities[i-1].length*44+28;
       }
       console.log(top);
       (function(top,that){
@@ -173,7 +246,7 @@ var SelectCity = React.createClass({
               ref = 'list'
               style={styles.listview}
               dataSource={this.state.dataSource}
-              onChangeVisibleRows={(visibleRows, changedRows) => console.log({visibleRows, changedRows})}
+              onChangeVisibleRows={(visibleRows, changedRows) => console.log('onChangeVisibleRows')}
               renderSectionHeader={this.renderSectionHeader}
               renderRow={this.renderRow}
               initialListSize={10}

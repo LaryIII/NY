@@ -26,13 +26,32 @@ var Jrw = React.createClass({
       items: items,
     };
   },
+  _gotoTaskDetail: function(id){
+    this.props.navigator.push({
+      title: '任务详情',
+      component: TaskDetail,
+      navigationBarHidden:false,
+      // backButtonTitle: "返回",
+      // backButtonIcon: require('image!back'),
+      leftButtonTitle: "返回",
+      leftButtonIcon:require('image!back1'),
+      onLeftButtonPress: ()=>this.props.navigator.pop(),
+      passProps: {
+        id:id,
+      }
+    });
+  },
   render: function(){
     var items = this.state.items;
     return (
       <View style={styles.bigcontainer}>
       <ScrollableTabView style={styles.container} renderTabBar={() =><JRWTabBar />}>
-        <AllTask tabLabel="所有任务" />
-        <ReceiveTask tabLabel="可接任务" />
+        <AllTask tabLabel="所有任务" onRowPress={(id)=>{
+          this._gotoTaskDetail(id);
+        }} />
+        <ReceiveTask tabLabel="可接任务" onRowPress={(id)=>{
+          this._gotoTaskDetail(id);
+        }} />
       </ScrollableTabView>
       </View>
     );

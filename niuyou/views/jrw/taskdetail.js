@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import Util from './../utils';
 import ApplyTask from './applytask';
-
+import Service from './../service';
 import {
   View,
   TextInput,
@@ -17,10 +17,62 @@ import {
 
 var TaskDetail = React.createClass({
   getInitialState: function(){
-    var items = [];
     return {
-      items: items,
+      merchantInfoDto:{
+        id:0,
+        merchantLevel:0,
+        merchantLogo:'',
+        merchantName:''
+      },
+      task:{
+        createTime:'',
+        gender:1,
+        id:0,
+        isSettle:0,
+        mainPhotoUrl:'',
+        merchantId:0,
+        noPassReason:'',
+        orderPeopleNum:'',
+        passTime:'',
+        peopleNum:'',
+        price:'',
+        showBeginTime:'',
+        showEndTime:'',
+        status:'',
+        taskDes:'',
+        taskEndTime:'',
+        taskName:'',
+        taskText:'',
+        updateTime:'',
+      },
+      taskPhotoList:[
+        {
+          createTime:'',
+          id:0,
+          num:1,
+          photoUrl:'',
+          taskId:0,
+          updateTime:''
+        }
+      ],
+      status:1,
     };
+  },
+  componentDidMount:function(){
+    var that = this;
+    Util.get(Service.host + Service.getTaskDetail, {taskId:this.props.id}, function(data){
+      console.log(data);
+      if(data.code == 200){
+        that.setState({
+          merchantInfoDto:data.data.response.merchantInfoDto,
+          task:data.data.response.task,
+          taskPhotoList:data.data.response.taskPhotoList,
+          status:data.data.response.status,
+        });
+      }else{
+
+      }
+    });
   },
   _gotoApplyTask: function(){
     this.props.navigator.push({
@@ -35,12 +87,39 @@ var TaskDetail = React.createClass({
     });
   },
   render: function(){
+    var zmimgs = [];
+    var imgs = [];
+    if(this.state.taskPhotoList && this.state.taskPhotoList.length>0){
+      for(var i=0; i< this.state.taskPhotoList.length;i++){
+        // TODO:做四行，用justifyContent: 'space-around',
+        imgs.push(
+          <Image resizeMode={'contain'} style={styles.zmimg} source={require('./../../res/mine/pic_wo_sl1@2x.png')}></Image>
+        );
+      }
+      zmimgs.push(
+        <View style={styles.beizhu}>
+          <View style={styles.bz_header}>
+            <View style={styles.box_title}>
+              <Image resizeMode={'contain'} style={styles.box_title_img} source={require('image!tupian1')}></Image>
+              <Text style={styles.box_title_text}>图片证明</Text>
+            </View>
+          </View>
+          <View style={styles.bz_content3}>
+            <View style={styles.zmimgs}>
+              {imgs}
+            </View>
+          </View>
+        </View>
+      );
+    }else{
+      <View />
+    }
     return (
       <View style={styles.container}>
         <ScrollView style={styles.scrollbox}>
           <View style={styles.header}>
             <Image resizeMode={'contain'} style={styles.faces} source={require('./../../res/mine/pic_wo_moren@3x.png')}></Image>
-            <Text style={styles.facesname}>窦窦</Text>
+            <Text style={styles.facesname}>{this.state.merchantInfoDto.merchantName}</Text>
             <View style={styles.stars}>
               <View style={styles.starscontainer}>
                 <Image resizeMode={'contain'} style={styles.star} source={require('image!star_active')}></Image>
@@ -59,7 +138,7 @@ var TaskDetail = React.createClass({
                   <Text style={{color:'#333'}}>酬金</Text>
                 </View>
                 <View style={styles.pictext}>
-                  <Text style={styles.fourtext}><Text style={styles.em1}>0.6元</Text><Text style={styles.spiritor}>/</Text>好友<Text style={styles.spiritor}>/</Text>次</Text>
+                  <Text style={styles.fourtext}><Text style={styles.em1}>{this.state.task.price}元</Text><Text style={styles.spiritor}>/</Text>好友<Text style={styles.spiritor}>/</Text>次</Text>
                 </View>
               </View>
               <View style={styles.col2}>
@@ -68,7 +147,7 @@ var TaskDetail = React.createClass({
                   <Text style={{color:'#333'}}>有效时间</Text>
                 </View>
                 <View style={styles.pictext}>
-                  <Text style={styles.fourtext}><Text style={styles.em2}>2016/1/8--2016/1/11</Text></Text>
+                  <Text style={styles.fourtext}><Text style={styles.em2}>{this.state.task.showBeginTime}--{this.state.task.showEndTime}</Text></Text>
                 </View>
               </View>
             </View>
@@ -79,7 +158,7 @@ var TaskDetail = React.createClass({
                 <Text style={{color:'#333'}}>性别要求</Text>
               </View>
               <View style={styles.pictext}>
-                <Text style={styles.fourtext}>女</Text>
+                <Text style={styles.fourtext}>{this.state.task.gender==1?'男':'女'}</Text>
               </View>
               </View>
               <View style={styles.col2}>
@@ -88,7 +167,7 @@ var TaskDetail = React.createClass({
                 <Text style={{color:'#333'}}>任务时间</Text>
               </View>
               <View style={styles.pictext}>
-                <Text style={styles.fourtext}><Text style={styles.em3}>7天</Text></Text>
+                <Text style={styles.fourtext}><Text style={styles.em3}>{this.state.task.passTime}天</Text></Text>
               </View>
               </View>
             </View>
@@ -102,7 +181,7 @@ var TaskDetail = React.createClass({
             </View>
             <View style={styles.bz_content}>
               <Text style={styles.bz_content_text}>
-                {'\t'}此次任务要求发送指定的文字 和图片至朋友圈，时间不少于2小时，此次任务要求发送指定的文字和图片至朋友圈，时间不少于2小时。
+                {'\t'}{this.state.task.taskDes}
               </Text>
             </View>
           </View>
@@ -115,12 +194,9 @@ var TaskDetail = React.createClass({
             </View>
             <View style={styles.bz_content2}>
               <View style={styles.bbox}>
-                <Image resizeMode={'contain'} style={styles.bimg} source={require('./../../res/mine/pic_wo_sl1@2x.png')}></Image>
+                <Image resizeMode={'contain'} style={styles.bimg} source={{uri:this.state.task.mainPhotoUrl}}></Image>
               </View>
-              <View style={styles.sbox}>
-                <Image resizeMode={'contain'} style={styles.simg} source={require('./../../res/mine/pic_wo_sl1@2x.png')}></Image>
-                <Image resizeMode={'contain'} style={styles.simg} source={require('./../../res/mine/pic_wo_sl1@2x.png')}></Image>
-              </View>
+
             </View>
           </View>
           <View style={styles.beizhu}>
@@ -132,15 +208,16 @@ var TaskDetail = React.createClass({
             </View>
             <View style={styles.bz_content}>
               <Text style={styles.bz_content_text}>
-                {'\t'}此次任务要求发送指定的文字 和图片至朋友圈，时间不少于2小时，此次任务要求发送指定的文字和图片至朋友圈，时间不少于2小时。
+                {'\t'}{this.state.task.taskText}
               </Text>
             </View>
           </View>
           <View style={styles.applynum}>
             <Image resizeMode={'contain'} style={styles.faces} source={require('image!apply_num')}></Image>
             <Text style={styles.facesname}>申请量</Text>
-            <Text style={styles.applynum_text}>25</Text>
+            <Text style={styles.applynum_text}>{this.state.task.orderPeopleNum}</Text>
           </View>
+          {zmimgs}
         </ScrollView>
         <View style={styles.applybtn}>
           <TouchableOpacity onPress={this._gotoApplyTask}>
@@ -357,6 +434,14 @@ var styles = StyleSheet.create({
   bluebtntext:{
     color:'#fff',
     fontSize:17,
+  },
+  zmimgs:{
+    flex:1,
+    flexDirection:'row',
+  },
+  zmimg:{
+    flex:1,
+    marginRight:1,
   }
 });
 

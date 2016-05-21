@@ -8,11 +8,13 @@
   "dependencies": {
     "react": "^0.14.8",
     "react-native": "^0.25.1",
+    "react-native-geocoder": "^0.3.1",
     "react-native-gifted-form": "0.0.6",
     "react-native-gifted-listview": "0.0.15",
     "react-native-refreshable-listview": "^2.0.0-beta4",
     "react-native-scrollable-tab-view": "^0.4.2",
     "react-native-simple-modal": "^3.0.2",
+    "react-native-sqlite-storage": "^2.1.6",
     "react-native-swiper": "^1.4.3"
   }
 }

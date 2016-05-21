@@ -1,6 +1,7 @@
 package com.niuyou;
 
 import com.facebook.react.ReactActivity;
+import com.devfd.RNGeocoder.RNGeocoderPackage;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 
@@ -34,7 +35,8 @@ public class MainActivity extends ReactActivity {
     @Override
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
-            new MainReactPackage()
+            new MainReactPackage(),
+            new RNGeocoderPackage()
         );
     }
 }

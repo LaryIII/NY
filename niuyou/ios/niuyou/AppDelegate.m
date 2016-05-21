@@ -17,6 +17,7 @@
 {
   NSURL *jsCodeLocation;
   [NSThread sleepForTimeInterval:3];
+  [self readyDatabase:@"resource.db"];
 
   /**
    * Loading JavaScript code - uncomment the one you want.
@@ -55,6 +56,24 @@
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   return YES;
+}
+
+- (NSString *)readyDatabase:(NSString *)dbName{
+  BOOL success;
+  NSFileManager *fileManager = [NSFileManager defaultManager];
+  NSError *error;
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+  NSString *documentsDirectory = [paths objectAtIndex:0];
+  NSString *writableDBPath = [[documentsDirectory stringByAppendingString:@"/"] stringByAppendingString:dbName];
+  success = [fileManager fileExistsAtPath:writableDBPath];
+  if(!success){
+    NSString *defaultDBPath = [[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/"] stringByAppendingString:dbName];
+    success = [fileManager copyItemAtPath:defaultDBPath toPath:writableDBPath error:&error];
+    if(!success){
+      NSAssert1(0,@"Failed with:'%@'",[error localizedDescription]);
+    }
+  }
+  return writableDBPath;
 }
 
 @end
