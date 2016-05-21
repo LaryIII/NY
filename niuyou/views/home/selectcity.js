@@ -128,6 +128,7 @@ var SelectCity = React.createClass({
             rowIDs[rowIDs.length-1].push(`${row.city_id};${row.city};${row.py}`);
             dataBlob[`${row.city_id}`] = `${row.city_id};${row.city};${row.py}`;
           }
+          console.log(rowIDs);
           that.setState({
             dataSource:dataSource.cloneWithRowsAndSections(dataBlob, sectionIDs, rowIDs),
             letters:sectionIDs,

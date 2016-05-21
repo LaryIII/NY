@@ -55,7 +55,7 @@ var Util = {
     };
     var temp = url;
     var sessionKey = '';
-    var cityId = '210000';// 默认南京
+    var cityId = '320100';// 默认南京
     AsyncStorage.getItem('userinfo',function(err,result){
       if(!err){
         sessionKey = JSON.parse(result).sessionKey;

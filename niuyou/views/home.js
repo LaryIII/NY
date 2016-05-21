@@ -28,12 +28,12 @@ import {
 var Home = React.createClass({
   getInitialState: function(){
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    AsyncStorage.setItem('cityId','210000',function(err){})
+    AsyncStorage.setItem('cityId','320100',function(err){})
     return {
       dataSource: ds.cloneWithRows([]),
       initialPosition: 'unknown',
       city:'南京',
-      city_id:'210000',
+      city_id:'320100',
       isLoading:true,
     };
   },
