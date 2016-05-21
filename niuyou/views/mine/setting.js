@@ -4,6 +4,7 @@
 
 import React, { Component } from 'react';
 import Util from './../utils';
+import Service from './../service';
 import {
   View,
   Text,
@@ -12,14 +13,28 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
+  AsyncStorage,
 } from 'react-native';
 
 var Setting = React.createClass({
   getInitialState: function(){
-    var items = [];
+    var userinfo = null;
     return {
-      items: items,
+      userinfo: userinfo,
     };
+  },
+  componentDidMount:function(){
+    var that = this;
+    AsyncStorage.getItem('userinfo',function(err,result){
+      if(!err){
+        userinfo = JSON.parse(result);
+      }else{
+        userinfo = null;
+      }
+      that.setState({
+        userinfo: userinfo,
+      });
+    });
   },
   _gotoSM: function(){
     // this.props.navigator.push({
@@ -33,10 +48,36 @@ var Setting = React.createClass({
     //   onLeftButtonPress: ()=>this.props.navigator.pop(),
     // });
   },
+  _quit: function(){
+    var that = this;
+    Util.get(Service.host + Service.logout, {sessionKey:userinfo.sessionKey}, function(data){
+      console.log(data);
+      if(data.code == 200){
+        // 已安全退出：1、清除userinfo；2、页面返回到mine
+        AsyncStorage.setItem('userinfo','',function(err){
+          if(!err){
+            that.props.navigator.pop();
+          }
+        })
+      }else{
+
+      }
+    });
+  },
 
   render: function(){
-    var items = this.state.items;
-
+    var quitbtn = [];
+    if(this.state.userinfo && this.state.userinfo.sessionKey){
+      quitbtn.push(
+        <TouchableOpacity onPress={this._quit}>
+          <View style={styles.applybtn}>
+            <View style={styles.bluebtn}>
+              <Text style={styles.bluebtntext}>安全退出</Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+      );
+    }
     return (
       <View style={styles.bigcontainer}>
         <ScrollView style={styles.container}>
@@ -61,6 +102,7 @@ var Setting = React.createClass({
               </View>
             </TouchableOpacity>
           </View>
+          {quitbtn}
         </ScrollView>
       </View>
     );
@@ -126,6 +168,27 @@ var styles = StyleSheet.create({
     right:15,
     width:6,
     height:11,
+  },
+  applybtn:{
+    width:Dimensions.get('window').width,
+    height:68,
+    borderTopWidth:0.5,
+    borderTopColor:'#dfdfdf',
+    backgroundColor:'#fff',
+  },
+  bluebtn:{
+    backgroundColor:'#51a7ff',
+    borderRadius:5,
+    marginTop:15,
+    marginLeft:15,
+    marginRight:15,
+    height:40,
+    justifyContent:'center',
+    alignItems:'center',
+  },
+  bluebtntext:{
+    color:'#fff',
+    fontSize:17,
   }
 });
 

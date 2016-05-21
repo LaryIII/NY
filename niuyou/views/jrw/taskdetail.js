@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Util from './../utils';
 import ApplyTask from './applytask';
 import Service from './../service';
+import Login from './../user/login';
 import {
   View,
   TextInput,
@@ -59,6 +60,9 @@ var TaskDetail = React.createClass({
     };
   },
   componentDidMount:function(){
+    this.setState({
+      id:this.props.id
+    });
     var that = this;
     Util.get(Service.host + Service.getTaskDetail, {taskId:this.props.id}, function(data){
       console.log(data);
@@ -75,20 +79,50 @@ var TaskDetail = React.createClass({
     });
   },
   _gotoApplyTask: function(){
-    this.props.navigator.push({
-      title: '接任务',
-      component: ApplyTask,
-      navigationBarHidden:false,
-      // backButtonTitle: "返回",
-      // backButtonIcon: require('image!back'),
-      leftButtonTitle: "返回",
-      leftButtonIcon:require('image!back1'),
-      onLeftButtonPress: ()=>this.props.navigator.pop(),
+    var that = this;
+    // 先调用接口申请任务，然后跳转到接任务的详细步骤页面
+    // 需要先登录
+    Util.get(Service.host + Service.receiveOrder, {taskId:this.props.id}, function(data){
+      console.log(data);
+      if(data.code == 200){
+        // 去接任务界面
+      }else if(data.code == 600){
+        // 跳转登录，登录后回来
+        that.props.navigator.push({
+          title: '登录',
+          component: Login,
+          navigationBarHidden:false,
+          // backButtonTitle: "返回",
+          // backButtonIcon: require('image!back'),
+          leftButtonTitle: "返回",
+          leftButtonIcon:require('image!back1'),
+          onLeftButtonPress: ()=>that.props.navigator.pop(),
+        });
+      }else{
+        // TODO: 500还是要提示错误了，先跳到接任务页面
+        that.props.navigator.push({
+          title: '接任务',
+          component: ApplyTask,
+          navigationBarHidden:false,
+          // backButtonTitle: "返回",
+          // backButtonIcon: require('image!back'),
+          leftButtonTitle: "返回",
+          leftButtonIcon:require('image!back1'),
+          onLeftButtonPress: ()=>that.props.navigator.pop(),
+          passProps: {
+            id:that.props.id,
+            content:that.state.task.taskText,
+            imgs:that.state.taskPhotoList,
+          }
+        });
+      }
     });
   },
   render: function(){
     var zmimgs = [];
     var imgs = [];
+
+    // 这边搞错了，taskPhotoList是用户需要分享的图片，而不是证明图片
     if(this.state.taskPhotoList && this.state.taskPhotoList.length>0){
       for(var i=0; i< this.state.taskPhotoList.length;i++){
         // TODO:做四行，用justifyContent: 'space-around',
@@ -437,11 +471,16 @@ var styles = StyleSheet.create({
   },
   zmimgs:{
     flex:1,
-    flexDirection:'row',
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   zmimg:{
-    flex:1,
     marginRight:1,
+    alignItems:'center',
+    justifyContent:'center',
+    width:(Dimensions.get('window').width-30)/4,
+    height:(Dimensions.get('window').width-30)/4,
   }
 });
 

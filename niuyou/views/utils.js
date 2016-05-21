@@ -4,7 +4,8 @@ var React = require('react-native');
 var Dimensions = require('Dimensions');
 
 var {
-  PixelRatio
+  PixelRatio,
+  AsyncStorage
 } = React;
 
 var Util = {
@@ -19,19 +20,31 @@ var Util = {
 
   //post请求
   post: function (url, data, callback) {
-    var fetchOptions = {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    };
+    AsyncStorage.getItem('userinfo',function(err,result){
+      if(!err){
+        sessionKey = JSON.parse(result).sessionKey;
+      }
+      data.sessionKey = sessionKey;
+      AsyncStorage.getItem('cityId',function(err,result){
+        if(!err){
+          cityId = result;
+        }
+        data.cityId = cityId;
+        var fetchOptions = {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        };
 
-    fetch(url, fetchOptions)
-    .then((response) => response.text())
-    .then((responseText) => {
-      callback(JSON.parse(responseText));
+        fetch(url, fetchOptions)
+        .then((response) => response.text())
+        .then((responseText) => {
+          callback(JSON.parse(responseText));
+        });
+      });
     });
   },
   //get请求
@@ -41,20 +54,34 @@ var Util = {
       body: ''
     };
     var temp = url;
-    if(data){
-      var querystring = Object.keys(data)
-        .map(key => key + '=' + encodeURIComponent(data[key]))
-        .join('&');
-      temp+='?'+querystring;
-    }
-    console.log(temp);
-    fetch(temp, fetchOptions)
-    .then((response) => response.text())
-    .then((responseText) => {
-      callback(JSON.parse(responseText));
-    })
-    .catch(function(e) {
-        console.log('error');
+    var sessionKey = '';
+    var cityId = '210000';// 默认南京
+    AsyncStorage.getItem('userinfo',function(err,result){
+      if(!err){
+        sessionKey = JSON.parse(result).sessionKey;
+      }
+      data.sessionKey = sessionKey;
+      AsyncStorage.getItem('cityId',function(err,result){
+        if(!err){
+          cityId = result;
+        }
+        data.cityId = cityId;
+        if(data){
+          var querystring = Object.keys(data)
+            .map(key => key + '=' + encodeURIComponent(data[key]))
+            .join('&');
+          temp+='?'+querystring;
+        }
+        console.log(temp);
+        fetch(temp, fetchOptions)
+        .then((response) => response.text())
+        .then((responseText) => {
+          callback(JSON.parse(responseText));
+        })
+        .catch(function(e) {
+            console.log('error');
+        });
+      });
     });
   },
   //Key

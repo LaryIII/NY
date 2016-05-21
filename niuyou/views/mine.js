@@ -23,9 +23,7 @@ import {
 
 var Mine = React.createClass({
   getInitialState: function(){
-    var items = [];
     return {
-      items: items,
     };
   },
   _gotoSetting: function(){
@@ -55,7 +53,6 @@ var Mine = React.createClass({
   },
 
   render: function(){
-    var items = this.state.items;
     var tags = [require('./../res/mine/ico_wo_zlrz@3x.png'), require('./../res/mine/ico_wo_jxz@3x.png'), require('./../res/mine/ico_wo_ywc@3x.png'), require('./../res/mine/ico_wo_sx@3x.png'), require('./../res/mine/ico_wo_fk@3x.png')];
     var items = ['资料认证', '进行中任务', '已完成任务', '失效的任务', '意见反馈'];
     var descs = ['未认证','查看所有进行中任务','查看所有完成的任务','不通过和过期任务'];

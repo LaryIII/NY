@@ -13,22 +13,35 @@ import {
   Text,
   AsyncStorage,
   Dimensions,
+  Clipboard,
 } from 'react-native';
 
 var ApplyTask = React.createClass({
   getInitialState: function(){
-    var items = [];
     return {
-      items: items,
+      content: this.props.content,
+      imgs:this.props.imgs
     };
   },
+  componentDidMount:function(){
+    this.setState({
+      id:this.props.id,
+    });
+  },
   _copy:function(){
-
+    Clipboard.setString(this.state.content);
+    try {
+      var content = Clipboard.getString();
+      this.setState({content});
+    } catch (e) {
+      this.setState({content:e.message});
+    }
   },
   _download:function(){
 
   },
   render: function(){
+    // 需要增加数量的显示，对照UI
     return (
       <ScrollView style={styles.container}>
         <View style={styles.warning}>
@@ -44,11 +57,11 @@ var ApplyTask = React.createClass({
           </View>
           <View style={styles.bz_content2}>
             <View style={styles.bbox}>
-              <Image resizeMode={'contain'} style={styles.bimg} source={require('./../../res/mine/pic_wo_sl1@2x.png')}></Image>
+              <Image resizeMode={'contain'} style={styles.bimg} source={{uri:this.state.imgs[0].photoUrl}}></Image>
             </View>
             <View style={styles.sbox}>
-              <Image resizeMode={'contain'} style={styles.simg} source={require('./../../res/mine/pic_wo_sl1@2x.png')}></Image>
-              <Image resizeMode={'contain'} style={styles.simg} source={require('./../../res/mine/pic_wo_sl1@2x.png')}></Image>
+              <Image resizeMode={'contain'} style={styles.simg} source={{uri:this.state.imgs[1].photoUrl}}></Image>
+              <Image resizeMode={'contain'} style={styles.simg} source={{uri:this.state.imgs[2].photoUrl}}></Image>
             </View>
           </View>
           <TouchableOpacity onPress={this._download}>
@@ -70,7 +83,7 @@ var ApplyTask = React.createClass({
           </View>
           <View style={styles.bz_content}>
             <Text style={styles.bz_content_text}>
-              {'\t'}此次任务要求发送指定的文字 和图片至朋友圈，时间不少于2小时，此次任务要求发送指定的文字和图片至朋友圈，时间不少于2小时。
+              {'\t'}{this.props.content}
             </Text>
           </View>
           <TouchableOpacity onPress={this._copy}>

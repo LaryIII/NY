@@ -22,12 +22,13 @@ import {
   TouchableOpacity,
   ListView,
   ActivityIndicatorIOS,
+  AsyncStorage,
 } from 'react-native';
 
 var Home = React.createClass({
   getInitialState: function(){
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
+    AsyncStorage.setItem('cityId','210000',function(err){})
     return {
       dataSource: ds.cloneWithRows([]),
       initialPosition: 'unknown',
@@ -94,7 +95,8 @@ var Home = React.createClass({
                  that.setState({
                    city_id:city_id,
                  });
-
+                 // 把cityId存到全局
+                 AsyncStorage.setItem('cityId',city_id,function(err){})
                  // 请求首页数据
                  that.getIndexData();
 
