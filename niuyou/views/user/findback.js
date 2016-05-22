@@ -57,7 +57,14 @@ var Findback = React.createClass({
       console.log(data);
       // 如果成功，跳转到开启牛友之旅页面
       if(data.code == 200){
-        this._gotoStartny();
+        // 保存sessionKey
+        AsyncStorage.setItem('userinfo',JSON.stringify(data.data.response),function(err){
+          if(!err){
+            that._gotoStartny();
+          }
+        })
+      }else{
+        AlertIOS.alert('提醒',data.messages[0].message);
       }
 
     });

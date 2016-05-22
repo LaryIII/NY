@@ -17,6 +17,11 @@ import qiniu from 'react-native-qiniu';
 qiniu.conf.ACCESS_KEY = '0cWE2Ci38evF_wbXbHSAUt-5vXMZgqN3idgyvvMy';
 qiniu.conf.SECRET_KEY = '3kBcjCfTbqEVKWZttKLae_RM0zEbYc3-Q-STnXkw';
 
+var EventEmitter = require('EventEmitter');
+var Subscribable = require('Subscribable');
+window.EventEmitter = EventEmitter;
+window.Subscribable = Subscribable;
+
 import {
   View,
   Text,
@@ -25,14 +30,79 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
+  AsyncStorage,
 } from 'react-native';
 
 var Mine = React.createClass({
+  mixins: [Subscribable.Mixin],
   getInitialState: function(){
     return {
+      sessionKey:null,
     };
   },
+  componentWillMount:function(){
+    this.eventEmitter = new EventEmitter();
+    this._checkSessionKey();
+  },
+  componentDidMount:function(){
+    var that = this;
+    // 登出
+    this.addListenerOn(this.eventEmitter, 'logout_success',  function(args){
+      console.log('logout_success');
+      that.props.navigator.push({
+        title: '登录',
+        component: Login,
+        navigationBarHidden:false,
+        // backButtonTitle: "返回",
+        // backButtonIcon: require('image!back'),
+        // leftButtonTitle: "返回",
+        leftButtonIcon:require('image!backo'),
+        // onLeftButtonPress: ()=>this.props.navigator.pop(),
+        barTintColor:'#f9f9f9',
+        passProps: {
+            events: that.eventEmitter
+        }
+      });
+    });
+    // 登录
+    this.addListenerOn(this.eventEmitter, 'login_success',  function(args){
+      console.log('login_success');
+      that._checkSessionKey();
+    });
+
+  },
+  _checkSessionKey:function(){
+    var that = this;
+    AsyncStorage.getItem('userinfo',function(err,result){
+      if(!err){
+        sessionKey = result&&JSON.parse(result)?JSON.parse(result).sessionKey:null;
+        console.log(sessionKey);
+      }else{
+        sessionKey = null;
+      }
+      that.setState({
+        sessionKey:sessionKey,
+      });
+      if(!sessionKey){
+        that.props.navigator.push({
+          title: '登录',
+          component: Login,
+          navigationBarHidden:false,
+          // backButtonTitle: "返回",
+          // backButtonIcon: require('image!back'),
+          // leftButtonTitle: "返回",
+          leftButtonIcon:require('image!backo'),
+          // onLeftButtonPress: ()=>this.props.navigator.pop(),
+          barTintColor:'#f9f9f9',
+          passProps: {
+              events: that.eventEmitter
+          }
+        });
+      }
+    });
+  },
   _gotoSetting: function(){
+    var that  = this;
     this.props.navigator.push({
       title: '设置',
       component: Setting,
@@ -42,6 +112,9 @@ var Mine = React.createClass({
       leftButtonTitle: "返回",
       leftButtonIcon:require('image!back1'),
       onLeftButtonPress: ()=>this.props.navigator.pop(),
+      passProps: {
+          events: that.eventEmitter
+      }
     });
   },
 
@@ -55,10 +128,16 @@ var Mine = React.createClass({
       leftButtonTitle: "返回",
       leftButtonIcon:require('image!back1'),
       onLeftButtonPress: ()=>this.props.navigator.pop(),
+      passProps: {
+          events: that.eventEmitter
+      }
     });
   },
-
   render: function(){
+    var that = this;
+    if(!this.state.sessionKey){
+      return <View />;
+    }
     var tags = [require('./../res/mine/ico_wo_zlrz@3x.png'), require('./../res/mine/ico_wo_jxz@3x.png'), require('./../res/mine/ico_wo_ywc@3x.png'), require('./../res/mine/ico_wo_sx@3x.png'), require('./../res/mine/ico_wo_fk@3x.png')];
     var items = ['资料认证', '进行中任务', '已完成任务', '失效的任务', '意见反馈'];
     var descs = ['未认证','查看所有进行中任务','查看所有完成的任务','不通过和过期任务'];

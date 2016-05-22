@@ -42,34 +42,34 @@ var Register = React.createClass({
   },
   _register:function(mobile,verifycode,password,confirmpassword){
     var that = this;
-    // Util.get(Service.host + Service.regMobile, {
-    //   mobile:mobile,
-    //   password:password,
-    //   password1:confirmpassword,
-    //   mobileCode:verifycode,
-    //   // inviteCode:'',//邀请码
-    //   // account:'',// 非必填
-    //   // loginType:'',//登录类型：1手机号2用户名
-    //   // devKey:'', 设备码
-    //   // appVersion:'',//版本信息
-    //   // p:'',// 渠道号
-    //   // devUKey:''，//Umeng串
-    // }, function(data){
-    //   console.log(data);
-    //   // 如果成功，跳转到开启牛友之旅页面
-    //   if(data.code == 200){
-    //     // 保存sessionKey
-    //     AsyncStorage.setItem('userinfo',JSON.stringify(data.data.response),function(err){
-    //       if(!err){
+    Util.get(Service.host + Service.regMobile, {
+      mobile:mobile,
+      password:password,
+      password1:confirmpassword,
+      mobileCode:verifycode,
+      // inviteCode:'',//邀请码
+      // account:'',// 非必填
+      // loginType:'',//登录类型：1手机号2用户名
+      // devKey:'', 设备码
+      // appVersion:'',//版本信息
+      // p:'',// 渠道号
+      // devUKey:''，//Umeng串
+    }, function(data){
+      console.log(data);
+      // 如果成功，跳转到开启牛友之旅页面
+      if(data.code == 200){
+        // 保存sessionKey
+        AsyncStorage.setItem('userinfo',JSON.stringify(data.data.response),function(err){
+          if(!err){
             that._gotoStartny();
-    //       }
-    //     })
-    //
-    //   }else{
-    //     AlertIOS.alert('提醒',data.messages[0].message);
-    //   }
-    // 
-    // });
+          }
+        })
+
+      }else{
+        AlertIOS.alert('提醒',data.messages[0].message);
+      }
+
+    });
   },
   _checkMobile:function(){
     var that  = this;
@@ -243,9 +243,9 @@ var Register = React.createClass({
               //   values.gender = values.gender[0];
               //   values.birthday = moment(values.birthday).format('YYYY-MM-DD');
               // }
-              // if(isValid === true){
+              if(isValid === true){
                 this._register(values.username, values.verifycode, values.password, values.confirmpassword);
-              // }
+              }
 
             }}
           />

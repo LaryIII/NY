@@ -56,6 +56,7 @@ var Setting = React.createClass({
         // 已安全退出：1、清除userinfo；2、页面返回到mine
         AsyncStorage.setItem('userinfo','',function(err){
           if(!err){
+            that.props.events.emit('logout_success', {});
             that.props.navigator.pop();
           }
         })

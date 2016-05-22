@@ -5,7 +5,6 @@ import Util from './../utils';
 import Register from './register';
 import Findback from './findback';
 import Service from './../service';
-
 import {
   View,
   TextInput,
@@ -56,7 +55,8 @@ var Login = React.createClass({
       if(data.code == 200){
         AsyncStorage.setItem('userinfo',JSON.stringify(data.data.response),function(err){
           if(!err){
-            that.props.navigator.pop();
+              that.props.events.emit('login_success', {});
+              that.props.navigator.pop();
           }
         })
       }else{
