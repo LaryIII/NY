@@ -4,6 +4,7 @@
 
 import React, { Component } from 'react';
 import Util from './utils';
+import Service from './service';
 import Authinfo from './mine/authinfo';
 import Tasking from './mine/tasking';
 import Tasked from './mine/tasked';
@@ -38,6 +39,9 @@ var Mine = React.createClass({
   getInitialState: function(){
     return {
       sessionKey:null,
+      avatar:require('./../res/mine/pic_wo_moren@3x.png'),
+      nickname:'匿名',
+      status:1,
     };
   },
   componentWillMount:function(){
@@ -98,6 +102,24 @@ var Mine = React.createClass({
               events: that.eventEmitter
           }
         });
+      }else{
+        Util.get(Service.host + Service.getInfo, {}, function(data){
+          console.log(data);
+          // 如果成功，返回原页面，且刷新页面
+          if(data.code == 200 && data.data.response.personalInfo){
+            that.setState({
+              avatar:{uri:data.data.response.personalInfo.photoUrl},
+              nickname:data.data.response.personalInfo.name,
+              status:data.data.response.personalInfo.status,
+            });
+          }else{
+            that.setState({
+              avatar:require('./../res/mine/pic_wo_moren@3x.png'),
+              nickname:'匿名',
+              status:1,
+            });
+          }
+        });
       }
     });
   },
@@ -140,7 +162,20 @@ var Mine = React.createClass({
     }
     var tags = [require('./../res/mine/ico_wo_zlrz@3x.png'), require('./../res/mine/ico_wo_jxz@3x.png'), require('./../res/mine/ico_wo_ywc@3x.png'), require('./../res/mine/ico_wo_sx@3x.png'), require('./../res/mine/ico_wo_fk@3x.png')];
     var items = ['资料认证', '进行中任务', '已完成任务', '失效的任务', '意见反馈'];
-    var descs = ['未认证','查看所有进行中任务','查看所有完成的任务','不通过和过期任务'];
+    var rzdesc = '';//状态 1 未完成，2 提交审核 3 审核通过 4 审核未通过
+    switch (this.state.status) {
+      case 1:
+      case 2:
+      case 4:
+        rzdesc = '未认证';
+        break;
+      case 3:
+        rzdesc = '已认证'
+        break;
+      default:
+        break;
+    }
+    var descs = [rzdesc,'查看所有进行中任务','查看所有完成的任务','不通过和过期任务'];
     var components = [Authinfo, Tasking, Tasked, Datedtask,Feedback];
     var JSXDOM = [];
     for(var i in items){
@@ -165,8 +200,8 @@ var Mine = React.createClass({
           </TouchableOpacity>
         </View>
         <View style={styles.infos}>
-            <Image resizeMode={'contain'} style={styles.avatar} source={require('./../res/mine/pic_wo_moren@3x.png')}></Image>
-            <Text style={styles.avatarname}>林晓萌</Text>
+            <Image resizeMode={'contain'} style={styles.avatar} source={this.state.avatar}></Image>
+            <Text style={styles.avatarname}>{this.state.nickname}</Text>
         </View>
         <View style={styles.borderbottom}></View>
       </View>
@@ -174,13 +209,6 @@ var Mine = React.createClass({
         <View style={styles.wrapper}>
           {JSXDOM}
         </View>
-        <TouchableOpacity onPress={this._gotoLogin}>
-          <View style={styles.applybtn}>
-            <View style={styles.bluebtn}>
-              <Text style={styles.bluebtntext}>登录</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
       </ScrollView>
       </View>
     );
@@ -212,7 +240,6 @@ var styles = StyleSheet.create({
   },
   container:{
     flex:1,
-    marginTop:-20,
   },
   navigatorx:{
     backgroundColor:'#f9f9f9',
