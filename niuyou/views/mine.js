@@ -13,6 +13,10 @@ import Setting from './mine/setting';
 import Login from './user/login';
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
 // import ImagePickerManager from 'react-native-image-picker';
+import qiniu from 'react-native-qiniu';
+qiniu.conf.ACCESS_KEY = '0cWE2Ci38evF_wbXbHSAUt-5vXMZgqN3idgyvvMy';
+qiniu.conf.SECRET_KEY = '3kBcjCfTbqEVKWZttKLae_RM0zEbYc3-Q-STnXkw';
+
 import {
   View,
   Text,
@@ -54,69 +58,6 @@ var Mine = React.createClass({
     });
   },
 
-  _uploadAvatar:function(){
-    console.log('准备上传文件');
-    var options = {
-      title: 'Select Avatar', // specify null or empty string to remove the title
-      cancelButtonTitle: 'Cancel',
-      takePhotoButtonTitle: 'Take Photo...', // specify null or empty string to remove this button
-      chooseFromLibraryButtonTitle: 'Choose from Library...', // specify null or empty string to remove this button
-      customButtons: {
-        'Choose Photo from Facebook': 'fb', // [Button Text] : [String returned upon selection]
-      },
-      cameraType: 'back', // 'front' or 'back'
-      mediaType: 'photo', // 'photo' or 'video'
-      videoQuality: 'high', // 'low', 'medium', or 'high'
-      durationLimit: 10, // video recording max time in seconds
-      maxWidth: 100, // photos only
-      maxHeight: 100, // photos only
-      aspectX: 2, // android only - aspectX:aspectY, the cropping image's ratio of width to height
-      aspectY: 1, // android only - aspectX:aspectY, the cropping image's ratio of width to height
-      quality: 0.2, // 0 to 1, photos only
-      angle: 0, // android only, photos only
-      allowsEditing: true, // Built in functionality to resize/reposition the image after selection
-      noData: false, // photos only - disables the base64 `data` field from being generated (greatly improves performance on large photos)
-      storageOptions: { // if this key is provided, the image will get saved in the documents directory on ios, and the pictures directory on android (rather than a temporary directory)
-        skipBackup: true, // ios only - image will NOT be backed up to icloud
-        path: 'images' // ios only - will save image at /Documents/images rather than the root
-      }
-    };
-
-    /**
-    * The first arg will be the options object for customization, the second is
-    * your callback which sends object: response.
-    *
-    * See the README for info about the response
-    */
-
-    ImagePickerManager.showImagePicker(options, (response) => {
-      console.log('Response = ', response);
-
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      }
-      else if (response.error) {
-        console.log('ImagePickerManager Error: ', response.error);
-      }
-      else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-      }
-      else {
-        // You can display the image using either data:
-        const source = {uri: 'data:image/jpeg;base64,' + response.data, isStatic: true};
-
-        // uri (on iOS)
-        // const source = {uri: response.uri.replace('file://', ''), isStatic: true};
-        // uri (on android)
-        // const source = {uri: response.uri, isStatic: true};
-
-        this.setState({
-          avatarSource: source
-        });
-      }
-    });
-  },
-
   render: function(){
     var tags = [require('./../res/mine/ico_wo_zlrz@3x.png'), require('./../res/mine/ico_wo_jxz@3x.png'), require('./../res/mine/ico_wo_ywc@3x.png'), require('./../res/mine/ico_wo_sx@3x.png'), require('./../res/mine/ico_wo_fk@3x.png')];
     var items = ['资料认证', '进行中任务', '已完成任务', '失效的任务', '意见反馈'];
@@ -145,10 +86,8 @@ var Mine = React.createClass({
           </TouchableOpacity>
         </View>
         <View style={styles.infos}>
-          <TouchableOpacity onPress={this._uploadAvatar}>
             <Image resizeMode={'contain'} style={styles.avatar} source={require('./../res/mine/pic_wo_moren@3x.png')}></Image>
             <Text style={styles.avatarname}>林晓萌</Text>
-          </TouchableOpacity>
         </View>
         <View style={styles.borderbottom}></View>
       </View>

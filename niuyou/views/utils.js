@@ -58,12 +58,12 @@ var Util = {
     var cityId = '320100';// 默认南京
     AsyncStorage.getItem('userinfo',function(err,result){
       if(!err){
-        sessionKey = JSON.parse(result).sessionKey;
+        sessionKey = result?JSON.parse(result).sessionKey:'';
       }
       data.sessionKey = sessionKey;
       AsyncStorage.getItem('cityId',function(err,result){
         if(!err){
-          cityId = result;
+          cityId = result?cityId:'320100';
         }
         data.cityId = cityId;
         if(data){

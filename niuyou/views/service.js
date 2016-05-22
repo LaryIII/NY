@@ -11,6 +11,7 @@ var Service = {
   sendPwdCode:'/sendPwdCode',// 忘记密码的验证码
   checkPwdCode:'/checkPwdCode',// 验证码校验
   resetPwd:'/resetPwd',// 重置密码并登录
+  getInfo:'/c/personalInfo/getInfo',// 获得用户基本信息
 
   index:'/c/index', //首页
   provinces:'/address/provinces',// 省市区接口：获取省份
@@ -39,7 +40,7 @@ var Service = {
   submitVerify:'/c/personalInfo/submitVerify',// 提交认证
 
   feedback:'/system/feedback/add',// 意见反馈
-  upload:'http://cs-test.jcc1.cn/admin/get_token',// 上传
+  getToken:'/get_token',// 上传
 };
 
 module.exports = Service;
