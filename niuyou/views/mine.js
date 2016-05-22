@@ -32,6 +32,7 @@ import {
   Dimensions,
   TouchableOpacity,
   AsyncStorage,
+  Alert,
 } from 'react-native';
 
 var Mine = React.createClass({
@@ -42,6 +43,7 @@ var Mine = React.createClass({
       avatar:require('./../res/mine/pic_wo_moren@3x.png'),
       nickname:'匿名',
       status:1,
+      nopassResult:'',
     };
   },
   componentWillMount:function(){
@@ -111,12 +113,14 @@ var Mine = React.createClass({
               avatar:{uri:data.data.response.personalInfo.photoUrl},
               nickname:data.data.response.personalInfo.name,
               status:data.data.response.personalInfo.status,
+              nopassResult:data.data.response.personalInfo.nopassResult,
             });
           }else{
             that.setState({
               avatar:require('./../res/mine/pic_wo_moren@3x.png'),
               nickname:'匿名',
               status:1,
+              nopassResult:'',
             });
           }
         });
@@ -155,6 +159,48 @@ var Mine = React.createClass({
       }
     });
   },
+  _dealRenzheng:function(){
+    if(this.state.status == 1){
+      this._gotoRZ();
+    }else if(this.state.status == 2){
+      Alert.alert(
+            '提醒',
+            '请的申请正在审核中, 请耐心等待',
+            [
+              {text: '确定', onPress: () => console.log('OK Pressed!')},
+            ]
+          )
+    }else if(this.state.status == 3){
+      Alert.alert(
+            '您的资料已认证',
+            '是否需要重新认证？',
+            [
+              {text: '取消', onPress: () => console.log('Cancel Pressed!')},
+              {text: '确定', onPress: () => this._gotoRZ()},
+            ]
+          )
+    }else if(this.state.status == 4){
+      Alert.alert(
+            '您的申请已被驳回',
+            '驳回原因: '+this.state.noPassReason,
+            [
+              {text: '我知道了，重新提交', onPress: () => this._gotoRZ()},
+            ]
+          )
+    }
+  },
+  _gotoRZ:function(){
+    this.props.navigator.push({
+      title: '资料认证',
+      component: Authinfo,
+      navigationBarHidden:false,
+      // backButtonTitle: "返回",
+      // backButtonIcon: require('image!back'),
+      leftButtonTitle: "返回",
+      leftButtonIcon:require('image!back1'),
+      onLeftButtonPress: ()=>this.props.navigator.pop(),
+    });
+  },
   render: function(){
     var that = this;
     if(!this.state.sessionKey){
@@ -165,12 +211,16 @@ var Mine = React.createClass({
     var rzdesc = '';//状态 1 未完成，2 提交审核 3 审核通过 4 审核未通过
     switch (this.state.status) {
       case 1:
+        rzdesc = '未认证'; // 点击直接去认证
+        break;
       case 2:
+        rzdesc = '正在审核'; // 点击无效果
+        break;
       case 4:
-        rzdesc = '未认证';
+        rzdesc = '审核未通过'; // 点击提示驳回原因，并提供再次认证:nopassResult
         break;
       case 3:
-        rzdesc = '已认证'
+        rzdesc = '已认证';// 点击重新认证
         break;
       default:
         break;
@@ -179,16 +229,30 @@ var Mine = React.createClass({
     var components = [Authinfo, Tasking, Tasked, Datedtask,Feedback];
     var JSXDOM = [];
     for(var i in items){
-      JSXDOM.push(
-        <TouchableOpacity key={items[i]} onPress={this._loadPage.bind(this, components[i], items[i])}>
-          <View style={[styles.item, {flexDirection:'row'}]}>
-            <Image style={styles.tag} resizeMode={'contain'} source={tags[i]}></Image>
-            <Text style={[styles.font,{flex:1}]}>{items[i]}</Text>
-            <Text style={styles.desc}>{descs[i]}</Text>
-            <Image style={styles.arrow} resizeMode={'contain'} source={require('./../res/mine/ico_wo_next@3x.png')}></Image>
-          </View>
-        </TouchableOpacity>
-      );
+      if(i==0){
+        JSXDOM.push(
+          <TouchableOpacity key={items[i]} onPress={this._dealRenzheng}>
+            <View style={[styles.item, {flexDirection:'row'}]}>
+              <Image style={styles.tag} resizeMode={'contain'} source={tags[i]}></Image>
+              <Text style={[styles.font,{flex:1}]}>{items[i]}</Text>
+              <Text style={styles.desc}>{descs[i]}</Text>
+              <Image style={styles.arrow} resizeMode={'contain'} source={require('./../res/mine/ico_wo_next@3x.png')}></Image>
+            </View>
+          </TouchableOpacity>
+        );
+      }else{
+        JSXDOM.push(
+          <TouchableOpacity key={items[i]} onPress={this._loadPage.bind(this, components[i], items[i])}>
+            <View style={[styles.item, {flexDirection:'row'}]}>
+              <Image style={styles.tag} resizeMode={'contain'} source={tags[i]}></Image>
+              <Text style={[styles.font,{flex:1}]}>{items[i]}</Text>
+              <Text style={styles.desc}>{descs[i]}</Text>
+              <Image style={styles.arrow} resizeMode={'contain'} source={require('./../res/mine/ico_wo_next@3x.png')}></Image>
+            </View>
+          </TouchableOpacity>
+        );
+      }
+
     }
 
     return (
