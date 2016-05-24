@@ -3,6 +3,10 @@ import React, { Component } from 'react';
 import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import Util from './../utils';
 import Authinfo3 from './authinfo3';
+import Service from './../service';
+var ImagePickerManager = require('NativeModules').ImagePickerManager;
+// import ImagePickerManager from 'react-native-image-picker';
+import qiniu from 'react-native-qiniu';
 import {
   View,
   TextInput,
@@ -17,21 +21,119 @@ import {
 
 var Authinfo2 = React.createClass({
   getInitialState: function(){
-    var items = [];
     return {
-      items: items,
+      numberphoto: require('image!backo'),
     };
   },
   _gotoAuthinfo3: function(){
-    this.props.navigator.push({
-      title: '图片认证',
-      component: Authinfo3,
-      navigationBarHidden:false,
-      // backButtonTitle: "返回",
-      // backButtonIcon: require('image!back'),
-      leftButtonTitle: "返回",
-      leftButtonIcon:require('image!back1'),
-      onLeftButtonPress: ()=>this.props.navigator.pop(),
+    var that = this;
+    // 保存持证照片成功后跳到下一步
+    if(this.state.numberphoto && this.state.numberphoto.uri){
+      Util.get(Service.host + Service.savePeopleNumPhotoUrl, {
+        peopleNumPhotoUrl:this.state.numberphoto.uri,
+      }, function(data){
+        console.log(data);
+        // 如果成功，返回原页面，且刷新页面
+        if(data.code == 200){
+          that.props.navigator.push({
+            title: '生活照认证',
+            component: Authinfo3,
+            navigationBarHidden:false,
+            // backButtonTitle: "返回",
+            // backButtonIcon: require('image!back'),
+            leftButtonTitle: "返回",
+            leftButtonIcon:require('image!back1'),
+            onLeftButtonPress: ()=>that.props.navigator.pop(),
+          });
+        }else{
+          AlertIOS.alert('提醒',data.messages[0].message);
+        }
+      });
+    }else{
+      AlertIOS.alert('提醒','请先上传你的联系人数量照片!');
+    }
+  },
+  _uploadImg:function(){
+    var that = this;
+    console.log('准备上传文件');
+    var options = {
+      title: 'Select Avatar', // specify null or empty string to remove the title
+      cancelButtonTitle: 'Cancel',
+      takePhotoButtonTitle: 'Take Photo...', // specify null or empty string to remove this button
+      chooseFromLibraryButtonTitle: 'Choose from Library...', // specify null or empty string to remove this button
+      customButtons: {
+        'Choose Photo from Facebook': 'fb', // [Button Text] : [String returned upon selection]
+      },
+      cameraType: 'back', // 'front' or 'back'
+      mediaType: 'photo', // 'photo' or 'video'
+      videoQuality: 'high', // 'low', 'medium', or 'high'
+      durationLimit: 10, // video recording max time in seconds
+      maxWidth: 1280, // photos only
+      maxHeight: 720, // photos only
+      aspectX: 2, // android only - aspectX:aspectY, the cropping image's ratio of width to height
+      aspectY: 1, // android only - aspectX:aspectY, the cropping image's ratio of width to height
+      quality: 0.6, // 0 to 1, photos only
+      angle: 0, // android only, photos only
+      allowsEditing: false, // Built in functionality to resize/reposition the image after selection
+      noData: false, // photos only - disables the base64 `data` field from being generated (greatly improves performance on large photos)
+      storageOptions: { // if this key is provided, the image will get saved in the documents directory on ios, and the pictures directory on android (rather than a temporary directory)
+        skipBackup: true, // ios only - image will NOT be backed up to icloud
+        path: 'images' // ios only - will save image at /Documents/images rather than the root
+      }
+    };
+
+    /**
+    * The first arg will be the options object for customization, the second is
+    * your callback which sends object: response.
+    *
+    * See the README for info about the response
+    */
+
+    ImagePickerManager.showImagePicker(options, (response) => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      }
+      else if (response.error) {
+        console.log('ImagePickerManager Error: ', response.error);
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      }
+      else {
+        // You can display the image using either data:
+        // const source = {uri: 'data:image/jpeg;base64,' + response.data, isStatic: true};
+
+        // uri (on iOS)
+        const source = {uri: response.uri.replace('file://', ''), isStatic: true};
+        var arrs = response.uri.split('.');
+
+        // uri (on android)
+        // const source = {uri: response.uri, isStatic: true};
+
+        //upload file to Qiniu
+        Util.get(Service.host + Service.getToken, {bucketName:'ny-personal-photo'}, function(data){
+          console.log(data);
+          if(data.code == 200){
+            var token = data.data.response.token;
+            var url = data.data.response.url;
+            var key = data.data.response.key;
+            console.log(11111111);
+            console.log(qiniu);
+            qiniu.rpc.uploadImage(response.uri, key, token, function (resp) {
+               console.log(resp);
+               if(resp.status == 200 && resp.ok == true){
+                 that.setState({
+                   numberphoto: {uri:url}
+                 });
+               }
+            });
+          }else{
+
+          }
+        });
+      }
     });
   },
   render: function(){
@@ -59,6 +161,19 @@ var Authinfo2 = React.createClass({
               <Image resizeMode={'contain'} style={styles.circleimg} source={require('image!upload')}></Image>
             </View>
           </TouchableOpacity>
+        </View>
+        <View style={styles.beizhu}>
+          <View style={styles.bz_header}>
+            <View style={styles.box_title}>
+              <Image resizeMode={'contain'} style={styles.box_title_img} source={require('image!tupian')}></Image>
+              <Text style={styles.box_title_text}>我的联系人数量照片</Text>
+            </View>
+          </View>
+          <View style={styles.bz_content2}>
+            <View style={styles.bbox}>
+              <Image resizeMode={'contain'} style={styles.bimg} source={this.state.numberphoto}></Image>
+            </View>
+          </View>
         </View>
       </ScrollView>
       <View style={styles.applybtn}>

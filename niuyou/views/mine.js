@@ -5,13 +5,14 @@
 import React, { Component } from 'react';
 import Util from './utils';
 import Service from './service';
-import Authinfo from './mine/authinfo';
+// import Authinfo from './mine/authinfo';
 import Tasking from './mine/tasking';
 import Tasked from './mine/tasked';
 import Datedtask from './mine/datedtask';
 import Feedback from './mine/feedback';
 import Setting from './mine/setting';
 import Login from './user/login';
+import SelectCity from './home/selectcity';
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
 // import ImagePickerManager from 'react-native-image-picker';
 import qiniu from 'react-native-qiniu';
@@ -191,14 +192,17 @@ var Mine = React.createClass({
   },
   _gotoRZ:function(){
     this.props.navigator.push({
-      title: '资料认证',
-      component: Authinfo,
+      title: '选择城市',
+      component: SelectCity,
       navigationBarHidden:false,
       // backButtonTitle: "返回",
       // backButtonIcon: require('image!back'),
       leftButtonTitle: "返回",
       leftButtonIcon:require('image!back1'),
       onLeftButtonPress: ()=>this.props.navigator.pop(),
+      passProps:{
+        type:"renzheng",// home:首页进去的；renzheng:认证页面第一步
+      }
     });
   },
   render: function(){
@@ -226,7 +230,7 @@ var Mine = React.createClass({
         break;
     }
     var descs = [rzdesc,'查看所有进行中任务','查看所有完成的任务','不通过和过期任务'];
-    var components = [Authinfo, Tasking, Tasked, Datedtask,Feedback];
+    var components = [SelectCity, Tasking, Tasked, Datedtask,Feedback];
     var JSXDOM = [];
     for(var i in items){
       if(i==0){

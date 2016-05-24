@@ -45,11 +45,11 @@ var Startny = React.createClass({
       mediaType: 'photo', // 'photo' or 'video'
       videoQuality: 'high', // 'low', 'medium', or 'high'
       durationLimit: 10, // video recording max time in seconds
-      maxWidth: 100, // photos only
-      maxHeight: 100, // photos only
+      maxWidth: 200, // photos only
+      maxHeight: 200, // photos only
       aspectX: 2, // android only - aspectX:aspectY, the cropping image's ratio of width to height
       aspectY: 1, // android only - aspectX:aspectY, the cropping image's ratio of width to height
-      quality: 0.2, // 0 to 1, photos only
+      quality: 0.6, // 0 to 1, photos only
       angle: 0, // android only, photos only
       allowsEditing: true, // Built in functionality to resize/reposition the image after selection
       noData: false, // photos only - disables the base64 `data` field from being generated (greatly improves performance on large photos)

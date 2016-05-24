@@ -4,7 +4,9 @@
 
 import React, { Component } from 'react';
 import Util from './../utils';
+import Service from './../service';
 import City from './city';
+import AuthInfo from './../mine/authinfo';
 import SQLite from 'react-native-sqlite-storage';
 SQLite.DEBUG(true);
 // SQLite.enablePromise(true);
@@ -19,6 +21,7 @@ import {
   TouchableOpacity,
   LayoutAnimation,
   ListView,
+  AsyncStorage,
 } from 'react-native';
 
 var SelectCity = React.createClass({
@@ -125,8 +128,8 @@ var SelectCity = React.createClass({
               dataBlob[letter] = letter;
               rowIDs.push([]);
             }
-            rowIDs[rowIDs.length-1].push(`${row.city_id};${row.city};${row.py}`);
-            dataBlob[`${row.city_id}`] = `${row.city_id};${row.city};${row.py}`;
+            rowIDs[rowIDs.length-1].push(`${row.city_id};${row.city};${row.father};${row.py}`);
+            dataBlob[`${row.city_id}`] = `${row.city_id};${row.city};${row.father};${row.py}`;
           }
           console.log(rowIDs);
           that.setState({
@@ -174,9 +177,11 @@ var SelectCity = React.createClass({
 
   renderRow: function(rowData:string, sectionID: string, rowID: string): ReactElement {
     return (
-      <View style={styles.row}>
-        <Text style={styles.rowtext}>{rowID.split(';')[1]}</Text>
-      </View>
+      <TouchableOpacity onPress={()=>this._selectCity(rowID)}>
+        <View style={styles.row}>
+          <Text style={styles.rowtext}>{rowID.split(';')[1]}</Text>
+        </View>
+      </TouchableOpacity>
     );
   },
 
@@ -221,8 +226,46 @@ var SelectCity = React.createClass({
 
   },
 
+  _selectCity:function(rowID){
+    var that = this;
+    var cityId = rowID.split(';')[0];
+    var cityName = rowID.split(';')[1];
+    var provinceId = rowID.split(';')[2];
+    AsyncStorage.setItem('city',rowID,function(err){
+      if(!err){
+        if(that.props.type == 'renzheng'){
+          // 先保存城市，然后去认证的下一步AuthInfo
+          Util.get(Service.host + Service.saveCity, {
+            cityId:cityId,
+            provinceId:provinceId
+          }, function(data){
+            console.log(data);
+            // 如果成功，返回原页面，且刷新页面
+            if(data.code == 200){
+              that.props.navigator.push({
+                title: '持证照片',
+                component: AuthInfo,
+                navigationBarHidden:false,
+                // backButtonTitle: "返回",
+                // backButtonIcon: require('image!back'),
+                // leftButtonTitle: "返回",
+                leftButtonIcon:require('image!back1'),
+                onLeftButtonPress: ()=>this.props.navigator.pop(),
+              });
+            }else{
+              AlertIOS.alert('提醒',data.messages[0].message);
+            }
+          });
+
+        }else{
+          that.props.navigator.pop();
+        }
+
+      }
+    })
+  },
+
   render: function(){
-    var items = this.state.items;
     return (
       <View style={styles.bigcontainer}>
         <ScrollView style={styles.container} ref="scrollView">
@@ -378,6 +421,30 @@ var styles = StyleSheet.create({
     fontSize:12,
     fontWeight:'bold'
   },
+  applybtn:{
+    position:'absolute',
+    left:0,
+    bottom:68,
+    width:Dimensions.get('window').width,
+    height:68,
+    borderTopWidth:0.5,
+    borderTopColor:'#dfdfdf',
+    backgroundColor:'#fff',
+  },
+  bluebtn:{
+    backgroundColor:'#51a7ff',
+    borderRadius:5,
+    marginTop:15,
+    marginLeft:15,
+    marginRight:15,
+    height:40,
+    justifyContent:'center',
+    alignItems:'center',
+  },
+  bluebtntext:{
+    color:'#fff',
+    fontSize:17,
+  }
 });
 
 var animations = {
