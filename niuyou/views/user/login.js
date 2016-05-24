@@ -13,7 +13,8 @@ import {
   TouchableOpacity,
   Image,
   Text,
-  AsyncStorage
+  AsyncStorage,
+  AlertIOS,
 } from 'react-native';
 
 var Login = React.createClass({

@@ -2,6 +2,15 @@
 import React, { Component } from 'react';
 import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import Util from './../utils';
+import Service from './../service';
+import CameraPicker from './camerapicker';
+import qiniu from 'react-native-qiniu';
+
+var EventEmitter = require('EventEmitter');
+var Subscribable = require('Subscribable');
+window.EventEmitter = EventEmitter;
+window.Subscribable = Subscribable;
+
 import {
   View,
   TextInput,
@@ -15,11 +24,61 @@ import {
 } from 'react-native';
 
 var Authinfo3 = React.createClass({
+  mixins: [Subscribable.Mixin],
   getInitialState: function(){
-    var items = [];
     return {
-      items: items,
+      lifeimgs:[]
     };
+  },
+  componentWillMount:function(){
+    this.eventEmitter = new EventEmitter();
+  },
+  componentDidMount:function(){
+    var that = this;
+    this.addListenerOn(this.eventEmitter, 'upload_imgs',  function(imgs){
+      console.log('upload_imgs');
+      //upload file to Qiniu
+      for(var i=0;i<imgs.length;i++){
+        (function(img){
+          Util.get(Service.host + Service.getToken, {bucketName:'ny-personal-photo'}, function(data){
+            console.log(data);
+            if(data.code == 200){
+              var token = data.data.response.token;
+              var url = data.data.response.url;
+              var key = data.data.response.key;
+              qiniu.rpc.uploadImage(img, key, token, function (resp) {
+                 console.log(resp);
+                 console.log(url);
+                 if(resp.status == 200 && resp.ok == true){
+                   that.state.lifeimgs.push({uri:url});
+                   that.setState({
+                     lifeimgs: that.state.lifeimgs
+                   });
+                 }
+              });
+            }else{
+
+            }
+          });
+        })(imgs[i])
+      }
+    });
+  },
+  _uploadImgs:function(){
+    var that = this;
+    that.props.navigator.push({
+      title: '选择最多9张生活照片',
+      component: CameraPicker,
+      navigationBarHidden:true,
+      // backButtonTitle: "返回",
+      // backButtonIcon: require('image!back'),
+      // leftButtonTitle: "返回",
+      // leftButtonIcon:require('image!back1'),
+      // onLeftButtonPress: ()=>that.props.navigator.pop(),
+      passProps: {
+          events: that.eventEmitter
+      }
+    });
   },
   _submitRZ: function(){
 
@@ -32,7 +91,7 @@ var Authinfo3 = React.createClass({
           <Image resizeMode={'contain'} style={styles.warningimg} source={require('image!log_tip')}></Image>
           <Text style={styles.warningtext}>请上传个人生活照片9张</Text>
         </View>
-        <TouchableOpacity onPress={this._download}>
+        <TouchableOpacity onPress={this._uploadImgs}>
           <View style={styles.circle}>
             <Image resizeMode={'contain'} style={styles.circleimg} source={require('image!upload')}></Image>
           </View>

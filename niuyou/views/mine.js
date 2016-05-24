@@ -36,6 +36,8 @@ import {
   Alert,
 } from 'react-native';
 
+import CameraPicker from './mine/camerapicker';
+
 var Mine = React.createClass({
   mixins: [Subscribable.Mixin],
   getInitialState: function(){
@@ -205,6 +207,19 @@ var Mine = React.createClass({
       }
     });
   },
+  _gotopicker:function(){
+    var that = this;
+    that.props.navigator.push({
+      title: '选择最多9张生活照片',
+      component: CameraPicker,
+      navigationBarHidden:true,
+      // backButtonTitle: "返回",
+      // backButtonIcon: require('image!back'),
+      // leftButtonTitle: "返回",
+      // leftButtonIcon:require('image!back1'),
+      // onLeftButtonPress: ()=>that.props.navigator.pop(),
+    });
+  },
   render: function(){
     var that = this;
     if(!this.state.sessionKey){
@@ -276,6 +291,13 @@ var Mine = React.createClass({
       <ScrollView style={styles.container}>
         <View style={styles.wrapper}>
           {JSXDOM}
+        </View>
+        <View style={styles.applybtn}>
+          <TouchableOpacity onPress={this._gotopicker}>
+            <View style={styles.bluebtn}>
+              <Text style={styles.bluebtntext}>多选图片</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
       </View>

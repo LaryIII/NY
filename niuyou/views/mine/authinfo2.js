@@ -156,7 +156,7 @@ var Authinfo2 = React.createClass({
               <Image resizeMode={'contain'} style={styles.bimg} source={require('./../../res/mine/pic_wo_sl1@2x.png')}></Image>
             </View>
           </View>
-          <TouchableOpacity onPress={this._download}>
+          <TouchableOpacity onPress={this._uploadImg}>
             <View style={styles.circle}>
               <Image resizeMode={'contain'} style={styles.circleimg} source={require('image!upload')}></Image>
             </View>
