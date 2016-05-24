@@ -21,13 +21,15 @@ import {
   Text,
   AsyncStorage,
   Dimensions,
+  AlertIOS,
 } from 'react-native';
 
 var Authinfo3 = React.createClass({
   mixins: [Subscribable.Mixin],
   getInitialState: function(){
     return {
-      lifeimgs:[]
+      lifeimgs:[],
+      uploaded:0,
     };
   },
   componentWillMount:function(){
@@ -81,9 +83,83 @@ var Authinfo3 = React.createClass({
     });
   },
   _submitRZ: function(){
+    var that = this;
+    //submitVerify
+    if(this.state.lifeimgs.length>0){
+      for(var i=0;i<this.state.lifeimgs.length;i++){
+        (function(img){
+          Util.get(Service.host + Service.uploadPersonalPhoto, {
+            photoUrl:img.uri
+          }, function(data){
+            console.log(data);
+            if(data.code == 200){
+              var num = that.state.uploaded;
+              num = num+1;
+              console.log(num);
+              that.setState({
+                uploaded:num,
+              });
+              if(that.state.uploaded == that.state.lifeimgs.length){
+                // 保存完毕之后提交认证
+                Util.get(Service.host + Service.submitVerify, {
+
+                }, function(data){
+                  console.log(data);
+                  if(data.code == 200){
+                    AlertIOS.alert('提醒',
+                    '认证提交成功，请耐心等待审核',
+                    [
+                      {text: '确认', onPress: () => that.props.navigator.popToTop()},
+                    ]
+                  );
+                  }else{
+                    AlertIOS.alert('提醒',data.messages[0].message);
+                  }
+                });
+              }
+            }else{
+
+            }
+          });
+        })(that.state.lifeimgs[i]);
+      }
+    }else{
+      AlertIOS.alert('提醒','请先上传你的生活照片!');
+    }
 
   },
+  _delimg:function(n){
+    var temp = [];
+    for(var i=0;i<this.state.lifeimgs.length;i++){
+      if(i!=n){
+        temp.push(this.state.lifeimgs[i]);
+      }
+    }
+    this.setState({
+      lifeimgs:temp,
+    });
+  },
   render: function(){
+    var that = this;
+    var mylifeimgdom = [];
+    if(this.state.lifeimgs.length>0){
+      for(var i=0;i<this.state.lifeimgs.length;i++){
+        (function(n){
+          mylifeimgdom.push(
+            <View style={styles.uploadimg}>
+              <Image resizeMode={'contain'} style={styles.upimg} source={that.state.lifeimgs[i]}></Image>
+              <TouchableOpacity onPress={()=>that._delimg(n)}>
+                <Text style={styles.delimg}>删除</Text>
+              </TouchableOpacity>
+            </View>
+          );
+        })(i)
+
+      }
+
+    }else{
+      mylifeimgdom.push(<View />);
+    }
     return (
       <View style={styles.container}>
       <ScrollView style={styles.scrollbox}>
@@ -121,24 +197,7 @@ var Authinfo3 = React.createClass({
           </View>
           <View style={styles.bz_content3}>
             <View style={styles.uploadimgs}>
-              <View style={styles.uploadimg}>
-                <Image resizeMode={'contain'} style={styles.upimg} source={require('./../../res/mine/pic_wo_sl1@2x.png')}></Image>
-                <TouchableOpacity>
-                  <Text style={styles.delimg}>删除</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.uploadimg}>
-                <Image resizeMode={'contain'} style={styles.upimg} source={require('./../../res/mine/pic_wo_sl1@2x.png')}></Image>
-                <Text style={styles.delimg}>删除</Text>
-              </View>
-              <View style={styles.uploadimg}>
-                <Image resizeMode={'contain'} style={styles.upimg} source={require('./../../res/mine/pic_wo_sl1@2x.png')}></Image>
-                <Text style={styles.delimg}>删除</Text>
-              </View>
-              <View style={styles.uploadimg}>
-                <Image resizeMode={'contain'} style={styles.upimg} source={require('./../../res/mine/pic_wo_sl1@2x.png')}></Image>
-                <Text style={styles.delimg}>删除</Text>
-              </View>
+              {mylifeimgdom}
             </View>
           </View>
         </View>
