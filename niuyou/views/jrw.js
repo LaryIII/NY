@@ -10,6 +10,12 @@ import Util from './utils';
 import Service from './service';
 import AllTask from './alltask';
 import ReceiveTask from './receivetask';
+import Login from './user/login';
+
+var EventEmitter = require('EventEmitter');
+var Subscribable = require('Subscribable');
+window.EventEmitter = EventEmitter;
+window.Subscribable = Subscribable;
 import {
   View,
   Text,
@@ -17,17 +23,34 @@ import {
   StyleSheet,
   Image,
   Dimensions,
+  AsyncStorage,
 } from 'react-native';
 
 var Jrw = React.createClass({
+  mixins: [Subscribable.Mixin],
   getInitialState: function(){
-    var items = [];
     return {
-      items: items,
+      sessionKey: '',
+      refreshReceive:0,
     };
   },
-  _gotoTaskDetail: function(id){
-    this.props.navigator.push({
+  componentWillMount:function(){
+    this.eventEmitter = new EventEmitter();
+  },
+  componentDidMount:function(){
+    var that = this;
+    // 登录
+    this.addListenerOn(this.eventEmitter, 'login_success',  function(args){
+      console.log('login_success');
+      // that._checkSessionKey();
+      that.setState({
+        refreshReceive:1,
+      });
+    });
+  },
+  _gotoTaskDetail:function(id){
+    var that = this;
+    that.props.navigator.push({
       title: '任务详情',
       component: TaskDetail,
       navigationBarHidden:false,
@@ -41,15 +64,52 @@ var Jrw = React.createClass({
       }
     });
   },
+  _changeTab:function(item){
+    console.log(item);
+    if(item.i==1){
+      this._checkSessionKey();
+    }
+  },
+  _checkSessionKey:function(){
+    var that = this;
+    AsyncStorage.getItem('userinfo',function(err,result){
+      if(!err){
+        sessionKey = result&&JSON.parse(result)?JSON.parse(result).sessionKey:null;
+        console.log(sessionKey);
+      }else{
+        sessionKey = null;
+      }
+      that.setState({
+        sessionKey:sessionKey,
+      });
+      if(!sessionKey){
+        that.props.navigator.push({
+          title: '登录',
+          component: Login,
+          navigationBarHidden:false,
+          // backButtonTitle: "返回",
+          // backButtonIcon: require('image!back'),
+          // leftButtonTitle: "返回",
+          leftButtonIcon:require('image!backo'),
+          // onLeftButtonPress: ()=>this.props.navigator.pop(),
+          barTintColor:'#f9f9f9',
+          passProps: {
+              events: that.eventEmitter
+          }
+        });
+      }else{
+
+      }
+    });
+  },
   render: function(){
-    var items = this.state.items;
     return (
       <View style={styles.bigcontainer}>
-      <ScrollableTabView style={styles.container} renderTabBar={() =><JRWTabBar />}>
+      <ScrollableTabView style={styles.container} renderTabBar={() =><JRWTabBar />} onChangeTab={(item)=>this._changeTab(item)}>
         <AllTask tabLabel="所有任务" onRowPress={(id)=>{
           this._gotoTaskDetail(id);
         }} />
-        <ReceiveTask tabLabel="可接任务" onRowPress={(id)=>{
+        <ReceiveTask ref="receive" tabLabel="可接任务" refreshFlag={this.state.refreshReceive} onRowPress={(id)=>{
           this._gotoTaskDetail(id);
         }} />
       </ScrollableTabView>

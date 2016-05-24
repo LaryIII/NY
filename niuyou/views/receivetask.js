@@ -18,14 +18,15 @@ import {
 
 var ReceiveTask = React.createClass({
   getInitialState: function(){
-    var items = [];
     return {
-      items: items,
+      refresh: 1,
     };
   },
-  _onFetch(page = 1, callback, options) {
+  componentWillMount:function(){
     // 需要sessionKey来跳登录
-    
+
+  },
+  _onFetch(page = 1, callback, options) {
     Util.get(Service.host + Service.myReceiveTaskList, {}, function(data){
       console.log(data);
       if(data.code == 200){
@@ -201,6 +202,7 @@ _renderSeparatorView() {
       //   {this._getSpinner()}
       // </View>
       <GiftedListView
+        refreshState = {this.state.refresh}
         contentContainerStyle = {styles.innercontainer}
         rowView={this._renderRowView}
         onFetch={this._onFetch}
