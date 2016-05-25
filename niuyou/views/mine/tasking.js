@@ -22,7 +22,7 @@ import {
   TouchableOpacity,
   ListView,
 } from 'react-native';
-
+// 任务状态:0接单；1待确认；2通过；3驳回；4失效
 var Tasking = React.createClass({
   mixins: [Subscribable.Mixin],
   getInitialState: function(){
@@ -142,6 +142,24 @@ var Tasking = React.createClass({
   },
   _renderRowView(rowData) {
     var genderimg = rowData.gender==1?require('image!ph_nan'):require('image!ph_nv');
+    var btndom = [];
+    if(rowData.status == 0){
+      btndom.push(
+        <TouchableOpacity style={styles.tbtn} onPress={()=>this._uploadZM(rowData.taskId)}>
+          <View style={styles.statusbtn}>
+            <Text style={styles.statustext}>上传图片证明</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    }else{
+      btndom.push(
+        <View style={styles.tbtn}>
+          <View style={styles.statusbtn2}>
+            <Text style={styles.statustext2}>待确认</Text>
+          </View>
+        </View>
+      );
+    }
     return (
       <TouchableOpacity onPress={()=>this.props.onRowPress(rowData.id)}>
         <View style={styles.item}>
@@ -152,11 +170,7 @@ var Tasking = React.createClass({
             <Text style={styles.statusx}>{rowData.taskEndTime}</Text>
             <Text style={styles.itemtitle}>{rowData.taskName}</Text>
             <Text style={styles.itemprice}>{rowData.price}元/次</Text>
-            <TouchableOpacity style={styles.tbtn} onPress={()=>this._uploadZM(rowData.taskId)}>
-              <View style={styles.statusbtn}>
-                <Text style={styles.statustext}>上传图片证明</Text>
-              </View>
-            </TouchableOpacity>
+            {btndom}
           </View>
         </View>
       </TouchableOpacity>
@@ -488,6 +502,16 @@ var styles = StyleSheet.create({
   },
   statustext:{
     color:'#333',
+    fontSize:15,
+  },
+  statusbtn2:{
+    height:40,
+    alignItems:'center',
+    justifyContent:'center',
+    backgroundColor:'rgba(238,221,27,0.3)',
+  },
+  statustext2:{
+    color:'#fff',
     fontSize:15,
   }
 });

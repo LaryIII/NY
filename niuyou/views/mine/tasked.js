@@ -42,7 +42,7 @@ var Tasked = React.createClass({
 
     return (
       <View style={styles.bigcontainer}>
-        <ScrollableTabView style={styles.container} renderTabBar={() =><JRWTabBar />} onChangeTab={(item)=>this._changeTab(item)}>
+        <ScrollableTabView style={styles.container} renderTabBar={() =><JRWTabBar />}>
           <NotSettledTask tabLabel="未结算" onRowPress={(id)=>{
             this._gotoTaskDetail(id);
           }} />
