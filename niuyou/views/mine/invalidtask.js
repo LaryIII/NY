@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import Util from './../utils';
 import Service from './../service';
+import TaskDetail from './../jrw/taskdetail';
 import GiftedListView from 'react-native-gifted-listview';
 import GiftedSpinner from 'react-native-gifted-spinner';
 import {
@@ -48,7 +49,7 @@ var InvalidTask = React.createClass({
   _renderRowView(rowData) {
     var genderimg = rowData.gender==1?require('image!ph_nan'):require('image!ph_nv');
     return (
-      <TouchableOpacity onPress={()=>this.props.onRowPress(rowData.id)}>
+      <TouchableOpacity onPress={()=>this.props.onRowPress(rowData.taskId)}>
         <View style={styles.item}>
           <Image resizeMode={'contain'} style={styles.itemimg} source={require('./../../res/home/banner.jpg')}></Image>
           <View style={styles.itemtext}>

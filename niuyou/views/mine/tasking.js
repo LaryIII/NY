@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import Util from './../utils';
 import Service from './../service';
+import TaskDetail from './../jrw/taskdetail';
 import GiftedListView from 'react-native-gifted-listview';
 import GiftedSpinner from 'react-native-gifted-spinner';
 import CameraPicker from './camerapicker';
@@ -140,6 +141,22 @@ var Tasking = React.createClass({
       }
     });
   },
+  _gotoTaskDetail:function(taskId){
+    var that = this;
+    that.props.navigator.push({
+      title: '任务详情',
+      component: TaskDetail,
+      navigationBarHidden:false,
+      // backButtonTitle: "返回",
+      // backButtonIcon: require('image!back'),
+      leftButtonTitle: "返回",
+      leftButtonIcon:require('image!back1'),
+      onLeftButtonPress: ()=>this.props.navigator.pop(),
+      passProps: {
+        id:taskId,
+      }
+    });
+  },
   _renderRowView(rowData) {
     var genderimg = rowData.gender==1?require('image!ph_nan'):require('image!ph_nv');
     var btndom = [];
@@ -161,7 +178,7 @@ var Tasking = React.createClass({
       );
     }
     return (
-      <TouchableOpacity onPress={()=>this.props.onRowPress(rowData.id)}>
+      <TouchableOpacity onPress={()=>this._gotoTaskDetail(rowData.taskId)}>
         <View style={styles.item}>
           <Image resizeMode={'contain'} style={styles.itemimg} source={require('./../../res/home/banner.jpg')}></Image>
           <View style={styles.itemtext}>

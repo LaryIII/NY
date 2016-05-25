@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import TaskDetails from './../jrw/taskdetails';
+import TaskDetail from './../jrw/taskdetail';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import JRWTabBar from './../jrw/jrwtabbar';
 import NotSettledTask from './notsettledtask';
@@ -28,13 +28,16 @@ var Tasked = React.createClass({
   _gotoTaskDetail: function(){
     this.props.navigator.push({
       title: '任务详情',
-      component: TaskDetails,
+      component: TaskDetail,
       navigationBarHidden:false,
       // backButtonTitle: "返回",
       // backButtonIcon: require('image!back'),
       leftButtonTitle: "返回",
       leftButtonIcon:require('image!back1'),
       onLeftButtonPress: ()=>this.props.navigator.pop(),
+      passProps: {
+        id:taskId,
+      }
     });
   },
   render: function(){

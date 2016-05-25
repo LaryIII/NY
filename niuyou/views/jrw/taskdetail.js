@@ -59,7 +59,7 @@ var TaskDetail = React.createClass({
       status:1,
     };
   },
-  componentDidMount:function(){
+  componentWillMount:function(){
     this.setState({
       id:this.props.id
     });
@@ -72,6 +72,7 @@ var TaskDetail = React.createClass({
           task:data.data.response.task,
           taskPhotoList:data.data.response.taskPhotoList,
           status:data.data.response.status,
+          taskOrderPhotoList:data.data.response.taskOrderPhotoList,
         });
       }else{
 
@@ -122,13 +123,14 @@ var TaskDetail = React.createClass({
   render: function(){
     var zmimgs = [];
     var imgs = [];
+    var applybtn = [];
 
     // 这边搞错了，taskPhotoList是用户需要分享的图片，而不是证明图片
-    if(this.state.taskPhotoList && this.state.taskPhotoList.length>0){
-      for(var i=0; i< this.state.taskPhotoList.length;i++){
+    if(this.state.taskOrderPhotoList && this.state.taskOrderPhotoList.length>0){
+      for(var i=0; i< 5;i++){
         // TODO:做四行，用justifyContent: 'space-around',
         imgs.push(
-          <Image resizeMode={'contain'} style={styles.zmimg} source={require('./../../res/mine/pic_wo_sl1@2x.png')}></Image>
+          <Image resizeMode={'contain'} style={styles.zmimg} source={{uri:this.state.taskOrderPhotoList[0].photoUrl}}></Image>
         );
       }
       zmimgs.push(
@@ -148,6 +150,17 @@ var TaskDetail = React.createClass({
       );
     }else{
       <View />
+    }
+    if(this.state.status != 0 && !this.state.status){
+      applybtn.push(
+        <View style={styles.applybtn}>
+          <TouchableOpacity onPress={this._gotoApplyTask}>
+            <View style={styles.bluebtn}>
+              <Text style={styles.bluebtntext}>申请任务</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      );
     }
     return (
       <View style={styles.container}>
@@ -254,13 +267,7 @@ var TaskDetail = React.createClass({
           </View>
           {zmimgs}
         </ScrollView>
-        <View style={styles.applybtn}>
-          <TouchableOpacity onPress={this._gotoApplyTask}>
-            <View style={styles.bluebtn}>
-              <Text style={styles.bluebtntext}>申请任务</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+        {applybtn}
       </View>
     );
   },
@@ -478,6 +485,7 @@ var styles = StyleSheet.create({
   },
   zmimg:{
     marginRight:1,
+    marginBottom:1,
     alignItems:'center',
     justifyContent:'center',
     width:(Dimensions.get('window').width-30)/4,
