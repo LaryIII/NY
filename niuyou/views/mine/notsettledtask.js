@@ -1,11 +1,10 @@
 'use strict'
 
 import React, { Component } from 'react';
-import Util from './utils';
-import Service from './service';
+import Util from './../utils';
+import Service from './../service';
 import GiftedListView from 'react-native-gifted-listview';
 import GiftedSpinner from 'react-native-gifted-spinner';
-
 import {
   View,
   Text,
@@ -16,21 +15,18 @@ import {
   ListView,
 } from 'react-native';
 
-var ReceiveTask = React.createClass({
+var NotSettledTask = React.createClass({
   getInitialState: function(){
+    var items = [];
     return {
-      refresh: 1,
+      items: items,
     };
   },
-  componentWillMount:function(){
-    // 需要sessionKey来跳登录
-
-  },
   _onFetch(page = 1, callback, options) {
-    Util.get(Service.host + Service.myReceiveTaskList, {}, function(data){
+    Util.get(Service.host + Service.finishNotSettleOrderList, {}, function(data){
       console.log(data);
       if(data.code == 200){
-        var rows = data.data.response.taskList;
+        var rows = data.data.response.list;
         if(rows.length==10){
           callback(rows);
         }else if(rows.length<10){
@@ -54,16 +50,13 @@ var ReceiveTask = React.createClass({
     return (
       <TouchableOpacity onPress={()=>this.props.onRowPress(rowData.id)}>
         <View style={styles.item}>
-          <Image resizeMode={'contain'} style={styles.itemimg} source={require('./../res/home/banner.jpg')}></Image>
+          <Image resizeMode={'contain'} style={styles.itemimg} source={require('./../../res/home/banner.jpg')}></Image>
           <View style={styles.itemtext}>
-            <Image resizeMode={'contain'} style={styles.avater} source={genderimg}></Image>
-            <Text style={styles.avatername}>{rowData.merchantName}</Text>
-            <Text style={styles.statusx}>发布了任务</Text>
-            <Text style={styles.itemtitle}>{rowData.taskName}</Text>
-            <Text style={styles.itemprice}>{rowData.price}元/次  性别限制:{rowData.gender==1?'男':'女'}</Text>
-            <Text style={styles.itemdesc}>地区限制:{rowData.publicCity}</Text>
-            <Text style={styles.itemdesc}>{rowData.showEndTime}</Text>
-            <Text style={styles.itemnum}>已接受任务自媒体：<Text style={styles.em}>{rowData.peopleNum}人</Text></Text>
+            <Image resizeMode={'contain'} style={styles.avater} source={require('./../../res/paihang/ico_ph_nv@3x.png')}></Image>
+            <Text style={styles.avatername}>窦窦</Text>
+            <Text style={styles.statusx}>2016-03-15 18:00</Text>
+            <Text style={styles.itemtitle}>丽江一米阳光宾馆照片转发朋友圈任务</Text>
+            <Text style={styles.itemprice}>36.0元/次</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -202,7 +195,6 @@ _renderSeparatorView() {
       //   {this._getSpinner()}
       // </View>
       <GiftedListView
-        refreshState = {this.state.refresh}
         contentContainerStyle = {styles.innercontainer}
         rowView={this._renderRowView}
         onFetch={this._onFetch}
@@ -432,4 +424,4 @@ var customStyles = {
 };
 
 
-module.exports = ReceiveTask;
+module.exports = NotSettledTask;

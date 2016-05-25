@@ -1,11 +1,10 @@
 'use strict'
 
 import React, { Component } from 'react';
-import Util from './utils';
-import Service from './service';
+import Util from './../utils';
+import Service from './../service';
 import GiftedListView from 'react-native-gifted-listview';
 import GiftedSpinner from 'react-native-gifted-spinner';
-
 import {
   View,
   Text,
@@ -16,21 +15,18 @@ import {
   ListView,
 } from 'react-native';
 
-var ReceiveTask = React.createClass({
+var InvalidTask = React.createClass({
   getInitialState: function(){
+    var items = [];
     return {
-      refresh: 1,
+      items: items,
     };
   },
-  componentWillMount:function(){
-    // 需要sessionKey来跳登录
-
-  },
   _onFetch(page = 1, callback, options) {
-    Util.get(Service.host + Service.myReceiveTaskList, {}, function(data){
+    Util.get(Service.host + Service.invalidOrderList, {}, function(data){
       console.log(data);
       if(data.code == 200){
-        var rows = data.data.response.taskList;
+        var rows = data.data.response.list;
         if(rows.length==10){
           callback(rows);
         }else if(rows.length<10){
@@ -54,16 +50,16 @@ var ReceiveTask = React.createClass({
     return (
       <TouchableOpacity onPress={()=>this.props.onRowPress(rowData.id)}>
         <View style={styles.item}>
-          <Image resizeMode={'contain'} style={styles.itemimg} source={require('./../res/home/banner.jpg')}></Image>
+          <Image resizeMode={'contain'} style={styles.itemimg} source={require('./../../res/home/banner.jpg')}></Image>
           <View style={styles.itemtext}>
-            <Image resizeMode={'contain'} style={styles.avater} source={genderimg}></Image>
-            <Text style={styles.avatername}>{rowData.merchantName}</Text>
-            <Text style={styles.statusx}>发布了任务</Text>
-            <Text style={styles.itemtitle}>{rowData.taskName}</Text>
-            <Text style={styles.itemprice}>{rowData.price}元/次  性别限制:{rowData.gender==1?'男':'女'}</Text>
-            <Text style={styles.itemdesc}>地区限制:{rowData.publicCity}</Text>
-            <Text style={styles.itemdesc}>{rowData.showEndTime}</Text>
-            <Text style={styles.itemnum}>已接受任务自媒体：<Text style={styles.em}>{rowData.peopleNum}人</Text></Text>
+            <Image resizeMode={'contain'} style={styles.avater} source={require('./../../res/paihang/ico_ph_nv@3x.png')}></Image>
+            <Text style={styles.avatername}>窦窦</Text>
+            <Text style={styles.statusx}>截止日期: 2016-03-15 18:00</Text>
+            <Text style={styles.itemtitle}>丽江一米阳光宾馆照片转发朋友圈任务</Text>
+            <Text style={styles.itemprice}>36.0元/次</Text>
+            <View style={styles.statusbtn}>
+              <Text style={styles.statustext}>未能在规定时间内完成任务</Text>
+            </View>
           </View>
         </View>
       </TouchableOpacity>
@@ -202,7 +198,6 @@ _renderSeparatorView() {
       //   {this._getSpinner()}
       // </View>
       <GiftedListView
-        refreshState = {this.state.refresh}
         contentContainerStyle = {styles.innercontainer}
         rowView={this._renderRowView}
         onFetch={this._onFetch}
@@ -246,19 +241,18 @@ _renderSeparatorView() {
 var styles = StyleSheet.create({
   bigcontainer:{
     flex:1,
-    paddingTop:20,
-    backgroundColor:'#f9f9f9',
   },
   container:{
     flex:1,
-    backgroundColor:'#fff',
-  },
-  innercontainer:{
-    flex:1,
+    marginTop:-20,
   },
   itemRow:{
     flexDirection:'row',
     marginBottom:20,
+  },
+  banner:{
+    flex:1,
+    borderRadius:4,
   },
   text: {
     color: '#fff',
@@ -350,35 +344,39 @@ var styles = StyleSheet.create({
     fontSize:12,
   },
   navigatorx:{
-    backgroundColor:'#f9f9f9',
-    height:64,
-    paddingTop:20,
+    backgroundColor:'#fff',
+    height:50,
+    borderWidth:0.5,
+    borderColor:'#dfdfdf',
   },
   tabs:{
     flexDirection:'row',
-    height:44,
-    backgroundColor:'#f9f9f9',
   },
-  borderbottom:{
-    backgroundColor:'#ececec',
-    height:0.5,
-  },
-  placeholder:{
+  tabitem:{
     flex:1,
-  },
-  btn:{
-    flex:1,
-    width:82,
     justifyContent:'center',
     alignItems:'center',
   },
-  btnborder:{
+  btn:{
+    width:82,
+    height:50,
+    justifyContent:'center',
+    alignItems:'center',
+  },
+  statusbtn:{
     position:'absolute',
     bottom:0,
     left:0,
-    width:Dimensions.get('window').width/4,
-    height:2,
-    backgroundColor:'#51a7ff',
+    width:Dimensions.get('window').width - 30,
+    height:40,
+    flex:1,
+    alignItems:'center',
+    justifyContent:'center',
+    backgroundColor:'#eedd1b',
+  },
+  statustext:{
+    color:'#333',
+    fontSize:15,
   }
 });
 var customStyles = {
@@ -431,5 +429,4 @@ var customStyles = {
   },
 };
 
-
-module.exports = ReceiveTask;
+module.exports = InvalidTask;

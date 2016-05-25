@@ -1,11 +1,10 @@
 'use strict'
 
 import React, { Component } from 'react';
-import Util from './utils';
-import Service from './service';
+import Util from './../utils';
+import Service from './../service';
 import GiftedListView from 'react-native-gifted-listview';
 import GiftedSpinner from 'react-native-gifted-spinner';
-
 import {
   View,
   Text,
@@ -16,21 +15,16 @@ import {
   ListView,
 } from 'react-native';
 
-var ReceiveTask = React.createClass({
+var SettledTask = React.createClass({
   getInitialState: function(){
     return {
-      refresh: 1,
     };
   },
-  componentWillMount:function(){
-    // 需要sessionKey来跳登录
-
-  },
   _onFetch(page = 1, callback, options) {
-    Util.get(Service.host + Service.myReceiveTaskList, {}, function(data){
+    Util.get(Service.host + Service.finishSettleOrderList, {}, function(data){
       console.log(data);
       if(data.code == 200){
-        var rows = data.data.response.taskList;
+        var rows = data.data.response.list;
         if(rows.length==10){
           callback(rows);
         }else if(rows.length<10){
@@ -54,16 +48,13 @@ var ReceiveTask = React.createClass({
     return (
       <TouchableOpacity onPress={()=>this.props.onRowPress(rowData.id)}>
         <View style={styles.item}>
-          <Image resizeMode={'contain'} style={styles.itemimg} source={require('./../res/home/banner.jpg')}></Image>
+          <Image resizeMode={'contain'} style={styles.itemimg} source={require('./../../res/home/banner.jpg')}></Image>
           <View style={styles.itemtext}>
-            <Image resizeMode={'contain'} style={styles.avater} source={genderimg}></Image>
-            <Text style={styles.avatername}>{rowData.merchantName}</Text>
-            <Text style={styles.statusx}>发布了任务</Text>
-            <Text style={styles.itemtitle}>{rowData.taskName}</Text>
-            <Text style={styles.itemprice}>{rowData.price}元/次  性别限制:{rowData.gender==1?'男':'女'}</Text>
-            <Text style={styles.itemdesc}>地区限制:{rowData.publicCity}</Text>
-            <Text style={styles.itemdesc}>{rowData.showEndTime}</Text>
-            <Text style={styles.itemnum}>已接受任务自媒体：<Text style={styles.em}>{rowData.peopleNum}人</Text></Text>
+            <Image resizeMode={'contain'} style={styles.avater} source={require('./../../res/paihang/ico_ph_nv@3x.png')}></Image>
+            <Text style={styles.avatername}>窦窦</Text>
+            <Text style={styles.statusx}>2016-03-15 18:00</Text>
+            <Text style={styles.itemtitle}>丽江一米阳光宾馆照片转发朋友圈任务</Text>
+            <Text style={styles.itemprice}>36.0元/次</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -202,7 +193,6 @@ _renderSeparatorView() {
       //   {this._getSpinner()}
       // </View>
       <GiftedListView
-        refreshState = {this.state.refresh}
         contentContainerStyle = {styles.innercontainer}
         rowView={this._renderRowView}
         onFetch={this._onFetch}
@@ -430,6 +420,55 @@ var customStyles = {
     color: '#fff',
   },
 };
+var customStyles = {
+  separator: {
+    height: 1,
+    backgroundColor: '#efefef',
+  },
+  spinner:{
+    backgroundColor:'#efefef',
+  },
+  refreshableView: {
+    height: 50,
+    backgroundColor: '#efefef',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  actionsLabel: {
+    fontSize: 20,
+    color: '#007aff',
+  },
+  paginationView: {
+    width:(Dimensions.get('window').width-30)/2,
+    height: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#efefef',
+  },
+  defaultView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor:'#efefef',
+  },
+  defaultViewTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  row: {
+    padding: 10,
+    height: 44,
+    backgroundColor:'#efefef',
+  },
+  header: {
+    backgroundColor: '#50a4ff',
+    padding: 10,
+  },
+  headerTitle: {
+    color: '#fff',
+  },
+};
 
 
-module.exports = ReceiveTask;
+module.exports = SettledTask;

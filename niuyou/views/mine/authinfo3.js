@@ -78,7 +78,8 @@ var Authinfo3 = React.createClass({
       // leftButtonIcon:require('image!back1'),
       // onLeftButtonPress: ()=>that.props.navigator.pop(),
       passProps: {
-          events: that.eventEmitter
+          events: that.eventEmitter,
+          type:'authinfo3'
       }
     });
   },

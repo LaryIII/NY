@@ -86,20 +86,6 @@ var TaskDetail = React.createClass({
       console.log(data);
       if(data.code == 200){
         // 去接任务界面
-      }else if(data.code == 600){
-        // 跳转登录，登录后回来
-        that.props.navigator.push({
-          title: '登录',
-          component: Login,
-          navigationBarHidden:false,
-          // backButtonTitle: "返回",
-          // backButtonIcon: require('image!back'),
-          leftButtonTitle: "返回",
-          leftButtonIcon:require('image!back1'),
-          onLeftButtonPress: ()=>that.props.navigator.pop(),
-        });
-      }else{
-        // TODO: 500还是要提示错误了，先跳到接任务页面
         that.props.navigator.push({
           title: '接任务',
           component: ApplyTask,
@@ -115,6 +101,21 @@ var TaskDetail = React.createClass({
             imgs:that.state.taskPhotoList,
           }
         });
+      }else if(data.code == 600){
+        // 跳转登录，登录后回来
+        that.props.navigator.push({
+          title: '登录',
+          component: Login,
+          navigationBarHidden:false,
+          // backButtonTitle: "返回",
+          // backButtonIcon: require('image!back'),
+          leftButtonTitle: "返回",
+          leftButtonIcon:require('image!back1'),
+          onLeftButtonPress: ()=>that.props.navigator.pop(),
+        });
+      }else{
+        // 500 提示错误信息
+        AlertIOS.alert('提醒',data.messages[0].message);
       }
     });
   },

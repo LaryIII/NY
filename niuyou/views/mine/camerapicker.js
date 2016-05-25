@@ -33,7 +33,15 @@ const CameraPicker =  React.createClass ({
     var that = this;
     // 发送事件
     if(this.state.num>0){
-      that.props.events.emit('upload_imgs', this.state.images);
+      if(that.props.type == "authinfo3"){
+        that.props.events.emit('upload_imgs', this.state.images);
+      }else if(that.props.type == "tasking" && that.props.taskId){
+        that.props.events.emit('upload_imgs2', {
+          images:that.state.images,
+          taskId:that.props.taskId
+        });
+      }
+
       this.props.navigator.pop();
     }else{
       AlertIOS.alert('提醒','请先上传图片');

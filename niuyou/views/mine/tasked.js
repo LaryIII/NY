@@ -4,6 +4,10 @@
 
 import React, { Component } from 'react';
 import TaskDetails from './../jrw/taskdetails';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
+import JRWTabBar from './../jrw/jrwtabbar';
+import NotSettledTask from './notsettledtask';
+import SettledTask from './settledtask';
 import {
   View,
   Text,
@@ -38,38 +42,14 @@ var Tasked = React.createClass({
 
     return (
       <View style={styles.bigcontainer}>
-      <View style={styles.navigatorx}>
-        <View style={styles.tabs}>
-          <View style={[styles.tabitem,{borderRightWidth:0.5,borderRightColor:'#dfdfdf',}]}>
-            <View style={[styles.btn]}>
-              <Text>未结算</Text>
-            </View>
-          </View>
-          <View style={styles.tabitem}>
-            <View style={[styles.btn,{borderBottomWidth:2,borderBottomColor:'#399bff',}]}>
-              <Text>已结算</Text>
-            </View>
-          </View>
-        </View>
-      </View>
-      <ScrollView style={styles.container}>
-        <View style={styles.tasklist}>
-          <View>
-            <TouchableOpacity onPress={this._gotoTaskDetail}>
-              <View style={styles.item}>
-                <Image resizeMode={'contain'} style={styles.itemimg} source={require('./../../res/home/banner.jpg')}></Image>
-                <View style={styles.itemtext}>
-                  <Image resizeMode={'contain'} style={styles.avater} source={require('./../../res/paihang/ico_ph_nv@3x.png')}></Image>
-                  <Text style={styles.avatername}>窦窦</Text>
-                  <Text style={styles.statusx}>2016-03-15 18:00</Text>
-                  <Text style={styles.itemtitle}>丽江一米阳光宾馆照片转发朋友圈任务</Text>
-                  <Text style={styles.itemprice}>36.0元/次</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
+        <ScrollableTabView style={styles.container} renderTabBar={() =><JRWTabBar />} onChangeTab={(item)=>this._changeTab(item)}>
+          <NotSettledTask tabLabel="未结算" onRowPress={(id)=>{
+            this._gotoTaskDetail(id);
+          }} />
+          <SettledTask ref="receive" tabLabel="已结算" refreshFlag={this.state.refreshReceive} onRowPress={(id)=>{
+            this._gotoTaskDetail(id);
+          }} />
+        </ScrollableTabView>
       </View>
     );
   }
@@ -81,7 +61,6 @@ var styles = StyleSheet.create({
   },
   container:{
     flex:1,
-    marginTop:-20,
   },
   itemRow:{
     flexDirection:'row',

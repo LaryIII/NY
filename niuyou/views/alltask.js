@@ -284,7 +284,7 @@ var styles = StyleSheet.create({
   itemtext:{
     position:'absolute',
     top:0,
-    left:0,
+    left:15,
     backgroundColor:'rgba(0,0,0,0)',
     width:Dimensions.get('window').width-30,
     height:180,
