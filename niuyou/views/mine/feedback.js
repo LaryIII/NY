@@ -10,7 +10,8 @@ import {
   TouchableOpacity,
   Image,
   Text,
-  AsyncStorage
+  AsyncStorage,
+  AlertIOS,
 } from 'react-native';
 
 var Feedback = React.createClass({
@@ -68,7 +69,14 @@ var Feedback = React.createClass({
           content: that.state.message,
           mobile:that.state.mobile
         }, function(data){
-          console.log(data);
+          if(data.code == 200){
+            console.log(data);
+            AlertIOS.alert('提醒','感谢您的建议，我们会认真处理',[
+              {text:'确定',onPress:()=>that.props.navigator.pop();}
+            ]);
+          }else{
+            AlertIOS.alert('提醒',data.messages[0].message);
+          }
         });
     //   }
 

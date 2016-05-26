@@ -292,13 +292,6 @@ var Mine = React.createClass({
         <View style={styles.wrapper}>
           {JSXDOM}
         </View>
-        <View style={styles.applybtn}>
-          <TouchableOpacity onPress={this._gotopicker}>
-            <View style={styles.bluebtn}>
-              <Text style={styles.bluebtntext}>多选图片</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
       </ScrollView>
       </View>
     );

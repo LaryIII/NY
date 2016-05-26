@@ -14,6 +14,7 @@ import {
   Text,
   AsyncStorage,
   Dimensions,
+  AlertIOS,
 } from 'react-native';
 
 var TaskDetail = React.createClass({
@@ -75,7 +76,7 @@ var TaskDetail = React.createClass({
           taskOrderPhotoList:data.data.response.taskOrderPhotoList,
         });
       }else{
-
+        AlertIOS.alert('提醒',data.messages[0].message);
       }
     });
   },

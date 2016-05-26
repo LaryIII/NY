@@ -87,6 +87,8 @@ var Findback = React.createClass({
             console.log(verifyCodeImg);
             //
             that.setState({open: true,offset:150,verifycodeimg:verifyCodeImg,mobile:mobile,token:token});
+          }else{
+            AlertIOS.alert('提醒',data.messages[0].message);
           }
         });
       }

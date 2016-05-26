@@ -26,6 +26,9 @@ var Register = React.createClass({
       verifycodeimg:'',
       mobile:'',
       token:'',
+      veritext:'验证',
+      verinum:60,
+      veribgcolor:'#eedd1b',
     };
   },
   _gotoStartny:function(){
@@ -72,6 +75,9 @@ var Register = React.createClass({
     });
   },
   _checkMobile:function(){
+    if(this.state.veribgcolor == '#666'){
+      return false;
+    }
     var that  = this;
     // 1.检查手机号是否可注册
     var mobile = GiftedFormManager.getValue('signupForm', 'username');
@@ -92,6 +98,8 @@ var Register = React.createClass({
             that.setState({open: true,offset:150,verifycodeimg:verifyCodeImg,mobile:mobile,token:token});
           }
         });
+      }else{
+        AlertIOS.alert('提醒',data.messages[0].message);
       }
 
     });
@@ -112,11 +120,33 @@ var Register = React.createClass({
       console.log(data);
       if(data.code == 200){
         that.setState({open: false});
+        that._countdown();
       }else{
         AlertIOS.alert('提醒',data.messages[0].message);
       }
 
     });
+  },
+  _countdown:function(){
+    var that = this;
+    var interval = setInterval(function(){
+      var num = that.state.verinum;
+      num--;
+      if(num<0){
+        that.setState({
+          veritext:'验证',
+          veribgcolor:'#eedd1b',
+          verinum:60,
+        })
+        clearInterval(interval);
+      }else{
+        that.setState({
+          veritext:num+'S',
+          veribgcolor:'#666',
+          verinum:num,
+        })
+      }
+    },1000);
   },
   _onChange: function(val){
     console.log(val);
@@ -253,9 +283,9 @@ var Register = React.createClass({
         </GiftedForm>
         </View>
 
-        <View style={styles.yanzheng}>
+        <View style={[styles.yanzheng,{backgroundColor:this.state.veribgcolor}]}>
           <TouchableOpacity onPress={this._checkMobile}>
-            <Text style={styles.yanzhengbtn}>验证</Text>
+            <Text style={styles.yanzhengbtn}>{this.state.veritext}</Text>
           </TouchableOpacity>
         </View>
 

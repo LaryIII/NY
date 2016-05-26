@@ -17,6 +17,7 @@ import {
   Text,
   AsyncStorage,
   Dimensions,
+  AlertIOS,
 } from 'react-native';
 
 var Authinfo = React.createClass({

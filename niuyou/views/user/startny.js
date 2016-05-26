@@ -18,6 +18,7 @@ import {
   Text,
   AsyncStorage,
   Dimensions,
+  AlertIOS,
 } from 'react-native';
 
 var Startny = React.createClass({
@@ -109,7 +110,7 @@ var Startny = React.createClass({
                }
             });
           }else{
-
+            AlertIOS.alert('提醒',data.messages[0].message);
           }
         });
         // var key = new Date().getTime()+1*10000+'.'+arrs[arrs.length-1];
@@ -148,7 +149,7 @@ var Startny = React.createClass({
         // 回到顶级路由
         that.props.navigator.popToTop();
       }else{
-
+        AlertIOS.alert('提醒',data.messages[0].message);
       }
     });
   },
@@ -257,28 +258,6 @@ var Startny = React.createClass({
       });
     }
   },
-
-  _postMessage: function(){
-    var that = this;
-    // AsyncStorage.getItem('token', function(err, token){
-    //   if(err){
-    //     alert('权限失效，请退出APP，重新登录');
-    //   }else{
-    //     Util.post(Service.host + Service.addMessage, {
-    //       token: token,
-    //       message: that.state.message
-    //     }, function(data){
-    //       if(data.status){
-    //         alert('添加成功！');
-    //       }else{
-    //         alert('添加失败！');
-    //       }
-    //     });
-    //   }
-    //
-    // });
-  }
-
 });
 
 var styles = StyleSheet.create({
