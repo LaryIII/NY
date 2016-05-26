@@ -158,13 +158,9 @@ var Findback = React.createClass({
             username: {
               title: '账号',
               validate: [{
-                validator: 'isLength',
-                arguments: [3, 16],
-                message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
-              },{
                 validator: 'matches',
-                arguments: /^[a-zA-Z0-9]*$/,
-                message: '{TITLE} can contains only alphanumeric characters'
+                arguments: /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/,
+                message: '请输入正确的手机号码'
               }]
             },
             verifycode: {
@@ -172,7 +168,7 @@ var Findback = React.createClass({
               validate: [{
                 validator: 'isLength',
                 arguments: [6,6],
-                message: '{TITLE} must be {ARGS[0]} characters'
+                message: '{TITLE} 必须是6个字符'
               }]
             },
             password: {
@@ -180,7 +176,7 @@ var Findback = React.createClass({
               validate: [{
                 validator: 'isLength',
                 arguments: [6, 16],
-                message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
+                message: '{TITLE} 必须是 {ARGS[0]} 到 {ARGS[1]} 个字符'
               }]
             },
             confirmpassword: {
@@ -188,7 +184,7 @@ var Findback = React.createClass({
               validate: [{
                 validator: 'isLength',
                 arguments: [6, 16],
-                message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
+                message: '{TITLE} 必须是 {ARGS[0]} 到 {ARGS[1]} 个字符'
               }]
             },
           }}

@@ -29,7 +29,7 @@ var Feedback = React.createClass({
           <TextInput multiline={true}
                      onChangeText={this._onChange2}
                      style={styles.textinput2}
-                     placeholder="你的手机号码或邮箱(选填)"/>
+                     placeholder="你的手机号码(必填)"/>
         </View>
         <View style={{marginTop:20}}>
           <TouchableOpacity onPress={this._postMessage}>
@@ -71,8 +71,9 @@ var Feedback = React.createClass({
         }, function(data){
           if(data.code == 200){
             console.log(data);
-            AlertIOS.alert('提醒','感谢您的建议，我们会认真处理',[
-              {text:'确定',onPress:()=>that.props.navigator.pop();}
+            AlertIOS.alert('提醒','感谢您的建议!',
+            [
+              {text:'确定',onPress:()=>that.props.navigator.pop()}
             ]);
           }else{
             AlertIOS.alert('提醒',data.messages[0].message);

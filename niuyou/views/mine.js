@@ -13,8 +13,6 @@ import Feedback from './mine/feedback';
 import Setting from './mine/setting';
 import Login from './user/login';
 import SelectCity from './home/selectcity';
-var ImagePickerManager = require('NativeModules').ImagePickerManager;
-// import ImagePickerManager from 'react-native-image-picker';
 import qiniu from 'react-native-qiniu';
 qiniu.conf.ACCESS_KEY = '0cWE2Ci38evF_wbXbHSAUt-5vXMZgqN3idgyvvMy';
 qiniu.conf.SECRET_KEY = '3kBcjCfTbqEVKWZttKLae_RM0zEbYc3-Q-STnXkw';

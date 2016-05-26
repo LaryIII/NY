@@ -59,13 +59,11 @@ var Authinfo = React.createClass({
     var that = this;
     console.log('准备上传文件');
     var options = {
-      title: 'Select Avatar', // specify null or empty string to remove the title
-      cancelButtonTitle: 'Cancel',
-      takePhotoButtonTitle: 'Take Photo...', // specify null or empty string to remove this button
-      chooseFromLibraryButtonTitle: 'Choose from Library...', // specify null or empty string to remove this button
-      customButtons: {
-        'Choose Photo from Facebook': 'fb', // [Button Text] : [String returned upon selection]
-      },
+      title: '选择图片', // specify null or empty string to remove the title
+      cancelButtonTitle: '取消',
+      takePhotoButtonTitle: '拍照...', // specify null or empty string to remove this button
+      chooseFromLibraryButtonTitle: '从相册选取...', // specify null or empty string to remove this button
+      customButtons: {},
       cameraType: 'back', // 'front' or 'back'
       mediaType: 'photo', // 'photo' or 'video'
       videoQuality: 'high', // 'low', 'medium', or 'high'
