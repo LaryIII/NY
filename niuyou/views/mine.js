@@ -191,18 +191,28 @@ var Mine = React.createClass({
     }
   },
   _gotoRZ:function(){
-    this.props.navigator.push({
-      title: '选择城市',
-      component: SelectCity,
-      navigationBarHidden:false,
-      // backButtonTitle: "返回",
-      // backButtonIcon: require('image!back'),
-      leftButtonTitle: "返回",
-      leftButtonIcon:require('image!back1'),
-      onLeftButtonPress: ()=>this.props.navigator.pop(),
-      passProps:{
-        type:"renzheng",// home:首页进去的；renzheng:认证页面第一步
+    var that = this;
+    AsyncStorage.getItem('city',function(err,result){
+      var cityInfo = '';
+      if(!err){
+         cityInfo = result?result:'';
       }
+      that.props.navigator.push({
+        title: '请选择城市',
+        component: SelectCity,
+        navigationBarHidden:false,
+        barTintColor:'#f9f9f9',
+        // backButtonTitle: "返回",
+        // backButtonIcon: require('image!back'),
+        leftButtonTitle: "返回",
+        leftButtonIcon:require('image!back1'),
+        onLeftButtonPress: ()=>that.props.navigator.pop(),
+        passProps:{
+          events: that.eventEmitter,
+          cityInfo:cityInfo,
+          type:"renzheng",// home:首页进去的；renzheng:认证页面第一步
+        }
+      });
     });
   },
   _gotopicker:function(){

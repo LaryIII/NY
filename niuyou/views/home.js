@@ -12,6 +12,11 @@ import SQLite from 'react-native-sqlite-storage';
 SQLite.DEBUG(true);
 // SQLite.enablePromise(true);
 SQLite.enablePromise(false);
+
+var EventEmitter = require('EventEmitter');
+var Subscribable = require('Subscribable');
+window.EventEmitter = EventEmitter;
+window.Subscribable = Subscribable;
 import {
   View,
   Text,
@@ -26,9 +31,10 @@ import {
 } from 'react-native';
 
 var Home = React.createClass({
+  mixins: [Subscribable.Mixin],
   getInitialState: function(){
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    AsyncStorage.setItem('cityId','320100',function(err){})
+    AsyncStorage.setItem('city','320100;南京;320000',function(err){})
     return {
       dataSource: ds.cloneWithRows([]),
       initialPosition: 'unknown',
@@ -37,8 +43,19 @@ var Home = React.createClass({
       isLoading:true,
     };
   },
+  componentWillMount:function(){
+    this.eventEmitter = new EventEmitter();
+  },
   componentDidMount: function() {
     var that = this;
+    this.addListenerOn(this.eventEmitter, 'locate_success',  function(args){
+      console.log('locate_success');
+      that.setState({
+        city_id:args.cityId,
+        city:args.city.split('市')[0],
+      });
+      that.getIndexData();
+    });
     navigator.geolocation.getCurrentPosition(
       (initialPosition) => {
         console.log(initialPosition);
@@ -47,6 +64,7 @@ var Home = React.createClass({
           latitude:initialPosition.coords.latitude,
           longitude:initialPosition.coords.initialPosition
         }
+        // TODO:模拟器测试的时候先用这个，真机测试的时候要删掉
         var NJ = {
           latitude: 32.031231,
           longitude: 118.461231
@@ -134,16 +152,27 @@ var Home = React.createClass({
     });
   },
   _gotoSelectCity:function(){
-    this.props.navigator.push({
-      title: '请选择城市',
-      component: SelectCity,
-      navigationBarHidden:false,
-      barTintColor:'#f9f9f9',
-      // backButtonTitle: "返回",
-      // backButtonIcon: require('image!back'),
-      leftButtonTitle: "返回",
-      leftButtonIcon:require('image!back1'),
-      onLeftButtonPress: ()=>this.props.navigator.pop(),
+    var that = this;
+    AsyncStorage.getItem('city',function(err,result){
+      var cityInfo = '';
+      if(!err){
+         cityInfo = result?result:'';
+      }
+      that.props.navigator.push({
+        title: '请选择城市',
+        component: SelectCity,
+        navigationBarHidden:false,
+        barTintColor:'#f9f9f9',
+        // backButtonTitle: "返回",
+        // backButtonIcon: require('image!back'),
+        leftButtonTitle: "返回",
+        leftButtonIcon:require('image!back1'),
+        onLeftButtonPress: ()=>that.props.navigator.pop(),
+        passProps:{
+          events: that.eventEmitter,
+          cityInfo:cityInfo,
+        }
+      });
     });
   },
 

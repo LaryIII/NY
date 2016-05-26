@@ -25,9 +25,9 @@ var Util = {
         sessionKey = JSON.parse(result).sessionKey;
       }
       data.sessionKey = sessionKey;
-      AsyncStorage.getItem('cityId',function(err,result){
+      AsyncStorage.getItem('city',function(err,result){
         if(!err){
-          cityId = result;
+          cityId = result.split(';')[0];
         }
         data.cityId = cityId;
         var fetchOptions = {
@@ -61,9 +61,9 @@ var Util = {
         sessionKey = result?JSON.parse(result).sessionKey:'';
       }
       data.sessionKey = sessionKey;
-      AsyncStorage.getItem('cityId',function(err,result){
+      AsyncStorage.getItem('city',function(err,result){
         if(!err){
-          cityId = result?cityId:'320100';
+          cityId = result?result.split(';')[0]:'320100';
         }
         data.cityId = cityId;
         if(data){

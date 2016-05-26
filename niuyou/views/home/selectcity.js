@@ -81,7 +81,9 @@ var SelectCity = React.createClass({
       cities:[]
     };
   },
+  componentWillMount:function(){
 
+  },
   componentDidMount:function(){
     var that = this;
     function errorCB(err) {
@@ -148,28 +150,45 @@ var SelectCity = React.createClass({
   },
 
   _renderHotCities:function(){
-    var hotcities = [['北京','上海','广州'],['深圳','南京','杭州']];
+    var that = this;
+    var hotcities = [
+      [
+        {cityId:110100,name:'北京',provinceId:110000},
+        {cityId:310100,name:'上海',provinceId:310000},
+        {cityId:440100,name:'广州',provinceId:440000}
+      ],
+      [
+        {cityId:440300,name:'深圳',provinceId:440000},
+        {cityId:320100,name:'南京',provinceId:320000},
+        {cityId:330100,name:'杭州',provinceId:330000}
+      ]
+    ];
     var citydoms = [];
     for(var i in hotcities){
-      citydoms.push(
-        <View style={styles.onelinehotcity}>
-          <TouchableOpacity>
-            <View style={styles.citybtn}>
-              <Text style={styles.citybtntext}>{hotcities[i][0]}</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.citybtn}>
-              <Text style={styles.citybtntext}>{hotcities[i][1]}</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.citybtn}>
-              <Text style={styles.citybtntext}>{hotcities[i][2]}</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      );
+      (function(n){
+        var args0 = hotcities[n][0].cityId+';'+hotcities[n][0].name+';'+hotcities[n][0].provinceId;
+        var args1 = hotcities[n][1].cityId+';'+hotcities[n][1].name+';'+hotcities[n][1].provinceId;
+        var args2 = hotcities[n][2].cityId+';'+hotcities[n][2].name+';'+hotcities[n][2].provinceId;
+        citydoms.push(
+          <View style={styles.onelinehotcity}>
+            <TouchableOpacity onPress={()=>that._selectCity(args0)}>
+              <View style={styles.citybtn}>
+                <Text style={styles.citybtntext}>{hotcities[n][0].name}</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>that._selectCity(args1)}>
+              <View style={styles.citybtn}>
+                <Text style={styles.citybtntext}>{hotcities[n][1].name}</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>that._selectCity(args2)}>
+              <View style={styles.citybtn}>
+                <Text style={styles.citybtntext}>{hotcities[n][2].name}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        );
+      })(i);
     }
     return citydoms;
   },
@@ -258,6 +277,7 @@ var SelectCity = React.createClass({
           });
 
         }else{
+          that.props.events.emit('locate_success', {cityId:cityId,city:cityName});
           that.props.navigator.pop();
         }
 
@@ -266,6 +286,23 @@ var SelectCity = React.createClass({
   },
 
   render: function(){
+    var locatecitydom = [];
+    if(this.props.cityInfo){
+      var cityName = this.props.cityInfo.split(';')[1];
+      locatecitydom.push(
+        <TouchableOpacity onPress={()=>this._selectCity(this.props.cityInfo)}>
+          <View style={styles.citybtn}>
+            <Text style={styles.citybtntext}>{cityName}</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    }else{
+      locatecitydom.push(
+        <View style={styles.nocitybtn}>
+          <Text style={styles.nocitybtntext}>定位失败,请选择您所在的城市</Text>
+        </View>
+      );
+    }
     return (
       <View style={styles.bigcontainer}>
         <ScrollView style={styles.container} ref="scrollView">
@@ -273,11 +310,7 @@ var SelectCity = React.createClass({
             <View style={styles.boxheader}>
               <Text style={styles.headertext}>定位城市</Text>
             </View>
-            <TouchableOpacity>
-              <View style={styles.citybtn}>
-                <Text style={styles.citybtntext}>南京</Text>
-              </View>
-            </TouchableOpacity>
+            {locatecitydom}
           </View>
           <View style={styles.hotcity}>
             <View style={styles.boxheader}>
@@ -444,6 +477,22 @@ var styles = StyleSheet.create({
   bluebtntext:{
     color:'#fff',
     fontSize:17,
+  },
+  nocitybtn:{
+    flex:1,
+    width:(Dimensions.get('window').width-30),
+    height:40,
+    backgroundColor:'#fff',
+    justifyContent:'center',
+    alignItems:'center',
+    marginLeft:15,
+    borderRadius:4,
+    borderWidth:1,
+    borderColor:'#ff7651',
+  },
+  nocitybtntext:{
+    color:'#ffaa93',
+    fontSize:15,
   }
 });
 
