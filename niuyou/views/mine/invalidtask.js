@@ -383,14 +383,14 @@ var styles = StyleSheet.create({
 var customStyles = {
   separator: {
     height: 1,
-    backgroundColor: '#efefef',
+    // backgroundColor: '#efefef',
   },
   spinner:{
-    backgroundColor:'#efefef',
+    // backgroundColor:'#efefef',
   },
   refreshableView: {
     height: 50,
-    backgroundColor: '#efefef',
+    // backgroundColor: '#efefef',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -403,13 +403,13 @@ var customStyles = {
     height: 44,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#efefef',
+    // backgroundColor: '#efefef',
   },
   defaultView: {
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor:'#efefef',
+    // backgroundColor:'#efefef',
   },
   defaultViewTitle: {
     fontSize: 16,
@@ -419,7 +419,7 @@ var customStyles = {
   row: {
     padding: 10,
     height: 44,
-    backgroundColor:'#efefef',
+    // backgroundColor:'#efefef',
   },
   header: {
     backgroundColor: '#50a4ff',

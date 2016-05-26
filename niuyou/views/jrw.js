@@ -48,7 +48,7 @@ var Jrw = React.createClass({
       });
     });
   },
-  _gotoTaskDetail:function(id){
+  _gotoTaskDetail:function(id,type){
     var that = this;
     that.props.navigator.push({
       title: '任务详情',
@@ -61,6 +61,7 @@ var Jrw = React.createClass({
       onLeftButtonPress: ()=>this.props.navigator.pop(),
       passProps: {
         id:id,
+        type:type,
       }
     });
   },
@@ -107,10 +108,10 @@ var Jrw = React.createClass({
       <View style={styles.bigcontainer}>
       <ScrollableTabView style={styles.container} renderTabBar={() =><JRWTabBar />} onChangeTab={(item)=>this._changeTab(item)}>
         <AllTask tabLabel="所有任务" onRowPress={(id)=>{
-          this._gotoTaskDetail(id);
+          this._gotoTaskDetail(id,'all');
         }} />
         <ReceiveTask ref="receive" tabLabel="可接任务" refreshFlag={this.state.refreshReceive} onRowPress={(id)=>{
-          this._gotoTaskDetail(id);
+          this._gotoTaskDetail(id,'receive');
         }} />
       </ScrollableTabView>
       </View>

@@ -152,7 +152,7 @@ var TaskDetail = React.createClass({
     }else{
       <View />
     }
-    if(this.state.status != 0 && !this.state.status){
+    if(this.state.type == 'receive'){
       applybtn.push(
         <View style={styles.applybtn}>
           <TouchableOpacity onPress={this._gotoApplyTask}>
@@ -162,6 +162,8 @@ var TaskDetail = React.createClass({
           </TouchableOpacity>
         </View>
       );
+    }else{
+      applybtn.push(<View />);
     }
     return (
       <View style={styles.container}>
@@ -279,6 +281,7 @@ var TaskDetail = React.createClass({
 var styles = StyleSheet.create({
   container:{
     flex:1,
+    backgroundColor:'#f9f9f9',
   },
   scrollbox:{
     flex:1,
