@@ -4,6 +4,8 @@ import Util from './../utils';
 import ApplyTask from './applytask';
 import Service from './../service';
 import Login from './../user/login';
+import FileDownload from 'react-native-file-download';
+import RNFS from 'react-native-fs';
 import {
   View,
   TextInput,
@@ -15,6 +17,7 @@ import {
   AsyncStorage,
   Dimensions,
   AlertIOS,
+  Clipboard,
 } from 'react-native';
 
 var TaskDetail = React.createClass({
@@ -58,6 +61,8 @@ var TaskDetail = React.createClass({
         }
       ],
       status:1,
+      content: '',
+      imgs:[],
     };
   },
   componentWillMount:function(){
@@ -74,6 +79,8 @@ var TaskDetail = React.createClass({
           taskPhotoList:data.data.response.taskPhotoList,
           status:data.data.response.status,
           taskOrderPhotoList:data.data.response.taskOrderPhotoList,
+          imgs:data.data.response.taskPhotoList,
+          content:data.data.response.task.taskText
         });
       }else{
         AlertIOS.alert('提醒',data.messages[0].message);
@@ -120,6 +127,45 @@ var TaskDetail = React.createClass({
         AlertIOS.alert('提醒',data.messages[0].message);
       }
     });
+  },
+  _copy:function(){
+    Clipboard.setString(this.state.content);
+    try {
+      var content = Clipboard.getString();
+      this.setState({content});
+    } catch (e) {
+      this.setState({content:e.message});
+    }
+  },
+  _download:function(){
+    for(var i=0;i<this.state.imgs.length;i++){
+      var URL = this.state.imgs[i].photoUrl;
+      var DEST = RNFS.DocumentDirectoryPath;
+      var arrs = URL.split('.');
+      var fileName = new Date().getTime()+i*10000+'.'+arrs[arrs.length-1];
+      console.log(fileName);
+      var headers = {
+        'Accept-Language':'zh-CN'
+      };
+      (function(URL,DEST,fileName,headers,n,length){
+        var flag = false;
+        console.log(n,length);
+        if(n==length-1){
+          flag = true;
+        }
+        FileDownload.download(URL, DEST, fileName, headers)
+        .then((response) => {
+          if(flag){
+            Alert.alert('下载成功');
+          }
+          console.log(`downloaded! file saved to: ${response}`)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+      })(URL,DEST,fileName,headers,i,this.state.imgs.length)
+    }
+
   },
   render: function(){
     var zmimgs = [];
@@ -247,8 +293,12 @@ var TaskDetail = React.createClass({
               <View style={styles.bbox}>
                 <Image resizeMode={'contain'} style={styles.bimg} source={{uri:this.state.task.mainPhotoUrl}}></Image>
               </View>
-
             </View>
+            <TouchableOpacity onPress={this._download}>
+              <View style={styles.circle}>
+                <Image resizeMode={'contain'} style={styles.circleimg} source={require('image!download')}></Image>
+              </View>
+            </TouchableOpacity>
           </View>
           <View style={styles.beizhu}>
             <View style={styles.bz_header}>
@@ -262,6 +312,11 @@ var TaskDetail = React.createClass({
                 {'\t'}{this.state.task.taskText}
               </Text>
             </View>
+            <TouchableOpacity onPress={this._copy}>
+              <View style={styles.circle}>
+                <Image resizeMode={'contain'} style={styles.circleimg} source={require('image!copy')}></Image>
+              </View>
+            </TouchableOpacity>
           </View>
           <View style={styles.applynum}>
             <Image resizeMode={'contain'} style={styles.faces} source={require('image!apply_num')}></Image>
@@ -494,6 +549,16 @@ var styles = StyleSheet.create({
     justifyContent:'center',
     width:(Dimensions.get('window').width-30)/4,
     height:(Dimensions.get('window').width-30)/4,
+  },
+  circle:{
+    flex:1,
+    alignItems:'center',
+    justifyContent:'center',
+    marginBottom:20,
+  },
+  circleimg:{
+    width:60,
+    height:60,
   }
 });
 
