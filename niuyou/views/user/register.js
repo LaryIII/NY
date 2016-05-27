@@ -102,6 +102,8 @@ var Register = React.createClass({
             that.setState({open: true,offset:150,verifycodeimg:verifyCodeImg,mobile:mobile,token:token});
           }
         });
+      }else if(data.code == 200 && !data.data.response){
+        AlertIOS.alert('提醒','该手机号已注册');
       }else{
         AlertIOS.alert('提醒',data.messages[0].message);
       }

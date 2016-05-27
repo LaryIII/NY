@@ -9,6 +9,7 @@ import GiftedSpinner from 'react-native-gifted-spinner';
 import CameraPicker from './camerapicker';
 import qiniu from 'react-native-qiniu';
 import moment from 'moment';
+import Modal from 'react-native-simple-modal';
 
 var EventEmitter = require('EventEmitter');
 var Subscribable = require('Subscribable');
@@ -23,12 +24,15 @@ import {
   Dimensions,
   TouchableOpacity,
   ListView,
+  ActivityIndicatorIOS,
 } from 'react-native';
 // 任务状态:0接单；1待确认；2通过；3驳回；4失效
 var Tasking = React.createClass({
   mixins: [Subscribable.Mixin],
   getInitialState: function(){
     return {
+      open: false,
+      offset:150,
       zmimgs:[],
       uploaded:0,
     };
@@ -41,6 +45,9 @@ var Tasking = React.createClass({
     this.addListenerOn(this.eventEmitter, 'upload_imgs2',  function(args){
       console.log('upload_imgs2');
       //upload file to Qiniu
+      that.setState({
+        open:true,
+      });
       for(var i=0;i<args.images.length;i++){
         (function(img,taskId){
           Util.get(Service.host + Service.getToken, {bucketName:'ny-task-photo'}, function(data){
@@ -72,6 +79,9 @@ var Tasking = React.createClass({
                        });
                        if(that.state.uploaded == that.state.zmimgs.length){
                          // 保存完毕之后提交认证
+                         that.setState({
+                           open:false,
+                         })
                          Util.get(Service.host + Service.sureOrder, {
                            taskId:taskId
                          }, function(data){
@@ -362,6 +372,18 @@ _renderSeparatorView() {
           progressBackgroundColor: '#003e82',
         }}
       />
+      <Modal
+         offset={this.state.offset}
+         open={this.state.open}
+         modalDidOpen={() => console.log('modal did open')}
+         modalDidClose={() => undefined}
+         style={{alignItems: 'center'}}
+         overlayOpacity={0.3}>
+         <View style={styles.modalbox}>
+            <ActivityIndicatorIOS style={styles.modalindicator} color="#999" />
+            <Text style={styles.modaltext}>正在上传图片...</Text>
+         </View>
+      </Modal>
       </View>
     );
   },
@@ -581,6 +603,20 @@ var customStyles = {
   headerTitle: {
     color: '#fff',
   },
+  modalbox:{
+    flex:1,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+    width:Dimensions.get('window').width-70,
+  },
+  modalindicator:{
+    marginRight:15,
+  },
+  modaltext:{
+    color:'#666',
+    fontSize:15,
+  }
 };
 
 

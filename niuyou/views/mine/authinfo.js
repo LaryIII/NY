@@ -7,6 +7,7 @@ import Authinfo2 from './authinfo2';
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
 // import ImagePickerManager from 'react-native-image-picker';
 import qiniu from 'react-native-qiniu';
+import Modal from 'react-native-simple-modal';
 import {
   View,
   TextInput,
@@ -18,12 +19,15 @@ import {
   AsyncStorage,
   Dimensions,
   AlertIOS,
+  ActivityIndicatorIOS,
 } from 'react-native';
 
 var Authinfo = React.createClass({
   getInitialState: function(){
     return {
-      shengfenphoto:require('image!backo')
+      open: false,
+      offset:150,
+      shengfenphoto:require('image!backo'),
     };
   },
   _gotoAuthinfo2: function(){
@@ -113,6 +117,9 @@ var Authinfo = React.createClass({
         // const source = {uri: response.uri, isStatic: true};
 
         //upload file to Qiniu
+        that.setState({
+          open:true,
+        });
         Util.get(Service.host + Service.getToken, {bucketName:'ny-personal-photo'}, function(data){
           console.log(data);
           if(data.code == 200){
@@ -125,7 +132,8 @@ var Authinfo = React.createClass({
                console.log(resp);
                if(resp.status == 200 && resp.ok == true){
                  that.setState({
-                   shengfenphoto: {uri:url}
+                   shengfenphoto: {uri:url},
+                   open:false,
                  });
                }
             });
@@ -183,6 +191,18 @@ var Authinfo = React.createClass({
           </View>
         </TouchableOpacity>
       </View>
+      <Modal
+         offset={this.state.offset}
+         open={this.state.open}
+         modalDidOpen={() => console.log('modal did open')}
+         modalDidClose={() => undefined}
+         style={{alignItems: 'center'}}
+         overlayOpacity={0.3}>
+         <View style={styles.modalbox}>
+            <ActivityIndicatorIOS style={styles.modalindicator} color="#999" />
+            <Text style={styles.modaltext}>正在上传图片...</Text>
+         </View>
+      </Modal>
       </View>
     );
   },
@@ -302,6 +322,20 @@ var styles = StyleSheet.create({
   bluebtntext:{
     color:'#fff',
     fontSize:17,
+  },
+  modalbox:{
+    flex:1,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+    width:Dimensions.get('window').width-70,
+  },
+  modalindicator:{
+    marginRight:15,
+  },
+  modaltext:{
+    color:'#666',
+    fontSize:15,
   }
 });
 

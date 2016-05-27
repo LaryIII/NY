@@ -5,6 +5,7 @@ import Util from './../utils';
 import Service from './../service';
 import CameraPicker from './camerapicker';
 import qiniu from 'react-native-qiniu';
+import Modal from 'react-native-simple-modal';
 
 var EventEmitter = require('EventEmitter');
 var Subscribable = require('Subscribable');
@@ -22,14 +23,18 @@ import {
   AsyncStorage,
   Dimensions,
   AlertIOS,
+  ActivityIndicatorIOS,
 } from 'react-native';
 
 var Authinfo3 = React.createClass({
   mixins: [Subscribable.Mixin],
   getInitialState: function(){
     return {
+      open: false,
+      offset:150,
       lifeimgs:[],
       uploaded:0,
+      imguploaded:0,
     };
   },
   componentWillMount:function(){
@@ -40,6 +45,9 @@ var Authinfo3 = React.createClass({
     this.addListenerOn(this.eventEmitter, 'upload_imgs',  function(imgs){
       console.log('upload_imgs');
       //upload file to Qiniu
+      that.setState({
+        open:true,
+      });
       for(var i=0;i<imgs.length;i++){
         (function(img){
           Util.get(Service.host + Service.getToken, {bucketName:'ny-personal-photo'}, function(data){
@@ -54,8 +62,19 @@ var Authinfo3 = React.createClass({
                  if(resp.status == 200 && resp.ok == true){
                    that.state.lifeimgs.push({uri:url});
                    that.setState({
-                     lifeimgs: that.state.lifeimgs
+                     lifeimgs: that.state.lifeimgs,
                    });
+                   var num = that.state.imguploaded;
+                   num = num+1;
+                   console.log(num);
+                   that.setState({
+                     imguploaded:num,
+                   });
+                   if(that.state.imguploaded == that.state.lifeimgs.length){
+                     that.setState({
+                       open:false,
+                     });
+                   }
                  }
               });
             }else{
@@ -210,6 +229,18 @@ var Authinfo3 = React.createClass({
           </View>
         </TouchableOpacity>
       </View>
+      <Modal
+         offset={this.state.offset}
+         open={this.state.open}
+         modalDidOpen={() => console.log('modal did open')}
+         modalDidClose={() => undefined}
+         style={{alignItems: 'center'}}
+         overlayOpacity={0.3}>
+         <View style={styles.modalbox}>
+            <ActivityIndicatorIOS style={styles.modalindicator} color="#999" />
+            <Text style={styles.modaltext}>正在上传图片...</Text>
+         </View>
+      </Modal>
       </View>
     );
   },
@@ -358,6 +389,20 @@ var styles = StyleSheet.create({
   },
   delimg:{
     color:'#f02626',
+    fontSize:15,
+  },
+  modalbox:{
+    flex:1,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+    width:Dimensions.get('window').width-70,
+  },
+  modalindicator:{
+    marginRight:15,
+  },
+  modaltext:{
+    color:'#666',
     fontSize:15,
   }
 });

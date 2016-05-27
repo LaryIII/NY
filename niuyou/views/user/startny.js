@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import Util from './../utils';
 import Service from './../service';
+import Modal from 'react-native-simple-modal';
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
 // import ImagePickerManager from 'react-native-image-picker';
 import qiniu from 'react-native-qiniu';
@@ -19,11 +20,14 @@ import {
   AsyncStorage,
   Dimensions,
   AlertIOS,
+  ActivityIndicatorIOS,
 } from 'react-native';
 
 var Startny = React.createClass({
   getInitialState: function(){
     return {
+      open: false,
+      offset:150,
       avatarurl:require('image!paishe'),
       nanstatus:'#333',
       nvstatus:'#999',
@@ -90,6 +94,9 @@ var Startny = React.createClass({
         // const source = {uri: response.uri, isStatic: true};
 
         //upload file to Qiniu
+        that.setState({
+          open:true,
+        });
         Util.get(Service.host + Service.getToken, {bucketName:'ny-personal-photo'}, function(data){
           console.log(data);
           if(data.code == 200){
@@ -104,7 +111,8 @@ var Startny = React.createClass({
                  // 存到全局变量，因为没有接口获取
                  AsyncStorage.setItem('avatarurl', url,function(err){})
                  that.setState({
-                   avatarurl: {uri:url}
+                   avatarurl: {uri:url},
+                   open:false,
                  });
                }
             });
@@ -250,6 +258,18 @@ var Startny = React.createClass({
               </View>
           </TouchableOpacity>
         </View>
+        <Modal
+           offset={this.state.offset}
+           open={this.state.open}
+           modalDidOpen={() => console.log('modal did open')}
+           modalDidClose={() => undefined}
+           style={{alignItems: 'center'}}
+           overlayOpacity={0.3}>
+           <View style={styles.modalbox}>
+              <ActivityIndicatorIOS style={styles.modalindicator} color="#999" />
+              <Text style={styles.modaltext}>正在上传图片...</Text>
+           </View>
+        </Modal>
       </ScrollView>
     );
   },
@@ -382,6 +402,20 @@ var styles = StyleSheet.create({
   },
   selectsexnvtext:{
     color:'#333',
+    fontSize:15,
+  },
+  modalbox:{
+    flex:1,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+    width:Dimensions.get('window').width-70,
+  },
+  modalindicator:{
+    marginRight:15,
+  },
+  modaltext:{
+    color:'#666',
     fontSize:15,
   }
 });
