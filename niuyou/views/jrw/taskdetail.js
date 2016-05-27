@@ -65,6 +65,7 @@ var TaskDetail = React.createClass({
       content: '',
       imgs:[],
       displayimgs:[],
+      scrollbottom:60,
     };
   },
   componentWillMount:function(){
@@ -210,12 +211,15 @@ var TaskDetail = React.createClass({
           </TouchableOpacity>
         </View>
       );
+      this.setState({
+        scrollbottom:135,
+      });
     }else{
       applybtn.push(<View />);
     }
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.scrollbox}>
+        <ScrollView style={[styles.scrollbox,{marginBottom:this.state.scrollbottom}]}>
           <View style={styles.header}>
             <Image resizeMode={'contain'} style={styles.faces} source={require('./../../res/mine/pic_wo_moren@3x.png')}></Image>
             <Text style={styles.facesname}>{this.state.merchantInfoDto.merchantName}</Text>
