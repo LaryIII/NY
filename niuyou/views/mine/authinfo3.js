@@ -33,6 +33,7 @@ var Authinfo3 = React.createClass({
       open: false,
       offset:150,
       lifeimgs:[],
+      displaylifeimgs:[],
       uploaded:0,
       imguploaded:0,
     };
@@ -61,8 +62,10 @@ var Authinfo3 = React.createClass({
                  console.log(url);
                  if(resp.status == 200 && resp.ok == true){
                    that.state.lifeimgs.push({uri:url});
+                   that.state.displaylifeimgs.push({uri:url+'?imageView2/1/w/170/h/170'});
                    that.setState({
                      lifeimgs: that.state.lifeimgs,
+                     displaylifeimgs:that.state.displaylifeimgs,
                    });
                    var num = that.state.imguploaded;
                    num = num+1;
@@ -150,24 +153,31 @@ var Authinfo3 = React.createClass({
   },
   _delimg:function(n){
     var temp = [];
+    var displaytemp = [];
     for(var i=0;i<this.state.lifeimgs.length;i++){
       if(i!=n){
         temp.push(this.state.lifeimgs[i]);
       }
     }
+    for(var i=0;i<this.state.displaylifeimgs.length;i++){
+      if(i!=n){
+        displaytemp.push(this.state.displaylifeimgs[i]);
+      }
+    }
     this.setState({
       lifeimgs:temp,
+      displaylifeimgs:displaytemp,
     });
   },
   render: function(){
     var that = this;
     var mylifeimgdom = [];
-    if(this.state.lifeimgs.length>0){
-      for(var i=0;i<this.state.lifeimgs.length;i++){
+    if(this.state.displaylifeimgs.length>0){
+      for(var i=0;i<this.state.displaylifeimgs.length;i++){
         (function(n){
           mylifeimgdom.push(
             <View style={styles.uploadimg}>
-              <Image resizeMode={'contain'} style={styles.upimg} source={that.state.lifeimgs[i]}></Image>
+              <Image resizeMode={'contain'} style={styles.upimg} source={that.state.displaylifeimgs[i]}></Image>
               <TouchableOpacity onPress={()=>that._delimg(n)}>
                 <Text style={styles.delimg}>删除</Text>
               </TouchableOpacity>

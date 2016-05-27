@@ -269,7 +269,7 @@ var SelectCity = React.createClass({
                 // backButtonIcon: require('image!back'),
                 // leftButtonTitle: "返回",
                 leftButtonIcon:require('image!back1'),
-                onLeftButtonPress: ()=>this.props.navigator.pop(),
+                onLeftButtonPress: ()=>that.props.navigator.pop(),
               });
             }else{
               AlertIOS.alert('提醒',data.messages[0].message);

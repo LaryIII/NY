@@ -64,6 +64,7 @@ var TaskDetail = React.createClass({
       status:1,
       content: '',
       imgs:[],
+      displayimgs:[],
     };
   },
   componentWillMount:function(){
@@ -178,7 +179,7 @@ var TaskDetail = React.createClass({
       for(var i=0; i< 5;i++){
         // TODO:做四行，用justifyContent: 'space-around',
         imgs.push(
-          <Image resizeMode={'contain'} style={styles.zmimg} source={{uri:this.state.taskOrderPhotoList[0].photoUrl}}></Image>
+          <Image resizeMode={'contain'} style={styles.zmimg} source={{uri:this.state.taskOrderPhotoList[0].photoUrl+'?imageView2/1/w/170/h/170'}}></Image>
         );
       }
       zmimgs.push(
