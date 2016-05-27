@@ -18,6 +18,11 @@ import {
 } from 'react-native';
 
 var Login = React.createClass({
+  getInitialState: function(){
+    return {
+      isLoading:false,
+    };
+  },
   _gotoRegister: function(){
     this.props.navigator.push({
       title: '注册新用户',
@@ -63,6 +68,9 @@ var Login = React.createClass({
       }else{
         AlertIOS.alert('提醒',data.messages[0].message);
       }
+      that.setState({
+        isLoading:false
+      });
     });
   },
   render: function(){
@@ -132,6 +140,7 @@ var Login = React.createClass({
           />
           <GiftedForm.SubmitWidget
             title='登录'
+            isLoading={this.state.isLoading}
             widgetStyles={{
               submitButton: {
                 backgroundColor: '#51a7ff',
@@ -145,7 +154,6 @@ var Login = React.createClass({
               }
             }}
           />
-          <GiftedForm.HiddenWidget name='tos' value={true} />
         </GiftedForm>
         </View>
         <View style={styles.btns}>

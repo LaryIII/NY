@@ -26,6 +26,7 @@ var Findback = React.createClass({
       verifycodeimg:'',
       mobile:'',
       token:'',
+      isLoading:false,
     };
   },
   _gotoStartny:function(){
@@ -66,7 +67,9 @@ var Findback = React.createClass({
       }else{
         AlertIOS.alert('提醒',data.messages[0].message);
       }
-
+      that.setState({
+        isLoading:false
+      });
     });
   },
   _checkMobile:function(){
@@ -229,6 +232,7 @@ var Findback = React.createClass({
           />
           <GiftedForm.SubmitWidget
             title='注册'
+            isLoading = {this.state.isLoading}
             widgetStyles={{
               submitButton: {
                 backgroundColor: '#51a7ff',

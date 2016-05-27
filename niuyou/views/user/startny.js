@@ -29,6 +29,7 @@ var Startny = React.createClass({
       nvstatus:'#999',
       nickname:'',
       gender:1, // 1是男，2是女
+      isLoading:false,
     };
   },
   _uploadAvatar:function(){
@@ -149,6 +150,9 @@ var Startny = React.createClass({
       }else{
         AlertIOS.alert('提醒',data.messages[0].message);
       }
+      that.setState({
+        isLoading:false
+      });
     });
   },
   _onChange: function(val){
@@ -216,6 +220,7 @@ var Startny = React.createClass({
           </View>
           <GiftedForm.SubmitWidget
             title='完成'
+            isLoading = {this.state.isLoading}
             widgetStyles={{
               submitButton: {
                 backgroundColor: '#51a7ff',

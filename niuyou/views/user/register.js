@@ -29,6 +29,7 @@ var Register = React.createClass({
       veritext:'验证',
       verinum:60,
       veribgcolor:'#eedd1b',
+      isLoading:false,
     };
   },
   _gotoStartny:function(){
@@ -71,6 +72,9 @@ var Register = React.createClass({
       }else{
         AlertIOS.alert('提醒',data.messages[0].message);
       }
+      that.setState({
+        isLoading:false
+      });
 
     });
   },
@@ -258,6 +262,7 @@ var Register = React.createClass({
           />
           <GiftedForm.SubmitWidget
             title='注册'
+            isLoading = {this.state.isLoading}
             widgetStyles={{
               submitButton: {
                 backgroundColor: '#51a7ff',
