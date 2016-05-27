@@ -201,10 +201,10 @@ var Authinfo3 = React.createClass({
           </View>
           <View style={styles.bz_content3}>
             <View style={styles.zmimgs}>
-              <Image resizeMode={'contain'} style={styles.zmimg} source={require('./../../res/mine/pic_wo_sl1@2x.png')}></Image>
-              <Image resizeMode={'contain'} style={styles.zmimg} source={require('./../../res/mine/pic_wo_sl1@2x.png')}></Image>
-              <Image resizeMode={'contain'} style={styles.zmimg} source={require('./../../res/mine/pic_wo_sl1@2x.png')}></Image>
-              <Image resizeMode={'contain'} style={styles.zmimg} source={require('./../../res/mine/pic_wo_sl1@2x.png')}></Image>
+              <Image resizeMode={'contain'} style={styles.zmimg} source={require('./../../res/mine/lifeimg1.jpg')}></Image>
+              <Image resizeMode={'contain'} style={styles.zmimg} source={require('./../../res/mine/lifeimg2.jpg')}></Image>
+              <Image resizeMode={'contain'} style={styles.zmimg} source={require('./../../res/mine/lifeimg3.jpg')}></Image>
+              <Image resizeMode={'contain'} style={styles.zmimg} source={require('./../../res/mine/lifeimg4.jpg')}></Image>
             </View>
           </View>
         </View>
