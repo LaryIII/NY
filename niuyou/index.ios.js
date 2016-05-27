@@ -5,6 +5,8 @@ import Home from './views/home';
 import Jrw from './views/jrw';
 import Phb from './views/phb';
 import Mine from './views/mine';
+import Util from './views/utils';
+import Service from './views/service';
 import {
   AppRegistry,
   StyleSheet,
@@ -13,6 +15,7 @@ import {
   View,
   Image,
   NavigatorIOS,
+  AsyncStorage,
 } from 'react-native';
 
 var niuyou = React.createClass({
@@ -32,6 +35,25 @@ var niuyou = React.createClass({
 
       }
     };
+  },
+  componentDidMount:function(){
+    this._checkSSO();
+  },
+  _checkSSO:function(){
+    var that = this;
+    Util.get(Service.host + Service.checkSSO, {}, function(data){
+      console.log(data);
+      if(data.code == 200){
+        if(data.data.response.ok){
+          // 表示sessionKey没有过期
+        }else{
+          // 表示sessionKey已过期，清除旧的sessionKey
+          AsyncStorage.setItem('userinfo','',function(err){})
+        }
+      }else{
+
+      }
+    });
   },
 
   _renderContent: function(color: string, pageText: string, num?: number) {
