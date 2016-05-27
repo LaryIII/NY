@@ -160,7 +160,7 @@ var Authinfo2 = React.createClass({
           </View>
           <View style={styles.bz_content2}>
             <View style={styles.bbox}>
-              <Image resizeMode={'contain'} style={styles.bimg} source={require('./../../res/mine/pic_wo_sl1@2x.png')}></Image>
+              <Image resizeMode={'contain'} style={styles.bimg} source={require('./../../res/mine/contactnum_min.png')}></Image>
             </View>
           </View>
           <TouchableOpacity onPress={this._uploadImg}>
