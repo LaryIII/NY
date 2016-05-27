@@ -6,6 +6,7 @@ import Service from './../service';
 import Login from './../user/login';
 import FileDownload from 'react-native-file-download';
 import RNFS from 'react-native-fs';
+import moment from 'moment';
 import {
   View,
   TextInput,
@@ -244,7 +245,7 @@ var TaskDetail = React.createClass({
                   <Text style={{color:'#333'}}>有效时间</Text>
                 </View>
                 <View style={styles.pictext}>
-                  <Text style={styles.fourtext}><Text style={styles.em2}>{this.state.task.showBeginTime}--{this.state.task.showEndTime}</Text></Text>
+                  <Text style={styles.fourtext}><Text style={styles.em2}>{moment(this.state.task.showBeginTime).format('YYYY/MM/DD')}--{moment(this.state.task.showEndTime).format('YYYY/MM/DD')}</Text></Text>
                 </View>
               </View>
             </View>
@@ -421,7 +422,7 @@ var styles = StyleSheet.create({
   },
   fourtext:{
     color:'#333',
-    fontSize:15,
+    fontSize:13,
   },
   em1:{
     color:'#ffc039',

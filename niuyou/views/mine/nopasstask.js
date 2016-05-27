@@ -52,13 +52,13 @@ var NoPassTask = React.createClass({
         <View style={styles.item}>
           <Image resizeMode={'contain'} style={styles.itemimg} source={require('./../../res/home/banner.jpg')}></Image>
           <View style={styles.itemtext}>
-            <Image resizeMode={'contain'} style={styles.avater} source={require('./../../res/paihang/ico_ph_nv@3x.png')}></Image>
-            <Text style={styles.avatername}>窦窦</Text>
-            <Text style={styles.statusx}>截止日期: 2016-03-15 18:00</Text>
-            <Text style={styles.itemtitle}>丽江一米阳光宾馆照片转发朋友圈任务</Text>
-            <Text style={styles.itemprice}>36.0元/次</Text>
+            <Image resizeMode={'contain'} style={styles.avater} source={genderimg}></Image>
+            <Text style={styles.avatername}>{rowData.merchantName}</Text>
+            <Text style={styles.statusx}>截止日期: {moment(rowData.showEndTime).format('YYYY-MM-DD HH:mm')}</Text>
+            <Text style={styles.itemtitle}>{rowData.taskName}</Text>
+            <Text style={styles.itemprice}>{rowData.price}元/次</Text>
             <View style={styles.statusbtn}>
-              <Text style={styles.statustext}>未能在规定时间内完成任务</Text>
+              <Text style={styles.statustext}>{rowData.noPassReason}</Text>
             </View>
           </View>
         </View>

@@ -8,6 +8,7 @@ import GiftedListView from 'react-native-gifted-listview';
 import GiftedSpinner from 'react-native-gifted-spinner';
 import CameraPicker from './camerapicker';
 import qiniu from 'react-native-qiniu';
+import moment from 'moment';
 
 var EventEmitter = require('EventEmitter');
 var Subscribable = require('Subscribable');
@@ -184,7 +185,7 @@ var Tasking = React.createClass({
           <View style={styles.itemtext}>
             <Image resizeMode={'contain'} style={styles.avater} source={genderimg}></Image>
             <Text style={styles.avatername}>{rowData.merchantName}</Text>
-            <Text style={styles.statusx}>{rowData.taskEndTime}</Text>
+            <Text style={styles.statusx}>{moment(rowData.taskEndTime).format('YYYY-MM-DD HH:mm')}</Text>
             <Text style={styles.itemtitle}>{rowData.taskName}</Text>
             <Text style={styles.itemprice}>{rowData.price}元/次</Text>
             {btndom}

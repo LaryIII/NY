@@ -6,6 +6,7 @@
     "start": "react-native start"
   },
   "dependencies": {
+    "moment": "^2.13.0",
     "react": "^0.14.8",
     "react-native": "^0.25.1",
     "react-native-camera-roll-picker": "^1.0.8",

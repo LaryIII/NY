@@ -5,6 +5,7 @@ import Util from './utils';
 import Service from './service';
 import GiftedListView from 'react-native-gifted-listview';
 import GiftedSpinner from 'react-native-gifted-spinner';
+import moment from 'moment';
 import {
   View,
   Text,
@@ -58,7 +59,7 @@ var AllTask = React.createClass({
             <Text style={styles.itemtitle}>{rowData.taskName}</Text>
             <Text style={styles.itemprice}>{rowData.price}元/次  性别限制:{rowData.gender==1?'男':'女'}</Text>
             <Text style={styles.itemdesc}>地区限制:{rowData.publicCity}</Text>
-            <Text style={styles.itemdesc}>{rowData.showEndTime}</Text>
+            <Text style={styles.itemdesc}>{moment(rowData.showEndTime).format('YYYY-MM-DD HH:mm')}</Text>
             <Text style={styles.itemnum}>已接受任务自媒体：<Text style={styles.em}>{rowData.peopleNum}人</Text></Text>
           </View>
         </View>
