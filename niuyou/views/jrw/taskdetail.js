@@ -175,7 +175,7 @@ var TaskDetail = React.createClass({
     var imgs = [];
     var applybtn = [];
     var shareimgs = [];
-
+    var stars = [];
     // 这边搞错了，taskPhotoList是用户需要分享的图片，而不是证明图片
     if(this.state.taskOrderPhotoList && this.state.taskOrderPhotoList.length>0){
       for(var i=0; i< 5;i++){
@@ -228,6 +228,20 @@ var TaskDetail = React.createClass({
     }else{
       shareimgs.push(<View />);
     }
+
+    if(this.state.merchantInfoDto.merchantLevel){
+      for(var i=0;i<5;i++){
+        if(i<this.state.merchantInfoDto.merchantLevel){
+          stars.push(
+            <Image resizeMode={'contain'} style={styles.star} source={require('image!star_active')}></Image>
+          );
+        }else{
+          stars.push(
+            <Image resizeMode={'contain'} style={styles.star} source={require('image!star_gray')}></Image>
+          );
+        }
+      }
+    }
     return (
       <View style={styles.container}>
         <ScrollView style={[styles.scrollbox,{marginBottom:this.state.scrollbottom}]}>
@@ -236,11 +250,7 @@ var TaskDetail = React.createClass({
             <Text style={styles.facesname}>{this.state.merchantInfoDto.merchantName}</Text>
             <View style={styles.stars}>
               <View style={styles.starscontainer}>
-                <Image resizeMode={'contain'} style={styles.star} source={require('image!star_active')}></Image>
-                <Image resizeMode={'contain'} style={styles.star} source={require('image!star_active')}></Image>
-                <Image resizeMode={'contain'} style={styles.star} source={require('image!star_active')}></Image>
-                <Image resizeMode={'contain'} style={styles.star} source={require('image!star_active')}></Image>
-                <Image resizeMode={'contain'} style={styles.star} source={require('image!star_gray')}></Image>
+                {stars}
               </View>
             </View>
           </View>
