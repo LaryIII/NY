@@ -29,10 +29,10 @@ var Startny = React.createClass({
       open: false,
       offset:150,
       avatarurl:require('image!paishe'),
-      nanstatus:'#333',
-      nvstatus:'#999',
+      nanstatus:'#999',
+      nvstatus:'#333',
       nickname:'',
-      gender:1, // 1是男，2是女
+      gender:2, // 1是男，2是女
       isLoading:false,
     };
   },
@@ -147,7 +147,7 @@ var Startny = React.createClass({
   _saveBasicInfo:function(nickname,gender){
     var that = this;
     Util.get(Service.host + Service.saveBasicInfo, {
-      photoUrl:this.state.avatarurl.uri,
+      photoUrl:this.state.avatarurl.uri?this.state.avatarurl.uri:'',
       name:nickname,
       gender:this.state.gender,
     }, function(data){
