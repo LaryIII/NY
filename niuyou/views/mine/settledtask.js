@@ -49,7 +49,7 @@ var SettledTask = React.createClass({
     return (
       <TouchableOpacity onPress={()=>this.props.onRowPress(rowData.taskId)}>
         <View style={styles.item}>
-          <Image resizeMode={'contain'} style={styles.itemimg} source={require('./../../res/home/banner.jpg')}></Image>
+          <Image resizeMode={'contain'} style={styles.itemimg} source={{uri:rowData.mainPhotoUrl+'?imageView2/1/w/1280/h/720'}}></Image>
           <View style={styles.itemtext}>
             <Image resizeMode={'contain'} style={styles.avater} source={genderimg}></Image>
             <Text style={styles.avatername}>{rowData.merchantName}</Text>
@@ -276,6 +276,10 @@ var styles = StyleSheet.create({
     height:180,
     marginTop:15,
     alignItems:'center',
+    backgroundColor:'#eee',
+    borderRadius:4,
+    marginLeft:15,
+    marginRight:15,
   },
   itemtext:{
     position:'absolute',
@@ -289,6 +293,8 @@ var styles = StyleSheet.create({
   itemimg:{
     flex:1,
     borderRadius:4,
+    width:Dimensions.get('window').width - 30,
+    height:180,
   },
   itemtitle:{
     fontSize:15,

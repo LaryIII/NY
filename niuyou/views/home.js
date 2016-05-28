@@ -186,9 +186,10 @@ var Home = React.createClass({
     if(this.state.adList && this.state.adList.length>0){
       for(var i=0;i<this.state.adList.length;i++){
         var url = this.state.adList[i].imgUrl;
+        console.log(url+'?imageView2/1/w/1280/h/720');
         slides.push(
           <View style={styles.slide1}>
-            <Image resizeMode={'contain'} style={styles.banner} source={require('./../res/home/banner.jpg')}></Image>
+            <Image resizeMode={'contain'} style={styles.banner} source={{uri:url+'?imageView2/1/w/1280/h/720'}}></Image>
           </View>
         );
       }
@@ -239,11 +240,11 @@ var Home = React.createClass({
     return (
       <TouchableOpacity underlayColor="transparent">
           <View style={styles.item}>
-            <Image resizeMode={'contain'} style={styles.itemimg} source={require('./../res/home/banner.jpg')}></Image>
+            <Image resizeMode={'contain'} style={styles.itemimg} source={{uri:rowData.mainPhotoUrl+'?imageView2/5/w/1280/h/720'}}></Image>
             <View style={styles.itemtext}>
-              <Text style={styles.itemtitle}>丽江一米阳光宾馆照片转发朋友圈任务</Text>
-              <Text style={styles.itemprice}>30元/次</Text>
-              <Text style={styles.itemnum}>已接受任务自媒体：<Text style={styles.em}>132人</Text></Text>
+              <Text style={styles.itemtitle}>{rowData.taskName}</Text>
+              <Text style={styles.itemprice}>{rowData.price}元/次</Text>
+              <Text style={styles.itemnum}>已接受任务自媒体：<Text style={styles.em}>{rowData.orderPeopleNum}人</Text></Text>
             </View>
           </View>
       </TouchableOpacity>
@@ -304,6 +305,8 @@ var styles = StyleSheet.create({
   banner:{
     flex:1,
     borderRadius:4,
+    width:Dimensions.get('window').width-30,
+    height:180,
   },
   wrapper: {
     height:180,
@@ -366,6 +369,8 @@ var styles = StyleSheet.create({
     height:180,
     marginTop:15,
     alignItems:'center',
+    backgroundColor:'#eee',
+    borderRadius:4,
   },
   itemtext:{
     position:'absolute',
@@ -379,6 +384,8 @@ var styles = StyleSheet.create({
   itemimg:{
     flex:1,
     borderRadius:4,
+    width:Dimensions.get('window').width - 30,
+    height:180,
   },
   itemtitle:{
     fontSize:15,
