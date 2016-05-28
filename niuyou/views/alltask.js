@@ -14,6 +14,7 @@ import {
   Dimensions,
   TouchableOpacity,
   ListView,
+  TouchableHighlight,
 } from 'react-native';
 
 var AllTask = React.createClass({
@@ -24,7 +25,10 @@ var AllTask = React.createClass({
     };
   },
   _onFetch(page = 1, callback, options) {
-    Util.get(Service.host + Service.taskList, {}, function(data){
+    Util.get(Service.host + Service.taskList, {
+      pageNo:page-1,
+      pageSize:10,
+    }, function(data){
       console.log(data);
       if(data.code == 200){
         var rows = data.data.response.taskList;
@@ -83,7 +87,7 @@ _renderRefreshableWaitingView(refreshCallback) {
   } else {
     return (
       <TouchableHighlight
-        underlayColor='#c8c7cc'
+        underlayColor='#fff'
         onPress={refreshCallback}
         style={customStyles.refreshableView}
       >
@@ -127,12 +131,12 @@ _renderRefreshableFetchingView() {
 _renderPaginationWaitingView(paginateCallback) {
   return (
     <TouchableHighlight
-      underlayColor='#c8c7cc'
+      underlayColor='#fff'
       onPress={paginateCallback}
       style={customStyles.paginationView}
     >
       <Text style={[customStyles.actionsLabel, {fontSize: 13}]}>
-        Load more
+        加载更多
       </Text>
     </TouchableHighlight>
   );
@@ -174,7 +178,7 @@ _renderEmptyView(refreshCallback) {
       </Text>
 
       <TouchableHighlight
-        underlayColor='#c8c7cc'
+        underlayColor='#fff'
         onPress={refreshCallback}
       >
         <Text>
@@ -229,7 +233,7 @@ _renderSeparatorView() {
 
         renderSeparator={this._renderSeparatorView}
         PullToRefreshViewAndroidProps={{
-          colors: ['#efefef'],
+          colors: ['#fff'],
           progressBackgroundColor: '#003e82',
         }}
         {...this.props}
@@ -250,7 +254,8 @@ var styles = StyleSheet.create({
     backgroundColor:'#fff',
   },
   innercontainer:{
-    flex:1,
+    // flex:1,
+    paddingBottom:60,
   },
   itemRow:{
     flexDirection:'row',
@@ -385,34 +390,36 @@ var styles = StyleSheet.create({
 });
 var customStyles = {
   separator: {
-    height: 1,
+    // height: 1,
     // backgroundColor: '#efefef',
   },
   spinner:{
-    // backgroundColor:'#efefef',
+    backgroundColor:'#fff',
+    color:'#666',
   },
   refreshableView: {
     height: 50,
-    // backgroundColor: '#efefef',
+    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
   },
   actionsLabel: {
-    fontSize: 20,
+    fontSize: 13,
     color: '#007aff',
   },
   paginationView: {
-    width:(Dimensions.get('window').width-30)/2,
+    width:(Dimensions.get('window').width-30),
+    marginLeft:15,
     height: 44,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: '#efefef',
+    backgroundColor: '#fff',
   },
   defaultView: {
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    // backgroundColor:'#efefef',
+    backgroundColor:'#fff',
   },
   defaultViewTitle: {
     fontSize: 16,
@@ -422,7 +429,7 @@ var customStyles = {
   row: {
     padding: 10,
     height: 44,
-    // backgroundColor:'#efefef',
+    backgroundColor:'#fff',
   },
   header: {
     backgroundColor: '#50a4ff',

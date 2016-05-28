@@ -22,7 +22,10 @@ var SettledTask = React.createClass({
     };
   },
   _onFetch(page = 1, callback, options) {
-    Util.get(Service.host + Service.finishSettleOrderList, {}, function(data){
+    Util.get(Service.host + Service.finishSettleOrderList, {
+      pageNo:page-1,
+      pageSize:10,
+    }, function(data){
       console.log(data);
       if(data.code == 200){
         var rows = data.data.response.list;
@@ -245,7 +248,8 @@ var styles = StyleSheet.create({
     backgroundColor:'#fff',
   },
   innercontainer:{
-    flex:1,
+    // flex:1,
+    paddingBottom:60,
   },
   itemRow:{
     flexDirection:'row',
@@ -397,7 +401,8 @@ var customStyles = {
     color: '#007aff',
   },
   paginationView: {
-    width:(Dimensions.get('window').width-30)/2,
+    width:(Dimensions.get('window').width-30),
+    marginLeft:15,
     height: 44,
     justifyContent: 'center',
     alignItems: 'center',
