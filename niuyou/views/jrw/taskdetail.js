@@ -174,6 +174,7 @@ var TaskDetail = React.createClass({
     var zmimgs = [];
     var imgs = [];
     var applybtn = [];
+    var shareimgs = [];
 
     // 这边搞错了，taskPhotoList是用户需要分享的图片，而不是证明图片
     if(this.state.taskOrderPhotoList && this.state.taskOrderPhotoList.length>0){
@@ -217,11 +218,21 @@ var TaskDetail = React.createClass({
     }else{
       applybtn.push(<View />);
     }
+
+    if(this.state.taskPhotoList && this.state.taskPhotoList.length>0){
+      for(var i=0;i<this.state.taskPhotoList.length; i++){
+        shareimgs.push(
+          <Image resizeMode={'contain'} style={styles.shareimg} source={{uri:this.state.taskPhotoList[i].photoUrl+'?imageView2/1/w/170/h/170'}}></Image>
+        );
+      }
+    }else{
+      shareimgs.push(<View />);
+    }
     return (
       <View style={styles.container}>
         <ScrollView style={[styles.scrollbox,{marginBottom:this.state.scrollbottom}]}>
           <View style={styles.header}>
-            <Image resizeMode={'contain'} style={styles.faces} source={require('./../../res/mine/pic_wo_moren@3x.png')}></Image>
+            <Image resizeMode={'contain'} style={styles.faces} source={{uri:this.state.merchantInfoDto.merchantLogo+'?imageView2/1/w/120/h/120'}}></Image>
             <Text style={styles.facesname}>{this.state.merchantInfoDto.merchantName}</Text>
             <View style={styles.stars}>
               <View style={styles.starscontainer}>
@@ -295,9 +306,9 @@ var TaskDetail = React.createClass({
                 <Text style={styles.box_title_text}>图片</Text>
               </View>
             </View>
-            <View style={styles.bz_content2}>
-              <View style={styles.bbox}>
-                <Image resizeMode={'contain'} style={styles.bimg} source={{uri:this.state.task.mainPhotoUrl}}></Image>
+            <View style={styles.bz_content3}>
+              <View style={styles.shareimgs}>
+                {shareimgs}
               </View>
             </View>
             <TouchableOpacity onPress={this._download}>
@@ -547,8 +558,24 @@ var styles = StyleSheet.create({
     justifyContent: 'space-around',
     flexDirection: 'row',
     flexWrap: 'wrap',
+    marginBottom:10,
   },
   zmimg:{
+    marginRight:1,
+    marginBottom:1,
+    alignItems:'center',
+    justifyContent:'center',
+    width:(Dimensions.get('window').width-30)/4,
+    height:(Dimensions.get('window').width-30)/4,
+  },
+  shareimgs:{
+    flex:1,
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom:10,
+  },
+  shareimg:{
     marginRight:1,
     marginBottom:1,
     alignItems:'center',

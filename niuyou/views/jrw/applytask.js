@@ -72,33 +72,15 @@ var ApplyTask = React.createClass({
   render: function(){
     // 需要增加数量的显示，对照UI
     var imgdom = [];
-    if(this.state.imgs.length>=3){
-      imgdom.push(
-        <View style={styles.bz_content2}>
-        <View style={styles.bbox}>
-          <Image resizeMode={'contain'} style={styles.bimg} source={{uri:this.state.imgs[0].photoUrl}}></Image>
-        </View>
-        <View style={styles.sbox}>
-          <Image resizeMode={'contain'} style={styles.simg} source={{uri:this.state.imgs[1].photoUrl}}></Image>
-          <Image resizeMode={'contain'} style={styles.simg} source={{uri:this.state.imgs[2].photoUrl}}></Image>
-        </View>
-        </View>
-      );
-    }else if(this.state.imgs.length == 2){
-      <View style={styles.bz_content2}>
-      <View style={styles.bbox}>
-        <Image resizeMode={'contain'} style={styles.bimg} source={{uri:this.state.imgs[0].photoUrl}}></Image>
-      </View>
-      <View style={styles.sbox}>
-        <Image resizeMode={'contain'} style={styles.simg} source={{uri:this.state.imgs[1].photoUrl}}></Image>
-      </View>
-      </View>
-    }else if(this.state.imgs.length == 1){
-      <View style={styles.bbox}>
-        <Image resizeMode={'contain'} style={styles.bimg} source={{uri:this.state.imgs[0].photoUrl}}></Image>
-      </View>
+    var shareimgs = [];
+    if(this.state.imgs && this.state.imgs.length>0){
+      for(var i=0;i<this.state.imgs.length; i++){
+        shareimgs.push(
+          <Image resizeMode={'contain'} style={styles.shareimg} source={{uri:this.state.imgs[i].photoUrl+'?imageView2/1/w/170/h/170'}}></Image>
+        );
+      }
     }else{
-      <View style={styles.bz_content2}></View>
+      shareimgs.push(<View />);
     }
     return (
       <ScrollView style={styles.container}>
@@ -113,7 +95,11 @@ var ApplyTask = React.createClass({
               <Text style={styles.box_title_text}>图片</Text>
             </View>
           </View>
-          {imgdom}
+          <View style={styles.bz_content3}>
+            <View style={styles.shareimgs}>
+              {shareimgs}
+            </View>
+          </View>
           <TouchableOpacity onPress={this._download}>
             <View style={styles.circle}>
               <Image resizeMode={'contain'} style={styles.circleimg} source={require('image!download')}></Image>
@@ -243,7 +229,22 @@ var styles = StyleSheet.create({
   circleimg:{
     width:60,
     height:60,
-  }
+  },
+  shareimgs:{
+    flex:1,
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom:10,
+  },
+  shareimg:{
+    marginRight:1,
+    marginBottom:1,
+    alignItems:'center',
+    justifyContent:'center',
+    width:(Dimensions.get('window').width-30)/4,
+    height:(Dimensions.get('window').width-30)/4,
+  },
 });
 
 module.exports = ApplyTask;
