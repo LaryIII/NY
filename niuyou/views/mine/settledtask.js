@@ -210,7 +210,7 @@ _renderSeparatorView() {
           },
         }}
 
-        refreshableTintColor="blue"
+        refreshableTintColor="gray"
         pagination={true} // enable infinite scrolling using touch to load more
         paginationFetchigView={this._renderPaginationFetchigView}
         paginationAllLoadedView={this._renderPaginationAllLoadedView}

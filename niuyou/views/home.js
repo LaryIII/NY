@@ -29,6 +29,7 @@ import {
   ListView,
   ActivityIndicatorIOS,
   AsyncStorage,
+  RefreshControl,
 } from 'react-native';
 
 var Home = React.createClass({
@@ -42,6 +43,7 @@ var Home = React.createClass({
       city:'南京',
       city_id:'320100',
       isLoading:true,
+      isRefreshing: false,
     };
   },
   componentWillMount:function(){
@@ -168,6 +170,7 @@ var Home = React.createClass({
           adList:data.data.response.adList,
           suggestTaskList:data.data.response.suggestTaskList,
           isLoading:false,
+          isRefreshing:false,
         })
 
       }else{
@@ -198,6 +201,11 @@ var Home = React.createClass({
         }
       });
     });
+  },
+
+  _onRefresh:function(){
+    this.setState({isRefreshing: true});
+    this.getIndexData();
   },
 
   render: function(){
@@ -235,7 +243,17 @@ var Home = React.createClass({
         </TouchableOpacity>
         <View style={styles.borderbottom}></View>
       </View>
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.isRefreshing}
+            onRefresh={this._onRefresh}
+            tintColor="#999"
+            title=""
+            colors={['#999', '#999', '#999']}
+            progressBackgroundColor="#fff"
+          />
+        }>
         {spinner}
         <Swiper style={styles.wrapper} showsButtons={false} height={195}>
           {slides}
