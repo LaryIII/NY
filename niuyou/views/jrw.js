@@ -43,9 +43,7 @@ var Jrw = React.createClass({
     this.addListenerOn(this.eventEmitter, 'login_success',  function(args){
       console.log('login_success');
       // that._checkSessionKey();
-      that.setState({
-        refreshReceive:1,
-      });
+      that.refs.receive.refresh();
     });
   },
   _gotoTaskDetail:function(id,type){

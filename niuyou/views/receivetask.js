@@ -23,9 +23,8 @@ var ReceiveTask = React.createClass({
       refresh: 1,
     };
   },
-  componentWillMount:function(){
-    // 需要sessionKey来跳登录
-
+  refresh:function(){
+    this._onFetch();
   },
   _onFetch(page = 1, callback, options) {
     Util.get(Service.host + Service.myReceiveTaskList, {}, function(data){
