@@ -8,6 +8,7 @@ import SelectCity from './home/selectcity';
 import Util from './utils';
 import RNGeocoder from 'react-native-geocoder';
 import Service from './service';
+import TaskDetail from './jrw/taskdetail';
 import SQLite from 'react-native-sqlite-storage';
 SQLite.DEBUG(true);
 // SQLite.enablePromise(true);
@@ -138,6 +139,24 @@ var Home = React.createClass({
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
     );
   },
+  _gotoTaskDetail:function(id,type){
+    var that = this;
+    that.props.navigator.push({
+      title: '任务详情',
+      component: TaskDetail,
+      navigationBarHidden:false,
+      barTintColor:'#f9f9f9',
+      // backButtonTitle: "返回",
+      // backButtonIcon: require('image!back'),
+      leftButtonTitle: "返回",
+      leftButtonIcon:require('image!back1'),
+      onLeftButtonPress: ()=>this.props.navigator.pop(),
+      passProps: {
+        id:id,
+        type:type,
+      }
+    });
+  },
   getIndexData:function(){
     var that  = this;
     Util.get(Service.host + Service.index, {cityId:this.state.city_id}, function(data){
@@ -189,7 +208,7 @@ var Home = React.createClass({
         console.log(url+'?imageView2/1/w/1280/h/720');
         slides.push(
           <View style={styles.slide1}>
-            <Image resizeMode={'contain'} style={styles.banner} source={{uri:url+'?imageView2/1/w/1280/h/720'}}></Image>
+            <Image resizeMode={'contain'} style={styles.banner} source={{uri:url+'?imageView2/1/w/690/h/360'}}></Image>
           </View>
         );
       }
@@ -238,9 +257,9 @@ var Home = React.createClass({
   },
   _renderRow: function(rowData: string, sectionID: number, rowID: number) {
     return (
-      <TouchableOpacity underlayColor="transparent">
+      <TouchableOpacity underlayColor="transparent" onPress={()=>this._gotoTaskDetail(rowData.id)}>
           <View style={styles.item}>
-            <Image resizeMode={'contain'} style={styles.itemimg} source={{uri:rowData.mainPhotoUrl+'?imageView2/5/w/1280/h/720'}}></Image>
+            <Image resizeMode={'contain'} style={styles.itemimg} source={{uri:rowData.mainPhotoUrl+'?imageView2/5/w/690/h/360'}}></Image>
             <View style={styles.itemtext}>
               <Text style={styles.itemtitle}>{rowData.taskName}</Text>
               <Text style={styles.itemprice}>{rowData.price}元/次</Text>
