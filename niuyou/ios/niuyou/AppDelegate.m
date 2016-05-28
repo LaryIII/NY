@@ -16,7 +16,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   NSURL *jsCodeLocation;
-  [NSThread sleepForTimeInterval:3];
+  [NSThread sleepForTimeInterval:1.5];
   [self readyDatabase:@"resource.db"];
 
   /**
