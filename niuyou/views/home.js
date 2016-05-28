@@ -105,16 +105,21 @@ var Home = React.createClass({
 
                  var len = results.rows.length;
                  var city_id = '';
+                 var city_name = '';
+                 var province_id = '';
                  for (let i = 0; i < len; i++) {
                    let row = results.rows.item(i);
                    city_id += `${row.city_id}`;
+                   city_name += `${row.city}`;
+                   province_id += `${row.father}`;
                  }
                  console.log(city_id);
                  that.setState({
                    city_id:city_id,
                  });
-                 // 把cityId存到全局
-                 AsyncStorage.setItem('cityId',city_id,function(err){})
+                 // 把city存到全局
+                 var city = city_id+';'+city_name+';'+province_id;
+                 AsyncStorage.setItem('city',city,function(err){})
                  // 请求首页数据
                  that.getIndexData();
 

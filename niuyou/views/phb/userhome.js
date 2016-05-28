@@ -18,37 +18,84 @@ import {
 var UserHome = React.createClass({
   getInitialState: function(){
     return {
-      idx:null
+      idx:null,
+      detail:{
+        cityName:'',
+        gender:1,
+        name:'',
+        num:0,
+        photoUrl:'',
+        totalPrice:''
+      },
+      personalPhotoList:[],
     };
   },
   // 接受由上个页面传来的idx
   componentDidMount() {
+    var that = this;
     this.setState({
       idx:this.props.idx,
     });
     Util.get(Service.host + Service.rankingDetail, {idx:this.props.idx}, function(data){
       console.log(data);
       if(data.code == 200){
-
-
+        that.setState({
+          detail:data.data.response.detail,
+          personalPhotoList:data.data.response.personalPhotoList,
+        });
       }else{
-        
+
       }
     });
   },
   render: function(){
+    var avatar = this.state.detail.photoUrl?{uri:this.state.detail.photoUrl}:require('./../../res/mine/pic_wo_moren@3x.png');
+    var genderimg = this.state.detail.gender==1?require('image!ph_nan'):require('image!ph_nv');
+    var photos = [];
+    for(var i=0;i<this.state.personalPhotoList.length;i++){
+      if(i%2 == 0){
+        if(i==this.state.personalPhotoList.length-1){
+          photos.push(
+            <View style={styles.item}>
+              <TouchableOpacity>
+                <View style={styles.inneritem}>
+                  <Image style={styles.itemimg} source={{uri:this.state.personalPhotoList[i].photoUrl+'?imageView2/1/w/347/h/342'}}></Image>
+                </View>
+              </TouchableOpacity>
+            </View>
+          );
+        }else{
+          photos.push(
+            <View style={styles.item}>
+              <TouchableOpacity>
+                <View style={styles.inneritem}>
+                  <Image style={styles.itemimg} source={{uri:this.state.personalPhotoList[i].photoUrl+'?imageView2/1/w/347/h/342'}}></Image>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <View style={styles.inneritem}>
+                  <Image style={styles.itemimg} source={{uri:this.state.personalPhotoList[i+1].photoUrl+'?imageView2/1/w/347/h/342'}}></Image>
+                </View>
+              </TouchableOpacity>
+            </View>
+          );
+        }
+
+      }
+
+    }
     return (
       <View style={styles.container}>
         <ScrollView style={styles.scrollbox}>
           <View style={styles.header}>
             <View style={styles.settingbox}>
               <Image resizeMode={'contain'} style={styles.setting} source={require('image!ph_mark')}></Image>
-              <Text style={styles.mark}>南京</Text>
+              <Text style={styles.mark}>{this.state.detail.cityName.split('市')[0]}</Text>
             </View>
             <View style={styles.infos}>
-              <Image resizeMode={'contain'} style={styles.avatar} source={require('./../../res/mine/pic_wo_moren@3x.png')}></Image>
-              <Image resizeMode={'contain'} style={styles.sex} source={require('image!ph_nv')}></Image>
-              <Text style={styles.avatarname}>窦窦</Text>
+              <Image resizeMode={'contain'} style={styles.avatar} source={avatar}></Image>
+              <Image resizeMode={'contain'} style={styles.sex} source={genderimg}></Image>
+              <Text style={styles.avatarname}>{this.state.detail.name}</Text>
             </View>
             <View style={styles.borderbottom}></View>
           </View>
@@ -60,7 +107,7 @@ var UserHome = React.createClass({
                   <Text style={{color:'#333'}}>酬金</Text>
                 </View>
                 <View style={styles.pictext}>
-                  <Text style={styles.fourtext}><Text style={styles.em1}>456元</Text><Text style={styles.spiritor}>/</Text>好友<Text style={styles.spiritor}>/</Text>次</Text>
+                  <Text style={styles.fourtext}><Text style={styles.em1}>{this.state.detail.totalPrice}元</Text><Text style={styles.spiritor}>/</Text>好友<Text style={styles.spiritor}>/</Text>次</Text>
                 </View>
               </View>
               <View style={styles.col2}>
@@ -69,7 +116,7 @@ var UserHome = React.createClass({
                   <Text style={{color:'#333'}}>任务个数</Text>
                 </View>
                 <View style={styles.pictext}>
-                  <Text style={styles.fourtext}><Text style={styles.em2}>28次</Text></Text>
+                  <Text style={styles.fourtext}><Text style={styles.em2}>{this.state.detail.num}次</Text></Text>
                 </View>
               </View>
             </View>
@@ -82,32 +129,7 @@ var UserHome = React.createClass({
               </View>
             </View>
             <View style={styles.bz_content2}>
-
-                <View style={styles.item}>
-                  <TouchableOpacity>
-                    <View style={styles.inneritem}>
-                      <Image style={styles.itemimg} source={require('./../../res/paihang/face.jpg')}></Image>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <View style={styles.inneritem}>
-                      <Image style={styles.itemimg} source={require('./../../res/paihang/face.jpg')}></Image>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-
-              <View style={styles.item}>
-                <TouchableOpacity>
-                  <View style={styles.inneritem}>
-                    <Image style={styles.itemimg} source={require('./../../res/paihang/face.jpg')}></Image>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <View style={styles.inneritem}>
-                    <Image style={styles.itemimg} source={require('./../../res/paihang/face.jpg')}></Image>
-                  </View>
-                </TouchableOpacity>
-              </View>
+              {photos}
             </View>
           </View>
         </ScrollView>
@@ -125,7 +147,7 @@ var styles = StyleSheet.create({
   scrollbox:{
     flex:1,
     backgroundColor:'#f9f9f9',
-    marginBottom:135,
+    marginBottom:50,
   },
   header:{
     flex:1,
