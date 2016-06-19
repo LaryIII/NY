@@ -487,6 +487,9 @@
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
+					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = GN8777AV76;
+					};
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "niuyou" */;
@@ -805,6 +808,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer: MINGLIANG DOU (VXV8T2P574)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: MINGLIANG DOU (VXV8T2P574)";
 				DEAD_CODE_STRIPPING = NO;
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = NO;
 				HEADER_SEARCH_PATHS = (
@@ -816,10 +821,11 @@
 					"$(SRCROOT)/../react-native/React/**",
 				);
 				INFOPLIST_FILE = niuyou/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = niuyou;
+				PROVISIONING_PROFILE = "932bcd04-580f-40b3-ac21-f5e35b5ec636";
 			};
 			name = Debug;
 		};
@@ -828,6 +834,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Nanjing Nuu Enterprise management consulting CO.,Ltd (PR2D7VBW48)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Nanjing Nuu Enterprise management consulting CO.,Ltd (PR2D7VBW48)";
 				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -838,10 +846,11 @@
 					"$(SRCROOT)/../react-native/React/**",
 				);
 				INFOPLIST_FILE = niuyou/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = niuyou;
+				PROVISIONING_PROFILE = "932bcd04-580f-40b3-ac21-f5e35b5ec636";
 			};
 			name = Release;
 		};
@@ -862,8 +871,10 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: MINGLIANG DOU (VXV8T2P574)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: MINGLIANG DOU (VXV8T2P574)";
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -888,6 +899,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "932bcd04-580f-40b3-ac21-f5e35b5ec636";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -909,8 +921,10 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Nanjing Nuu Enterprise management consulting CO.,Ltd (PR2D7VBW48)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Nanjing Nuu Enterprise management consulting CO.,Ltd (PR2D7VBW48)";
 				COPY_PHASE_STRIP = YES;
+				DEAD_CODE_STRIPPING = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -928,6 +942,7 @@
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "932bcd04-580f-40b3-ac21-f5e35b5ec636";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};

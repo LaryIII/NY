@@ -292,6 +292,7 @@ var styles = StyleSheet.create({
     // backgroundColor:'#fff',
     alignItems:'center',
     justifyContent:'center',
+    marginBottom:10,
   },
   itemimgbox:{
     flex:1,

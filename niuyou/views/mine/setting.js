@@ -14,7 +14,9 @@ import {
   Dimensions,
   TouchableOpacity,
   AsyncStorage,
+  Linking,
 } from 'react-native';
+import Communications from 'react-native-communications';
 
 var Setting = React.createClass({
   getInitialState: function(){
@@ -89,15 +91,8 @@ var Setting = React.createClass({
                 <Image style={styles.arrow} resizeMode={'contain'} source={require('./../../res/mine/ico_wo_next@3x.png')}></Image>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={[styles.item, {flexDirection:'row'}]}>
-                <Text style={[styles.font,{flex:1}]}>新版本检测</Text>
-                <Text style={styles.desc}>V1.1</Text>
-                <Image style={styles.arrow} resizeMode={'contain'} source={require('./../../res/mine/ico_wo_next@3x.png')}></Image>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={[styles.item, {flexDirection:'row',marginTop:15,}]}>
+            <TouchableOpacity onPress={this._call}>
+              <View style={[styles.item, {flexDirection:'row',}]}>
                 <Text style={[styles.font,{flex:1}]}>客服热线</Text>
                 <Text style={styles.desc,{marginRight:15,color:'#399bff',}}>400-828-8686</Text>
               </View>
@@ -107,6 +102,9 @@ var Setting = React.createClass({
         </ScrollView>
       </View>
     );
+  },
+  _call:function(){
+    Communications.phonecall('4008288686',true);
   },
 
   _loadPage: function(component, title){

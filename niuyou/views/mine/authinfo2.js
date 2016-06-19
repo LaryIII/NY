@@ -287,6 +287,8 @@ var styles = StyleSheet.create({
   },
   bimg:{
     flex:1,
+    width:345,
+    height:170,
   },
   circle:{
     flex:1,

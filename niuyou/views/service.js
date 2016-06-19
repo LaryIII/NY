@@ -1,5 +1,5 @@
 var Service = {
-  host:'http://ny-api.jcc1.cn',
+  host:'http://api.nuu.cn',
   checkMobile: '/checkMobile', // 手机号验证
   isVerifyCode: '/isVerifyCode',//是否需要验证码,并获取验证码
   verifyCode: '/verifyCode',//获取图形验证码
