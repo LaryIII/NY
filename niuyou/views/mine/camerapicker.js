@@ -44,7 +44,7 @@ const CameraPicker =  React.createClass ({
 
       this.props.navigator.pop();
     }else{
-      AlertIOS.alert('提醒','请先上传图片');
+      AlertIOS.alert('提醒','请先选择图片');
     }
 
   },

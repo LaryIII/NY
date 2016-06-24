@@ -14,6 +14,7 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
+  TouchableHighlight,
   ListView,
 } from 'react-native';
 

@@ -33,6 +33,7 @@ var Tasking = React.createClass({
     return {
       open: false,
       offset:150,
+      lifeimgs:[],
       zmimgs:[],
       uploaded:0,
     };

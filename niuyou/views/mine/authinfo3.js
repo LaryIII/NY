@@ -32,14 +32,45 @@ var Authinfo3 = React.createClass({
     return {
       open: false,
       offset:150,
+      // hasimgs:[], // 已存在图片
+      // displayhasimgs:[], // 要显示的已存在图片
       lifeimgs:[],
       displaylifeimgs:[],
-      uploaded:0,
+      shouldbeupload:0,
       imguploaded:0,
     };
   },
   componentWillMount:function(){
+    var that = this;
     this.eventEmitter = new EventEmitter();
+    // 获得已经上传的图片
+    Util.get(Service.host + Service.getPersonalPhoto, {
+    }, function(data){
+      console.log(data);
+      if(data.code == 200){
+        var imgs = data.data.response.list;
+        var displayimgs = [];
+        for(var i=0;i<imgs.length;i++){
+          if(imgs[i].photoUrl == "[object Object]"){
+            // 如果是之前的错误假数据，则删掉
+            Util.get(Service.host + Service.deletePersonalPhoto, {
+              photoUrl:imgs[i].photoUrl
+            }, function(data){
+              console.log(data);
+              if(data.code == 200){
+              }
+            });
+          }else{
+            displayimgs.push(imgs[i].photoUrl+'?imageView2/1/w/170/h/170');
+          }
+
+        }
+        that.setState({
+          lifeimgs:imgs,
+          displaylifeimgs:displayimgs,
+        });
+      }
+    });
   },
   componentDidMount:function(){
     var that = this;
@@ -48,6 +79,9 @@ var Authinfo3 = React.createClass({
       //upload file to Qiniu
       that.setState({
         open:true,
+      });
+      that.setState({
+        shouldbeupload:imgs.length,
       });
       for(var i=0;i<imgs.length;i++){
         (function(img){
@@ -61,23 +95,32 @@ var Authinfo3 = React.createClass({
                  console.log(resp);
                  console.log(url);
                  if(resp.status == 200 && resp.ok == true){
-                   that.state.lifeimgs.push({uri:url});
-                   that.state.displaylifeimgs.push({uri:url+'?imageView2/1/w/170/h/170'});
+                   that.state.lifeimgs.push(url);
+                   that.state.displaylifeimgs.push(url+'?imageView2/1/w/170/h/170');
                    that.setState({
                      lifeimgs: that.state.lifeimgs,
                      displaylifeimgs:that.state.displaylifeimgs,
                    });
-                   var num = that.state.imguploaded;
-                   num = num+1;
-                   console.log(num);
-                   that.setState({
-                     imguploaded:num,
+
+                   // 保存到服务器
+                   Util.get(Service.host + Service.uploadPersonalPhoto, {
+                     photoUrl:url
+                   }, function(data){
+                     console.log(data);
+                     if(data.code == 200){
+                       var num = that.state.imguploaded;
+                       num = num+1;
+                       console.log(num);
+                       that.setState({
+                         imguploaded:num,
+                       });
+                       if(that.state.imguploaded == that.state.shouldbeupload){
+                         that.setState({
+                           open:false,
+                         });
+                       }
+                     }
                    });
-                   if(that.state.imguploaded == that.state.lifeimgs.length){
-                     that.setState({
-                       open:false,
-                     });
-                   }
                  }
               });
             }else{
@@ -109,43 +152,21 @@ var Authinfo3 = React.createClass({
     var that = this;
     //submitVerify
     if(this.state.lifeimgs.length>0){
-      for(var i=0;i<this.state.lifeimgs.length;i++){
-        (function(img){
-          Util.get(Service.host + Service.uploadPersonalPhoto, {
-            photoUrl:img.uri
-          }, function(data){
-            console.log(data);
-            if(data.code == 200){
-              var num = that.state.uploaded;
-              num = num+1;
-              console.log(num);
-              that.setState({
-                uploaded:num,
-              });
-              if(that.state.uploaded == that.state.lifeimgs.length){
-                // 保存完毕之后提交认证
-                Util.get(Service.host + Service.submitVerify, {
+      Util.get(Service.host + Service.submitVerify, {
 
-                }, function(data){
-                  console.log(data);
-                  if(data.code == 200){
-                    AlertIOS.alert('提醒',
-                    '认证提交成功，请耐心等待审核',
-                    [
-                      {text: '确认', onPress: () => that.props.navigator.popToTop()},
-                    ]
-                  );
-                  }else{
-                    AlertIOS.alert('提醒',data.messages[0].message);
-                  }
-                });
-              }
-            }else{
-
-            }
-          });
-        })(that.state.lifeimgs[i]);
-      }
+      }, function(data){
+        console.log(data);
+        if(data.code == 200){
+          AlertIOS.alert('提醒',
+          '认证提交成功，请耐心等待审核',
+          [
+            {text: '确认', onPress: () => that.props.navigator.popToTop()},
+          ]
+        );
+        }else{
+          AlertIOS.alert('提醒',data.messages[0].message);
+        }
+      });
     }else{
       AlertIOS.alert('提醒','请先上传你的生活照片!');
     }
@@ -157,6 +178,15 @@ var Authinfo3 = React.createClass({
     for(var i=0;i<this.state.lifeimgs.length;i++){
       if(i!=n){
         temp.push(this.state.lifeimgs[i]);
+      }else{
+        // 向服务端删除图片
+        Util.get(Service.host + Service.deletePersonalPhoto, {
+          photoUrl:this.state.lifeimgs[i]
+        }, function(data){
+          console.log(data);
+          if(data.code == 200){
+          }
+        });
       }
     }
     for(var i=0;i<this.state.displaylifeimgs.length;i++){
@@ -177,14 +207,13 @@ var Authinfo3 = React.createClass({
         (function(n){
           mylifeimgdom.push(
             <View style={styles.uploadimg}>
-              <Image resizeMode={'contain'} style={styles.upimg} source={that.state.displaylifeimgs[i]}></Image>
+              <Image resizeMode={'contain'} style={styles.upimg} source={{uri:that.state.displaylifeimgs[i]}}></Image>
               <TouchableOpacity onPress={()=>that._delimg(n)}>
                 <Text style={styles.delimg}>删除</Text>
               </TouchableOpacity>
             </View>
           );
         })(i)
-
       }
 
     }else{

@@ -24,6 +24,7 @@ var Service = {
   getTaskDetail:'/c/task/getTaskDetail', // 任务详情
   receiveOrder:'/c/taskOrder/receiveOrder', // 申请任务
   uploadOrderPhoto:'/c/taskOrder/uploadOrderPhoto', //上传接单图片凭证
+  deleteOrderPhoto:'/c/taskOrder/deleteOrderPhoto', // 删除接单图片凭证
   sureOrder:'/c/taskOrder/sureOrder', //提交任务
   ongoingOrderList:'/c/taskOrder/ongoingOrderList',// 进行中的任务
   finishNotSettleOrderList:'/c/taskOrder/finishNotSettleOrderList',// 完成未结算任务
@@ -37,6 +38,7 @@ var Service = {
   savePeopleNumPhotoUrl:'/c/personalInfo/savePeopleNumPhotoUrl', // 设置联系人数量照片路径
   uploadPersonalPhoto:'/c/personalInfo/uploadPersonalPhoto',// 上传生活照
   getPersonalPhoto:'/c/personalInfo/getPersonalPhoto',// 获取生活照
+  deletePersonalPhoto:'/c/personalInfo/deletePersonalPhoto', // 删除生活照
   submitVerify:'/c/personalInfo/submitVerify',// 提交认证
 
   feedback:'/system/feedback/add',// 意见反馈

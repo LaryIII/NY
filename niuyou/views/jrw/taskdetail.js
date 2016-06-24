@@ -7,6 +7,13 @@ import Login from './../user/login';
 import FileDownload from 'react-native-file-download';
 import RNFS from 'react-native-fs';
 import moment from 'moment';
+import qiniu from 'react-native-qiniu';
+import Modal from 'react-native-simple-modal';
+import CameraPicker from './../mine/camerapicker';
+var EventEmitter = require('EventEmitter');
+var Subscribable = require('Subscribable');
+window.EventEmitter = EventEmitter;
+window.Subscribable = Subscribable;
 import {
   View,
   TextInput,
@@ -20,9 +27,11 @@ import {
   AlertIOS,
   Clipboard,
   Alert,
+  ActivityIndicatorIOS,
 } from 'react-native';
 
 var TaskDetail = React.createClass({
+  mixins: [Subscribable.Mixin],
   getInitialState: function(){
     return {
       merchantInfoDto:{
@@ -62,14 +71,22 @@ var TaskDetail = React.createClass({
           updateTime:''
         }
       ],
+      taskOrderPhotoList:[],
       status:1,
       content: '',
       imgs:[],
       displayimgs:[],
       scrollbottom:60,
+
+      open: false,
+      offset:150,
+      lifeimgs:[],
+      zmimgs:[],
+      uploaded:0,
     };
   },
   componentWillMount:function(){
+    this.eventEmitter = new EventEmitter();
     this.setState({
       id:this.props.id
     });
@@ -77,17 +94,99 @@ var TaskDetail = React.createClass({
     Util.get(Service.host + Service.getTaskDetail, {taskId:this.props.id}, function(data){
       console.log(data);
       if(data.code == 200){
+        var temp = [];
+        var disptemp = [];
+        for(var i=0;i<data.data.response.taskOrderPhotoList.length;i++){
+          temp.push({uri:data.data.response.taskOrderPhotoList[i].photoUrl});
+          disptemp.push(data.data.response.taskOrderPhotoList[i].photoUrl+'?imageView2/1/w/170/h/170');
+        }
         that.setState({
           merchantInfoDto:data.data.response.merchantInfoDto,
           task:data.data.response.task,
           taskPhotoList:data.data.response.taskPhotoList,
           status:data.data.response.status,
-          taskOrderPhotoList:data.data.response.taskOrderPhotoList,
+          zmimgs:temp,
+          taskOrderPhotoList:disptemp,
           imgs:data.data.response.taskPhotoList,
-          content:data.data.response.task.taskText
+          content:data.data.response.task.taskText,
         });
       }else{
         AlertIOS.alert('提醒',data.messages[0].message);
+      }
+    });
+  },
+  componentDidMount:function(){
+    var that = this;
+    this.addListenerOn(this.eventEmitter, 'upload_imgs2',  function(args){
+      console.log('upload_imgs2');
+      //upload file to Qiniu
+      that.setState({
+        open:true,
+      });
+      for(var i=0;i<args.images.length;i++){
+        (function(img,taskId){
+          Util.get(Service.host + Service.getToken, {bucketName:'ny-task-photo'}, function(data){
+            console.log(data);
+            if(data.code == 200){
+              var token = data.data.response.token;
+              var url = data.data.response.url;
+              var key = data.data.response.key;
+              qiniu.rpc.uploadImage(img, key, token, function (resp) {
+                 console.log(resp);
+                 console.log(url);
+                 if(resp.status == 200 && resp.ok == true){
+                   that.state.zmimgs.push({uri:url});
+                   that.state.taskOrderPhotoList.push(url+'?imageView2/1/w/170/h/170');
+                   that.setState({
+                     zmimgs: that.state.zmimgs,
+                     taskOrderPhotoList:that.state.taskOrderPhotoList
+                   });
+                   // 保存图片地址到服务器
+                   Util.get(Service.host + Service.uploadOrderPhoto, {
+                     taskId:taskId,
+                     photoUrl:url,
+                   }, function(data){
+                     console.log(data);
+                     console.log('上传成功:'+url);
+                     if(data.code == 200){
+                       var num = that.state.uploaded;
+                       num = num+1;
+                       console.log(num);
+                       that.setState({
+                         uploaded:num,
+                       });
+                       if(that.state.uploaded == that.state.zmimgs.length){
+                         // 保存完毕之后提交认证
+                         that.setState({
+                           open:false,
+                         })
+                         Util.get(Service.host + Service.sureOrder, {
+                           taskId:taskId
+                         }, function(data){
+                           console.log(data);
+                           if(data.code == 200){
+                             AlertIOS.alert('提醒',
+                             '任务提交成功, 请耐心等待审核',
+                             [
+                               {text: '确认', onPress: () => that.render()},
+                             ]
+                           );
+                           }else{
+                             AlertIOS.alert('提醒',data.messages[0].message);
+                           }
+                         });
+                       }
+                     }else{
+
+                     }
+                   });
+                 }
+              });
+            }else{
+
+            }
+          });
+        })(args.images[i],args.taskId)
       }
     });
   },
@@ -172,22 +271,76 @@ var TaskDetail = React.createClass({
     }
 
   },
+  _uploadZM:function(taskId){
+    var that = this;
+    that.props.navigator.push({
+      title: '选择最多9张生活照片',
+      component: CameraPicker,
+      navigationBarHidden:true,
+      // backButtonTitle: "返回",
+      // backButtonIcon: require('image!back'),
+      // leftButtonTitle: "返回",
+      // leftButtonIcon:require('image!back1'),
+      // onLeftButtonPress: ()=>that.props.navigator.pop(),
+      passProps: {
+          events: that.eventEmitter,
+          type:'tasking',
+          taskId:taskId,
+      }
+    });
+  },
+  _delimg:function(n){
+    var temp = [];
+    var displaytemp = [];
+    for(var i=0;i<this.state.zmimgs.length;i++){
+      if(i!=n){
+        temp.push(this.state.zmimgs[i]);
+      }else{
+        // 向服务端删除图片
+        Util.get(Service.host + Service.deleteOrderPhoto, {
+          photoUrl:this.state.zmimgs[i].uri
+        }, function(data){
+          console.log(data);
+          if(data.code == 200){
+          }
+        });
+      }
+    }
+    for(var i=0;i<this.state.taskOrderPhotoList.length;i++){
+      if(i!=n){
+        displaytemp.push(this.state.taskOrderPhotoList[i]);
+      }
+    }
+    this.setState({
+      zmimgs:temp,
+      taskOrderPhotoList:displaytemp,
+    });
+  },
   render: function(){
+    var that = this;
     var zmimgs = [];
     var imgs = [];
     var applybtn = [];
     var shareimgs = [];
     var stars = [];
+    var scrollbottom = 0;
     // 这边搞错了，taskPhotoList是用户需要分享的图片，而不是证明图片
     if(this.state.taskOrderPhotoList && this.state.taskOrderPhotoList.length>0){
-      for(var i=0; i< 5;i++){
+      for(var i=0; i< this.state.taskOrderPhotoList.length;i++){
         // TODO:做四行，用justifyContent: 'space-around',
-        imgs.push(
-          <Image resizeMode={'contain'} style={styles.zmimg} source={{uri:this.state.taskOrderPhotoList[0].photoUrl+'?imageView2/1/w/170/h/170'}}></Image>
-        );
+        (function(n){
+          imgs.push(
+            <View style={styles.uploadimg}>
+            <Image resizeMode={'contain'} style={styles.zmimg2} source={{uri:that.state.taskOrderPhotoList[n]}}></Image>
+              <TouchableOpacity onPress={()=>that._delimg(n)}>
+                <Text style={styles.delimg}>删除</Text>
+              </TouchableOpacity>
+            </View>
+          );
+        })(i)
       }
       zmimgs.push(
-        <View style={styles.beizhu}>
+        <View style={[styles.beizhu,{marginBottom:60}]}>
           <View style={styles.bz_header}>
             <View style={styles.box_title}>
               <Image resizeMode={'contain'} style={styles.box_title_img} source={require('image!tupian1')}></Image>
@@ -204,7 +357,8 @@ var TaskDetail = React.createClass({
     }else{
       <View />
     }
-    if(this.state.type == 'receive'){
+    if(this.state.status == 1){
+      // status:1领取任务 2上传图片 2不展示
       applybtn.push(
         <View style={styles.applybtn}>
           <TouchableOpacity onPress={this._gotoApplyTask}>
@@ -214,9 +368,18 @@ var TaskDetail = React.createClass({
           </TouchableOpacity>
         </View>
       );
-      this.setState({
-        scrollbottom:135,
-      });
+      scrollbottom=135;
+    }else if(this.state.status == 2){
+      applybtn.push(
+        <View style={styles.applybtn}>
+          <TouchableOpacity onPress={()=>this._uploadZM(this.props.id)}>
+            <View style={styles.bluebtn}>
+              <Text style={styles.bluebtntext}>上传证明图片</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      );
+      scrollbottom=135;
     }else{
       applybtn.push(<View />);
     }
@@ -246,7 +409,7 @@ var TaskDetail = React.createClass({
     }
     return (
       <View style={styles.container}>
-        <ScrollView style={[styles.scrollbox,{marginBottom:this.state.scrollbottom}]}>
+        <ScrollView style={[styles.scrollbox,{marginBottom:scrollbottom}]}>
           <View style={styles.header}>
             <Image resizeMode={'contain'} style={styles.faces} source={{uri:this.state.merchantInfoDto.merchantLogo+'?imageView2/1/w/120/h/120'}}></Image>
             <Text style={styles.facesname}>{this.state.merchantInfoDto.merchantName}</Text>
@@ -290,10 +453,10 @@ var TaskDetail = React.createClass({
               <View style={styles.col2}>
               <View style={styles.pictext}>
                 <Image resizeMode={'contain'} style={styles.pic} source={require('image!time_task')}></Image>
-                <Text style={{color:'#333'}}>任务时间</Text>
+                <Text style={{color:'#333'}}>任务结束时间</Text>
               </View>
               <View style={styles.pictext}>
-                <Text style={styles.fourtext}><Text style={styles.em3}>{this.state.task.passTime}天</Text></Text>
+                <Text style={styles.fourtext}><Text style={styles.em3}>{moment(this.state.task.taskEndTime).format('YYYY/MM/DD')}</Text></Text>
               </View>
               </View>
             </View>
@@ -355,6 +518,18 @@ var TaskDetail = React.createClass({
           {zmimgs}
         </ScrollView>
         {applybtn}
+        <Modal
+           offset={this.state.offset}
+           open={this.state.open}
+           modalDidOpen={() => console.log('modal did open')}
+           modalDidClose={() => undefined}
+           style={{alignItems: 'center'}}
+           overlayOpacity={0.3}>
+           <View style={styles.modalbox}>
+              <ActivityIndicatorIOS style={styles.modalindicator} color="#999" />
+              <Text style={styles.modaltext}>正在上传图片...</Text>
+           </View>
+        </Modal>
       </View>
     );
   },
@@ -580,6 +755,14 @@ var styles = StyleSheet.create({
     width:(Dimensions.get('window').width-30)/4,
     height:(Dimensions.get('window').width-30)/4,
   },
+  bz_content3:{
+    flex:1,
+    flexDirection:'row',
+    justifyContent:'space-around',
+    paddingLeft:15,
+    paddingRight:15,
+    paddingBottom:15,
+  },
   shareimgs:{
     flex:1,
     justifyContent: 'space-around',
@@ -604,7 +787,34 @@ var styles = StyleSheet.create({
   circleimg:{
     width:60,
     height:60,
-  }
+  },
+  modalbox:{
+    flex:1,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+    width:Dimensions.get('window').width-70,
+  },
+  modalindicator:{
+    marginRight:15,
+  },
+  modaltext:{
+    color:'#666',
+    fontSize:15,
+  },
+  uploadimg:{
+    flex:1,
+    marginRight:2,
+  },
+  zmimg2:{
+    flex:1,
+    width:(Dimensions.get('window').width-36)/4,
+    height:(Dimensions.get('window').width-36)/4,
+  },
+  delimg:{
+    color:'#f02626',
+    fontSize:15,
+  },
 });
 
 module.exports = TaskDetail;

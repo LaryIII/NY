@@ -286,7 +286,7 @@ var Mine = React.createClass({
       <View style={styles.bigcontainer}>
       <View style={styles.navigatorx}>
         <View style={styles.settingbox}>
-          <TouchableOpacity onPress={this._gotoSetting}>
+          <TouchableOpacity onPress={this._gotoSetting} style={styles.settingb}>
             <Image resizeMode={'contain'} style={styles.setting} source={require('./../res/mine/ico_wo_setting@3x.png')}></Image>
           </TouchableOpacity>
         </View>
@@ -342,8 +342,14 @@ var styles = StyleSheet.create({
   },
   settingbox:{
     position:'absolute',
-    top:12+20,
-    right:15,
+    top:0,
+    right:0,
+  },
+  settingb:{
+    paddingTop:12+20,
+    paddingRight:15,
+    paddingBottom:10,
+    paddingLeft:10,
   },
   setting:{
     flex:1,
