@@ -335,6 +335,7 @@ var TaskDetail = React.createClass({
     var shareimgs = [];
     var stars = [];
     var scrollbottom = 0;
+    var paddingBottom = 0;
     // 这边搞错了，taskPhotoList是用户需要分享的图片，而不是证明图片
     if(this.state.taskOrderPhotoList && this.state.taskOrderPhotoList.length>0){
       for(var i=0; i< this.state.taskOrderPhotoList.length;i++){
@@ -393,6 +394,7 @@ var TaskDetail = React.createClass({
       scrollbottom=135;
     }else{
       applybtn.push(<View />);
+      paddingBottom = 135;
     }
 
     if(this.state.taskPhotoList && this.state.taskPhotoList.length>0){
@@ -419,8 +421,8 @@ var TaskDetail = React.createClass({
       }
     }
     return (
-      <View style={styles.container}>
-        <ScrollView style={[styles.scrollbox,{marginBottom:scrollbottom}]}>
+      <View style={[styles.container,{paddingBottom:paddingBottom}]}>
+        <ScrollView style={[styles.scrollbox,{paddingBottom:scrollbottom}]}>
           <View style={styles.header}>
             <Image resizeMode={'contain'} style={styles.faces} source={{uri:this.state.merchantInfoDto.merchantLogo+'?imageView2/1/w/120/h/120'}}></Image>
             <Text style={styles.facesname}>{this.state.merchantInfoDto.merchantName}</Text>
@@ -556,7 +558,7 @@ var styles = StyleSheet.create({
   scrollbox:{
     flex:1,
     backgroundColor:'#f9f9f9',
-    marginBottom:135,
+    paddingBottom:135,
   },
   header:{
     flex:1,
@@ -712,7 +714,7 @@ var styles = StyleSheet.create({
     width:(Dimensions.get('window').width-40)*1/4,
   },
   applynum:{
-    flex:1,
+    // flex:1,
     height:50,
     backgroundColor:'#fff',
     // justifyContent:'center',

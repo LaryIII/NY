@@ -55,7 +55,7 @@ var AllTask = React.createClass({
     return (
       <TouchableOpacity onPress={()=>this.props.onRowPress(rowData.id)}>
         <View style={styles.item}>
-          <Image resizeMode={'contain'} style={styles.itemimg} source={{uri:rowData.mainPhotoUrl+'?imageView2/1/w/690/h/360'}}></Image>
+          <Image resizeMode={'cover'} style={styles.itemimg} source={{uri:rowData.mainPhotoUrl+'?imageView2/1/w/690/h/360'}}></Image>
           <View style={styles.itemtext}>
             <Image resizeMode={'contain'} style={styles.avater} source={genderimg}></Image>
             <Text style={styles.avatername}>{rowData.merchantName}</Text>
@@ -294,7 +294,7 @@ var styles = StyleSheet.create({
   itemtext:{
     position:'absolute',
     top:0,
-    left:15,
+    left:0,
     backgroundColor:'rgba(0,0,0,0)',
     width:Dimensions.get('window').width-30,
     height:180,
