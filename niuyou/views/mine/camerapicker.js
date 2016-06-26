@@ -34,17 +34,28 @@ const CameraPicker =  React.createClass ({
     // 发送事件
     if(this.state.num>0){
       if(that.props.type == "authinfo3"){
-        that.props.events.emit('upload_imgs', this.state.images);
+        if(this.state.num>this.props.leftnum){
+          AlertIOS.alert('提醒','图片数量超出限制，您还可以上传'+this.props.leftnum+'张');
+        }else{
+          that.props.events.emit('upload_imgs', this.state.images);
+          this.props.navigator.pop();
+        }
       }else if(that.props.type == "tasking" && that.props.taskId){
-        that.props.events.emit('upload_imgs2', {
-          images:that.state.images,
-          taskId:that.props.taskId
-        });
-      }
+        if(this.state.num>this.props.leftnum){
+          AlertIOS.alert('提醒','图片数量超出限制，您还可以上传'+this.props.leftnum+'张');
+        }else{
+          that.props.events.emit('upload_imgs2', {
+            images:that.state.images,
+            taskId:that.props.taskId
+          });
+          this.props.navigator.pop();
+        }
 
-      this.props.navigator.pop();
-    }else{
+      }
+    }else if(this.state.num == 0){
       AlertIOS.alert('提醒','请先选择图片');
+    }else if(this.state.num > 9){
+      lertIOS.alert('提醒','上传图片超出数量限制');
     }
 
   },
@@ -58,7 +69,7 @@ const CameraPicker =  React.createClass ({
             </View>
           </TouchableOpacity>
           <View style={styles.text}>
-            <Text style={styles.bold}>请选择最多9张生活照片</Text>
+            <Text style={styles.bold}>{this.props.title}</Text>
           </View>
           <TouchableOpacity onPress={this._finish}>
             <View style={styles.finishbtn}>

@@ -140,8 +140,17 @@ var Tasking = React.createClass({
   },
   _uploadZM:function(taskId){
     var that = this;
+    var title = '';
+    if(that.state.zmimgs.length==9){
+      AlertIOS.alert('提醒','您已有9张证明照片,无法再上传');
+      return false;
+    }else if(that.state.zmimgs.length==0){
+      title = '选择最多9张证明照片';
+    }else if(that.state.zmimgs.length<9 && that.state.zmimgs.length>0){
+      title = '您还可以上传'+(9-that.state.zmimgs.length)+'张证明照片';
+    }
     that.props.navigator.push({
-      title: '选择最多9张生活照片',
+      title: title,
       component: CameraPicker,
       navigationBarHidden:true,
       // backButtonTitle: "返回",
@@ -153,6 +162,8 @@ var Tasking = React.createClass({
           events: that.eventEmitter,
           type:'tasking',
           taskId:taskId,
+          leftnum:9-that.state.zmimgs.length,
+          title:title
       }
     });
   },

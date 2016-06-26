@@ -133,8 +133,17 @@ var Authinfo3 = React.createClass({
   },
   _uploadImgs:function(){
     var that = this;
+    var title = '';
+    if(that.state.lifeimgs.length==9){
+      AlertIOS.alert('提醒','您已有9张生活照,无法再上传');
+      return false;
+    }else if(that.state.lifeimgs.length==0){
+      title = '选择最多9张生活照片';
+    }else if(that.state.lifeimgs.length<9 && that.state.lifeimgs.length>0){
+      title = '您还可以上传'+(9-that.state.lifeimgs.length)+'张生活照';
+    }
     that.props.navigator.push({
-      title: '选择最多9张生活照片',
+      title: title,
       component: CameraPicker,
       navigationBarHidden:true,
       // backButtonTitle: "返回",
@@ -144,7 +153,9 @@ var Authinfo3 = React.createClass({
       // onLeftButtonPress: ()=>that.props.navigator.pop(),
       passProps: {
           events: that.eventEmitter,
-          type:'authinfo3'
+          type:'authinfo3',
+          leftnum:9-that.state.lifeimgs.length,
+          title:title
       }
     });
   },
