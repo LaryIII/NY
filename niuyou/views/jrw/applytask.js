@@ -32,12 +32,7 @@ var ApplyTask = React.createClass({
   },
   _copy:function(){
     Clipboard.setString(this.state.content);
-    try {
-      var content = Clipboard.getString();
-      this.setState({content});
-    } catch (e) {
-      this.setState({content:e.message});
-    }
+    Alert.alert("复制成功!");
   },
   _download:function(){
     for(var i=0;i<this.props.imgs.length;i++){

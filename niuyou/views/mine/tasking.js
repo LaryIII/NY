@@ -91,7 +91,7 @@ var Tasking = React.createClass({
                              AlertIOS.alert('提醒',
                              '任务提交成功, 请耐心等待审核',
                              [
-                               {text: '确认', onPress: () => that.render()},
+                               {text: '确认', onPress: () => that.refs.listview._refresh()},
                              ]
                            );
                            }else{
@@ -186,6 +186,12 @@ var Tasking = React.createClass({
   _renderRowView(rowData) {
     var genderimg = rowData.gender==1?require('image!ph_nan'):require('image!ph_nv');
     var btndom = [];
+    // 0：接单 1：待确认 2：通过 3：驳回 4：失效
+    // 0显示“上传图片证明”
+    // 1显示“待确认”
+    // 2不显示
+    // 3显示驳回原因
+    // 4显示“未能在规定时间内完成任务”
     if(rowData.status == 0){
       btndom.push(
         <TouchableOpacity style={styles.tbtn} onPress={()=>this._uploadZM(rowData.taskId)}>
@@ -194,13 +200,37 @@ var Tasking = React.createClass({
           </View>
         </TouchableOpacity>
       );
-    }else{
+    }else if(rowData.status == 1){
       btndom.push(
         <View style={styles.tbtn}>
           <View style={styles.statusbtn2}>
             <Text style={styles.statustext2}>待确认</Text>
           </View>
         </View>
+      );
+    }else if(rowData.status == 2){
+      btndom.push(
+        <View />
+      );
+    }else if(rowData.status == 3){
+      btndom.push(
+        <View style={styles.tbtn}>
+          <View style={styles.statusbtn2}>
+            <Text style={styles.statustext2}>{rowData.nopassResult}</Text>
+          </View>
+        </View>
+      );
+    }else if(rowData.status == 4){
+      btndom.push(
+        <View style={styles.tbtn}>
+          <View style={styles.statusbtn2}>
+            <Text style={styles.statustext2}>未能在规定时间内完成任务</Text>
+          </View>
+        </View>
+      );
+    }else{
+      btndom.push(
+        <View />
       );
     }
     return (
@@ -285,7 +315,7 @@ _renderPaginationWaitingView(paginateCallback) {
       style={customStyles.paginationView}
     >
       <Text style={[customStyles.actionsLabel, {fontSize: 13}]}>
-        Load more
+        加载更多
       </Text>
     </TouchableHighlight>
   );
@@ -353,6 +383,7 @@ _renderSeparatorView() {
       // </View>
       <View style={styles.container}>
       <GiftedListView
+        ref="listview"
         contentContainerStyle = {styles.innercontainer}
         rowView={this._renderRowView}
         onFetch={this._onFetch}

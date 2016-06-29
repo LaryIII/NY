@@ -90,15 +90,20 @@ var TaskDetail = React.createClass({
     this.setState({
       id:this.props.id
     });
+    this.getDetail();
+  },
+  getDetail:function(){
     var that = this;
     Util.get(Service.host + Service.getTaskDetail, {taskId:this.props.id}, function(data){
       console.log(data);
       if(data.code == 200){
         var temp = [];
         var disptemp = [];
-        for(var i=0;i<data.data.response.taskOrderPhotoList.length;i++){
-          temp.push({uri:data.data.response.taskOrderPhotoList[i].photoUrl});
-          disptemp.push(data.data.response.taskOrderPhotoList[i].photoUrl+'?imageView2/1/w/170/h/170');
+        if(data.data.response.taskOrderPhotoList){
+          for(var i=0;i<data.data.response.taskOrderPhotoList.length;i++){
+            temp.push({uri:data.data.response.taskOrderPhotoList[i].photoUrl});
+            disptemp.push(data.data.response.taskOrderPhotoList[i].photoUrl+'?imageView2/1/w/170/h/170');
+          }
         }
         that.setState({
           merchantInfoDto:data.data.response.merchantInfoDto,
@@ -188,6 +193,17 @@ var TaskDetail = React.createClass({
           });
         })(args.images[i],args.taskId)
       }
+    });
+
+    //从applytask回来的时候，刷新页面
+    this.props.navigator.navigationContext.addListener('didfocus', (event) => {
+      // this.currentRoute will go away
+      // event.data.route will be focused
+      console.log(event.data.route);
+      if(event.data.route.title == '任务详情'){
+        that.getDetail();
+      }
+
     });
   },
   _gotoApplyTask: function(){
@@ -381,6 +397,7 @@ var TaskDetail = React.createClass({
         </View>
       );
       scrollbottom=135;
+      paddingBottom = 135;
     }else if(this.state.status == 2){
       applybtn.push(
         <View style={styles.applybtn}>
@@ -392,6 +409,7 @@ var TaskDetail = React.createClass({
         </View>
       );
       scrollbottom=135;
+      paddingBottom = 135;
     }else{
       applybtn.push(<View />);
       paddingBottom = 135;
@@ -753,13 +771,6 @@ var styles = StyleSheet.create({
     color:'#fff',
     fontSize:17,
   },
-  zmimgs:{
-    flex:1,
-    justifyContent: 'space-around',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginBottom:10,
-  },
   zmimg:{
     marginRight:1,
     marginBottom:1,
@@ -778,7 +789,7 @@ var styles = StyleSheet.create({
   },
   shareimgs:{
     flex:1,
-    justifyContent: 'space-around',
+    justifyContent: 'flex-start',
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginBottom:10,
@@ -788,8 +799,8 @@ var styles = StyleSheet.create({
     marginBottom:1,
     alignItems:'center',
     justifyContent:'center',
-    width:(Dimensions.get('window').width-30)/4,
-    height:(Dimensions.get('window').width-30)/4,
+    width:(Dimensions.get('window').width-30-4)/4,
+    height:(Dimensions.get('window').width-30-4)/4,
   },
   circle:{
     flex:1,
@@ -815,18 +826,28 @@ var styles = StyleSheet.create({
     color:'#666',
     fontSize:15,
   },
-  uploadimg:{
+  zmimgs:{
     flex:1,
-    marginRight:2,
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom:10,
+  },
+  uploadimg:{
+    marginRight:1,
+    marginBottom:8,
+    width:(Dimensions.get('window').width-30-4)/4,
   },
   zmimg2:{
-    flex:1,
-    width:(Dimensions.get('window').width-36)/4,
-    height:(Dimensions.get('window').width-36)/4,
+    alignItems:'center',
+    justifyContent:'center',
+    width:(Dimensions.get('window').width-30-4)/4,
+    height:(Dimensions.get('window').width-30-4)/4,
   },
   delimg:{
     color:'#f02626',
     fontSize:15,
+    marginTop:4,
   },
 });
 

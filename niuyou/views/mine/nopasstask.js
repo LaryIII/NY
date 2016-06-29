@@ -134,7 +134,7 @@ _renderPaginationWaitingView(paginateCallback) {
       style={customStyles.paginationView}
     >
       <Text style={[customStyles.actionsLabel, {fontSize: 13}]}>
-        Load more
+        加载更多
       </Text>
     </TouchableHighlight>
   );

@@ -201,11 +201,7 @@ var Startny = React.createClass({
               validate: [{
                 validator: 'isLength',
                 arguments: [2, 10],
-                message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
-              },{
-                validator: 'matches',
-                arguments: /^[a-zA-Z0-9]*$/,
-                message: '{TITLE} can contains only alphanumeric characters'
+                message: '{TITLE} 必须是 {ARGS[0]} 到 {ARGS[1]} 个字符'
               }]
             },
           }}
@@ -213,7 +209,7 @@ var Startny = React.createClass({
           <GiftedForm.TextInputWidget
             name='nickname'
             title='昵称'
-            placeholder='请输入昵称，最长10个字符'
+            placeholder='请输入昵称，2-10个字符'
             clearButtonMode='while-editing'
             onChangeText={this._onChange}
           />

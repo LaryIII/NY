@@ -65,14 +65,14 @@ var Home = React.createClass({
         this.setState({initialPosition});
         var loc = {
           latitude:initialPosition.coords.latitude,
-          longitude:initialPosition.coords.initialPosition
+          longitude:initialPosition.coords.longitude
         }
         // TODO:模拟器测试的时候先用这个，真机测试的时候要删掉
-        var NJ = {
-          latitude: 32.031231,
-          longitude: 118.461231
-        };
-        RNGeocoder.reverseGeocodeLocation(NJ, (err, data) => {
+        // var NJ = {
+        //   latitude: 32.031231,
+        //   longitude: 118.461231
+        // };
+        RNGeocoder.reverseGeocodeLocation(loc, (err, data) => {
             if (err) {
               console.log(err);
               return;
@@ -216,7 +216,7 @@ var Home = React.createClass({
         console.log(url+'?imageView2/1/w/1280/h/720');
         slides.push(
           <View style={styles.slide1}>
-            <Image resizeMode={'contain'} style={styles.banner} source={{uri:url+'?imageView2/1/w/690/h/360'}}></Image>
+            <Image resizeMode={'cover'} style={styles.banner} source={{uri:url+'?imageView2/1/w/690/h/360'}}></Image>
           </View>
         );
       }
@@ -277,7 +277,7 @@ var Home = React.createClass({
     return (
       <TouchableOpacity underlayColor="transparent" onPress={()=>this._gotoTaskDetail(rowData.id)}>
           <View style={styles.item}>
-            <Image resizeMode={'contain'} style={styles.itemimg} source={{uri:rowData.mainPhotoUrl+'?imageView2/5/w/690/h/360'}}></Image>
+            <Image resizeMode={'cover'} style={styles.itemimg} source={{uri:rowData.mainPhotoUrl+'?imageView2/5/w/690/h/360'}}></Image>
             <View style={styles.itemtext}>
               <Text style={styles.itemtitle}>{rowData.taskName}</Text>
               <Text style={styles.itemprice}>{rowData.price}元/次</Text>

@@ -25,7 +25,7 @@ var ReceiveTask = React.createClass({
     };
   },
   refresh:function(){
-    this._onFetch();
+    this.refs.listview._refresh();
   },
   _onFetch(page = 1, callback, options) {
     Util.get(Service.host + Service.myReceiveTaskList, {
@@ -34,7 +34,7 @@ var ReceiveTask = React.createClass({
     }, function(data){
       console.log(data);
       if(data.code == 200){
-        var rows = data.data.response.taskList;
+        var rows = data.data.response.taskList?data.data.response.taskList:[];
         if(rows.length==10){
           callback(rows);
         }else if(rows.length<10){
@@ -139,7 +139,7 @@ _renderPaginationWaitingView(paginateCallback) {
       style={customStyles.paginationView}
     >
       <Text style={[customStyles.actionsLabel, {fontSize: 13}]}>
-        Load more
+        加载更多
       </Text>
     </TouchableHighlight>
   );
@@ -206,6 +206,7 @@ _renderSeparatorView() {
       //   {this._getSpinner()}
       // </View>
       <GiftedListView
+        ref="listview"
         refreshState = {this.state.refresh}
         contentContainerStyle = {styles.innercontainer}
         rowView={this._renderRowView}

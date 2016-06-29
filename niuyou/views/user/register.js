@@ -226,6 +226,7 @@ var Register = React.createClass({
         >
           <GiftedForm.TextInputWidget
             name='username'
+            value=''
             title='账号'
             placeholder='请输入手机号码'
             clearButtonMode='while-editing'
@@ -250,6 +251,7 @@ var Register = React.createClass({
 
           <GiftedForm.TextInputWidget
             name='password' // mandatory
+            value=''
             title='密码'
             placeholder='请输入密码'
             clearButtonMode='while-editing'
@@ -282,7 +284,6 @@ var Register = React.createClass({
 
             }}
           />
-          <GiftedForm.HiddenWidget name='tos' value={true} />
         </GiftedForm>
         </View>
 

@@ -77,6 +77,17 @@ var Mine = React.createClass({
       that._checkSessionKey();
     });
 
+    // 开启牛友之旅后跳回到这里的处理
+    this.props.navigator.navigationContext.addListener('didfocus', (event) => {
+      // this.currentRoute will go away
+      // event.data.route will be focused
+      console.log(event.data.route);
+      if(event.data.route.title == 'mine'){
+        that._checkSessionKey();
+      }
+
+    });
+
   },
   _checkSessionKey:function(){
     var that = this;

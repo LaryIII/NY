@@ -70,14 +70,14 @@ var niuyou = React.createClass({
     var display = false;
     var barTintColor = '#f9f9f9';
     if(title === '主页'){
-      title = '';
+      title = 'home';
       display = true;
       data = this.state.data;
       barTintColor = '#f3ea85';
     }
     if(title === '接任务'){
       display = true;
-      title = '';
+      title = 'jrw';
       barTintColor = '#f9f9f9';
     }
     if(title === '排行榜'){
@@ -85,7 +85,7 @@ var niuyou = React.createClass({
     }
     if(title === '我的'){
       display = true;
-      title = '';
+      title = 'mine';
       barTintColor = '#f9f9f9';
     }
     return <NavigatorIOS

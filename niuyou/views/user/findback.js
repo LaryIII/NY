@@ -42,6 +42,7 @@ var Findback = React.createClass({
     });
   },
   _findback:function(mobile,verifycode,password,confirmpassword){
+    var that = this;
     Util.get(Service.host + Service.resetPwd, {
       mobile:mobile,
       password:password,
@@ -61,7 +62,8 @@ var Findback = React.createClass({
         // 保存sessionKey
         AsyncStorage.setItem('userinfo',JSON.stringify(data.data.response),function(err){
           if(!err){
-            that._gotoStartny();
+            // 回到顶级路由
+            that.props.navigator.popToTop();
           }
         })
       }else{
@@ -98,6 +100,7 @@ var Findback = React.createClass({
     });
   },
   _sendverifycode:function(){
+    var that = this;
     // 先校验图形验证码是否填写
     if(this.state.verifyCode == ''){
       AlertIOS.alert('提醒','请填写图形验证码!');
@@ -111,7 +114,7 @@ var Findback = React.createClass({
     }, function(data){
       console.log(data);
       if(data.code == 200){
-        this.setState({open: false})
+        that.setState({open: false})
       }else{
         AlertIOS.alert('提醒',data.messages[0].message);
       }
@@ -231,7 +234,7 @@ var Findback = React.createClass({
             secureTextEntry={true}
           />
           <GiftedForm.SubmitWidget
-            title='注册'
+            title='重置密码'
             isLoading = {this.state.isLoading}
             widgetStyles={{
               submitButton: {
@@ -261,7 +264,7 @@ var Findback = React.createClass({
            offset={this.state.offset}
            open={this.state.open}
            modalDidOpen={() => console.log('modal did open')}
-           modalDidClose={() => this.setState({open: false})}
+           modalDidClose={() => console.log('modal did close')}
            style={{alignItems: 'center'}}
            overlayOpacity={0.3}>
            <View style={styles.modalbox}>

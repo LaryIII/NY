@@ -33,7 +33,7 @@ var Authinfo = React.createClass({
   _gotoAuthinfo2: function(){
     var that = this;
     // 保存持证照片成功后跳到下一步
-    if(this.state.shengfenphoto && this.state.shengfenphoto.uri){
+    if(this.state.shengfenphoto && this.state.shengfenphoto.uri != 'backo'){
       Util.get(Service.host + Service.saveCardnoPhotoUrl, {
         cardnoPhotoUrl:this.state.shengfenphoto.uri,
       }, function(data){

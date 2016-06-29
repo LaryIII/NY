@@ -33,7 +33,7 @@ var Authinfo2 = React.createClass({
   _gotoAuthinfo3: function(){
     var that = this;
     // 保存持证照片成功后跳到下一步
-    if(this.state.numberphoto && this.state.numberphoto.uri){
+    if(this.state.numberphoto && this.state.numberphoto.uri != 'backo'){
       Util.get(Service.host + Service.savePeopleNumPhotoUrl, {
         peopleNumPhotoUrl:this.state.numberphoto.uri,
       }, function(data){
