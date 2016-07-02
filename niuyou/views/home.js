@@ -9,6 +9,7 @@ import Util from './utils';
 import RNGeocoder from 'react-native-geocoder';
 import Service from './service';
 import TaskDetail from './jrw/taskdetail';
+import H5Detail from './jrw/h5detail';
 import SQLite from 'react-native-sqlite-storage';
 SQLite.DEBUG(true);
 // SQLite.enablePromise(true);
@@ -208,16 +209,60 @@ var Home = React.createClass({
     this.getIndexData();
   },
 
+  _gotoDetail:function(type, value){
+    if(type == 1){
+      // H5页面
+      var that = this;
+      that.props.navigator.push({
+        title: '详情',
+        component: H5Detail,
+        navigationBarHidden:false,
+        barTintColor:'#f9f9f9',
+        // backButtonTitle: "返回",
+        // backButtonIcon: require('image!back'),
+        leftButtonTitle: "返回",
+        leftButtonIcon:require('image!back1'),
+        onLeftButtonPress: ()=>this.props.navigator.pop(),
+        passProps: {
+          url:value
+        }
+      });
+    }else if(type == 2){
+      // native页面
+      var that = this;
+      that.props.navigator.push({
+        title: '任务详情',
+        component: TaskDetail,
+        navigationBarHidden:false,
+        barTintColor:'#f9f9f9',
+        // backButtonTitle: "返回",
+        // backButtonIcon: require('image!back'),
+        leftButtonTitle: "返回",
+        leftButtonIcon:require('image!back1'),
+        onLeftButtonPress: ()=>this.props.navigator.pop(),
+        passProps: {
+          id:value,
+          type:'',
+          event:that.props.event
+        }
+      });
+    }
+  },
+
   render: function(){
     var slides = [];
     if(this.state.adList && this.state.adList.length>0){
       for(var i=0;i<this.state.adList.length;i++){
         var url = this.state.adList[i].imgUrl;
+        var type = this.state.adList[i].linkType;
+        var value = this.state.adList[i].linkParam;
         console.log(url+'?imageView2/1/w/1280/h/720');
         slides.push(
-          <View style={styles.slide1}>
-            <Image resizeMode={'cover'} style={styles.banner} source={{uri:url+'?imageView2/1/w/690/h/360'}}></Image>
-          </View>
+          <TouchableOpacity onPress={()=>this._gotoDetail(type, value)}>
+            <View style={styles.slide1}>
+              <Image resizeMode={'cover'} style={styles.banner} source={{uri:url+'?imageView2/1/w/690/h/360'}}></Image>
+            </View>
+          </TouchableOpacity>
         );
       }
     }

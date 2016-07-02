@@ -26,6 +26,7 @@
 		B92D19C41CF066830074AD64 /* libRNFileDownload.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B92D19C11CF066760074AD64 /* libRNFileDownload.a */; };
 		B92D19CB1CF06A300074AD64 /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B92D19CA1CF06A2A0074AD64 /* libRNFS.a */; };
 		B92D19D21CF099EE0074AD64 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B92D19D11CF099E90074AD64 /* libRNImagePicker.a */; };
+		B937AE5E1D27D08300D75F40 /* RCTLocalImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B937AE5D1D27D08300D75F40 /* RCTLocalImageManager.m */; };
 		B937BC941CEDCEEE007FC4FA /* resource.db in Resources */ = {isa = PBXBuildFile; fileRef = B937BC931CEDCEEE007FC4FA /* resource.db */; };
 		B939A5D01CED9FCB0033C19F /* libRNGeocoder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B939A5CF1CED9FB30033C19F /* libRNGeocoder.a */; };
 		B95849DD1CF4493D006CF4D8 /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B95849CE1CF44677006CF4D8 /* libRCTCameraRoll.a */; };
@@ -181,6 +182,7 @@
 		B92D19B21CF066760074AD64 /* RNFileDownload.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFileDownload.xcodeproj; path = "../node_modules/react-native-file-download/RNFileDownload.xcodeproj"; sourceTree = "<group>"; };
 		B92D19C51CF06A2A0074AD64 /* RNFS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
 		B92D19CC1CF099E90074AD64 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
+		B937AE5D1D27D08300D75F40 /* RCTLocalImageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTLocalImageManager.m; path = "../node_modules/react-native-local-image-manager/RCTLocalImageManager.m"; sourceTree = "<group>"; };
 		B937BC931CEDCEEE007FC4FA /* resource.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = resource.db; path = "/Users/zhouhai/Library/Developer/Xcode/DerivedData/niuyou-dpdodzkfzerlqebmruzkowpprjns/Build/Products/Debug-iphoneos/../../../../../../../../GitHub/NY/niuyou/ios/niuyou/resource.db"; sourceTree = "<absolute>"; };
 		B939A5C01CED9FB30033C19F /* RNGeocoder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNGeocoder.xcodeproj; path = "../node_modules/react-native-geocoder/RNGeocoder.xcodeproj"; sourceTree = "<group>"; };
 		B95849C81CF44677006CF4D8 /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
@@ -302,6 +304,7 @@
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
+				B937AE5D1D27D08300D75F40 /* RCTLocalImageManager.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
@@ -742,6 +745,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B937AE5E1D27D08300D75F40 /* RCTLocalImageManager.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);

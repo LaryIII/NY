@@ -60,6 +60,7 @@ var Jrw = React.createClass({
       passProps: {
         id:id,
         type:type,
+        event:that.props.event
       }
     });
   },

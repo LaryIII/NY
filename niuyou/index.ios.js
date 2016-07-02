@@ -7,6 +7,10 @@ import Phb from './views/phb';
 import Mine from './views/mine';
 import Util from './views/utils';
 import Service from './views/service';
+var EventEmitter = require('EventEmitter');
+var Subscribable = require('Subscribable');
+window.EventEmitter = EventEmitter;
+window.Subscribable = Subscribable;
 import {
   AppRegistry,
   StyleSheet,
@@ -25,7 +29,7 @@ var niuyou = React.createClass({
   },
 
   displayName: 'TabBarExample',
-
+  mixins: [Subscribable.Mixin],
   getInitialState: function() {
     return {
       selectedTab: 0,
@@ -36,8 +40,18 @@ var niuyou = React.createClass({
       }
     };
   },
+  componentWillMount:function(){
+    this.eventEmitter = new EventEmitter();
+  },
   componentDidMount:function(){
+    var that = this;
     this._checkSSO();
+    this.addListenerOn(this.eventEmitter, 'gotomine',  function(args){
+      console.log('gotomine');
+      that.setState({
+        selectedTab: 3,
+      });
+    });
   },
   _checkSSO:function(){
     var that = this;
@@ -66,6 +80,7 @@ var niuyou = React.createClass({
   },
 
   _addNavigator: function(component, title){
+    var that = this;
     var data = null;
     var display = false;
     var barTintColor = '#f9f9f9';
@@ -100,7 +115,8 @@ var niuyou = React.createClass({
           component: component,
           title: title,
           passProps:{
-            data: data
+            data: data,
+            event:that.eventEmitter,
           },
         }}
       />;

@@ -14,6 +14,8 @@ var EventEmitter = require('EventEmitter');
 var Subscribable = require('Subscribable');
 window.EventEmitter = EventEmitter;
 window.Subscribable = Subscribable;
+var { NativeModules } = require('react-native');
+var LocalImageManager = require('NativeModules').LocalImageManager;
 import {
   View,
   TextInput,
@@ -28,6 +30,7 @@ import {
   Clipboard,
   Alert,
   ActivityIndicatorIOS,
+  CameraRoll,
 } from 'react-native';
 
 var TaskDetail = React.createClass({
@@ -243,8 +246,45 @@ var TaskDetail = React.createClass({
         });
       }else{
         // 500 提示错误信息
-        AlertIOS.alert('提醒',data.messages[0].message);
+          AlertIOS.alert(
+            '提醒',
+            '用户资料还没有认证，不能接单。',
+            [
+              {text: '取消', onPress: () => {}},
+              {text: '去认证', onPress: () => {
+                if(that.props.event){
+                  that.props.event.emit('gotomine', {});
+                }
+              }},
+            ]
+          )
+
       }
+    });
+  },
+  _gotoRZ:function(){
+    var that = this;
+    AsyncStorage.getItem('city',function(err,result){
+      var cityInfo = '';
+      if(!err){
+         cityInfo = result?result:'';
+      }
+      that.props.navigator.push({
+        title: '请选择城市',
+        component: SelectCity,
+        navigationBarHidden:false,
+        barTintColor:'#f9f9f9',
+        // backButtonTitle: "返回",
+        // backButtonIcon: require('image!back'),
+        leftButtonTitle: "返回",
+        leftButtonIcon:require('image!back1'),
+        onLeftButtonPress: ()=>that.props.navigator.pop(),
+        passProps:{
+          events: that.eventEmitter,
+          cityInfo:cityInfo,
+          type:"renzheng",// home:首页进去的；renzheng:认证页面第一步
+        }
+      });
     });
   },
   _copy:function(){
@@ -258,33 +298,50 @@ var TaskDetail = React.createClass({
     // }
   },
   _download:function(){
+    // for(var i=0;i<this.state.imgs.length;i++){
+    //   var URL = this.state.imgs[i].photoUrl;
+    //   var DEST = RNFS.DocumentDirectoryPath;
+    //   var arrs = URL.split('.');
+    //   var fileName = new Date().getTime()+i*10000+'.'+arrs[arrs.length-1];
+    //   console.log(fileName);
+    //   var headers = {
+    //     'Accept-Language':'zh-CN'
+    //   };
+    //   (function(URL,DEST,fileName,headers,n,length){
+    //     var flag = false;
+    //     console.log(n,length);
+    //     if(n==length-1){
+    //       flag = true;
+    //     }
+    //     FileDownload.download(URL, DEST, fileName, headers)
+    //     .then((response) => {
+    //       if(flag){
+    //         Alert.alert('下载成功');
+    //       }
+    //       console.log(`downloaded! file saved to: ${response}`)
+    //     })
+    //     .catch((error) => {
+    //       console.log(error)
+    //     })
+    //   })(URL,DEST,fileName,headers,i,this.state.imgs.length)
+    // }
+    var count = this.state.imgs.length;
+    var c = 0;
     for(var i=0;i<this.state.imgs.length;i++){
       var URL = this.state.imgs[i].photoUrl;
-      var DEST = RNFS.DocumentDirectoryPath;
-      var arrs = URL.split('.');
-      var fileName = new Date().getTime()+i*10000+'.'+arrs[arrs.length-1];
-      console.log(fileName);
-      var headers = {
-        'Accept-Language':'zh-CN'
-      };
-      (function(URL,DEST,fileName,headers,n,length){
-        var flag = false;
-        console.log(n,length);
-        if(n==length-1){
-          flag = true;
-        }
-        FileDownload.download(URL, DEST, fileName, headers)
-        .then((response) => {
-          if(flag){
+      (function(url){
+        CameraRoll.saveImageWithTag(url, function(data) {
+          console.log(data);
+          c++;
+          if(c == count){
             Alert.alert('下载成功');
           }
-          console.log(`downloaded! file saved to: ${response}`)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-      })(URL,DEST,fileName,headers,i,this.state.imgs.length)
+        }, function(err) {
+          console.log(err);
+        });
+      })(URL);
     }
+
 
   },
   _uploadZM:function(taskId){
@@ -350,8 +407,11 @@ var TaskDetail = React.createClass({
     var applybtn = [];
     var shareimgs = [];
     var stars = [];
+    var downloadbtn = [];
+    var copybtn = [];
     var scrollbottom = 0;
     var paddingBottom = 0;
+    var applynumBottom = 15;
     // 这边搞错了，taskPhotoList是用户需要分享的图片，而不是证明图片
     if(this.state.taskOrderPhotoList && this.state.taskOrderPhotoList.length>0){
       for(var i=0; i< this.state.taskOrderPhotoList.length;i++){
@@ -383,6 +443,7 @@ var TaskDetail = React.createClass({
         </View>
       );
     }else{
+      applynumBottom = 80;
       <View />
     }
     if(this.state.status == 1){
@@ -398,6 +459,7 @@ var TaskDetail = React.createClass({
       );
       scrollbottom=135;
       paddingBottom = 135;
+      applynumBottom = 15;
     }else if(this.state.status == 2){
       applybtn.push(
         <View style={styles.applybtn}>
@@ -410,9 +472,34 @@ var TaskDetail = React.createClass({
       );
       scrollbottom=135;
       paddingBottom = 135;
+      applynumBottom = 15;
     }else{
       applybtn.push(<View />);
       paddingBottom = 135;
+    }
+
+    if(this.state.status == 1){
+      downloadbtn.push(
+        <View></View>
+      );
+      copybtn.push(
+        <View></View>
+      );
+    }else{
+      downloadbtn.push(
+        <TouchableOpacity onPress={this._download}>
+          <View style={styles.circle}>
+            <Image resizeMode={'contain'} style={styles.circleimg} source={require('image!download')}></Image>
+          </View>
+        </TouchableOpacity>
+      );
+      copybtn.push(
+        <TouchableOpacity onPress={this._copy}>
+          <View style={styles.circle}>
+            <Image resizeMode={'contain'} style={styles.circleimg} source={require('image!copy')}></Image>
+          </View>
+        </TouchableOpacity>
+      );
     }
 
     if(this.state.taskPhotoList && this.state.taskPhotoList.length>0){
@@ -439,8 +526,8 @@ var TaskDetail = React.createClass({
       }
     }
     return (
-      <View style={[styles.container,{paddingBottom:paddingBottom}]}>
-        <ScrollView style={[styles.scrollbox,{paddingBottom:scrollbottom}]}>
+      <View style={[styles.container,]}>
+        <ScrollView style={[styles.scrollbox,]} contentContainerStyle={{paddingBottom:scrollbottom}}>
           <View style={styles.header}>
             <Image resizeMode={'contain'} style={styles.faces} source={{uri:this.state.merchantInfoDto.merchantLogo+'?imageView2/1/w/120/h/120'}}></Image>
             <Text style={styles.facesname}>{this.state.merchantInfoDto.merchantName}</Text>
@@ -517,11 +604,7 @@ var TaskDetail = React.createClass({
                 {shareimgs}
               </View>
             </View>
-            <TouchableOpacity onPress={this._download}>
-              <View style={styles.circle}>
-                <Image resizeMode={'contain'} style={styles.circleimg} source={require('image!download')}></Image>
-              </View>
-            </TouchableOpacity>
+            {downloadbtn}
           </View>
           <View style={styles.beizhu}>
             <View style={styles.bz_header}>
@@ -535,13 +618,9 @@ var TaskDetail = React.createClass({
                 {'\t'}{this.state.task.taskText}
               </Text>
             </View>
-            <TouchableOpacity onPress={this._copy}>
-              <View style={styles.circle}>
-                <Image resizeMode={'contain'} style={styles.circleimg} source={require('image!copy')}></Image>
-              </View>
-            </TouchableOpacity>
+            {copybtn}
           </View>
-          <View style={styles.applynum}>
+          <View style={[styles.applynum,{marginBottom:applynumBottom}]}>
             <Image resizeMode={'contain'} style={styles.faces} source={require('image!apply_num')}></Image>
             <Text style={styles.facesname}>申请量</Text>
             <Text style={styles.applynum_text}>{this.state.task.orderPeopleNum}</Text>
