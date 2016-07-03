@@ -24,6 +24,9 @@ var AllTask = React.createClass({
       items: items,
     };
   },
+  refresh:function(){
+    this.refs.listview._refresh();
+  },
   _onFetch(page = 1, callback, options) {
     Util.get(Service.host + Service.taskList, {
       pageNo:page-1,
@@ -64,7 +67,7 @@ var AllTask = React.createClass({
             <Text style={styles.itemprice}>{rowData.price}元/次  性别限制:{rowData.gender==1?'男':'女'}</Text>
             <Text style={styles.itemdesc}>地区限制:{rowData.publicCity}</Text>
             <Text style={styles.itemdesc}>{moment(rowData.showEndTime).format('YYYY-MM-DD HH:mm')}</Text>
-            <Text style={styles.itemnum}>已接受任务自媒体：<Text style={styles.em}>{rowData.peopleNum}人</Text></Text>
+            <Text style={styles.itemnum}>已接受任务自媒体：<Text style={styles.em}>{rowData.orderPeopleNum}人</Text></Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -203,6 +206,7 @@ _renderSeparatorView() {
       //   {this._getSpinner()}
       // </View>
       <GiftedListView
+        ref="listview"
         contentContainerStyle = {styles.innercontainer}
         rowView={this._renderRowView}
         onFetch={this._onFetch}
@@ -368,7 +372,7 @@ var styles = StyleSheet.create({
   },
   borderbottom:{
     backgroundColor:'#ececec',
-    height:0.5,
+    height:Util.pixel,
   },
   placeholder:{
     flex:1,

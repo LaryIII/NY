@@ -460,7 +460,7 @@ var styles = StyleSheet.create({
     bottom:68,
     width:Dimensions.get('window').width,
     height:68,
-    borderTopWidth:0.5,
+    borderTopWidth:Util.pixel,
     borderTopColor:'#dfdfdf',
     backgroundColor:'#fff',
   },

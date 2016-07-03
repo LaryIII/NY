@@ -364,7 +364,7 @@ var styles = StyleSheet.create({
   },
   borderbottom:{
     backgroundColor:'#ececec',
-    height:0.5,
+    height:Util.pixel,
   },
   placeholder:{
     flex:1,

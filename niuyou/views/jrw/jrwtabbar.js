@@ -1,5 +1,6 @@
 const React = require('react');
 const ReactNative = require('react-native');
+import Util from './../utils';
 const {
   StyleSheet,
   Text,
@@ -75,12 +76,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor:'#f9f9f9',
+    marginBottom:Util.pixel,
   },
   tabs: {
     height: 44,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    borderWidth: 0.5,
+    borderWidth: Util.pixel,
     borderTopWidth: 0,
     borderLeftWidth: 0,
     borderRightWidth: 0,

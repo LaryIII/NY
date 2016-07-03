@@ -348,7 +348,7 @@ var styles = StyleSheet.create({
     height:64+125,
     paddingTop:20,
     alignItems:'center',
-    borderBottomWidth:0.5,
+    borderBottomWidth:Util.pixel,
     borderBottomColor:'#ececec',
   },
   settingbox:{
@@ -437,7 +437,7 @@ var styles = StyleSheet.create({
   applybtn:{
     width:Dimensions.get('window').width,
     height:68,
-    borderTopWidth:0.5,
+    borderTopWidth:Util.pixel,
     borderTopColor:'#dfdfdf',
     backgroundColor:'#fff',
   },

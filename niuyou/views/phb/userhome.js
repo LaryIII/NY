@@ -155,7 +155,7 @@ var styles = StyleSheet.create({
     backgroundColor:'#fff',
     alignItems:'center',
     // justifyContent:'center',
-    borderBottomWidth:0.5,
+    borderBottomWidth:Util.pixel,
     borderBottomColor:'#dfdfdf',
   },
   faces:{
@@ -197,7 +197,7 @@ var styles = StyleSheet.create({
   row:{
     flex:1,
     flexDirection:'row',
-    borderBottomWidth:0.5,
+    borderBottomWidth:Util.pixel,
     borderBottomColor:'#dfdfdf',
     paddingTop:15,
     paddingLeft:15,
@@ -206,7 +206,7 @@ var styles = StyleSheet.create({
   },
   col1:{
     flex:1,
-    borderRightWidth:0.5,
+    borderRightWidth:Util.pixel,
     borderRightColor:'#dfdfdf',
     justifyContent:'center',
     alignItems:'center',
@@ -245,7 +245,7 @@ var styles = StyleSheet.create({
   beizhu:{
     flex:1,
     backgroundColor:'#fff',
-    borderBottomWidth:0.5,
+    borderBottomWidth:Util.pixel,
     borderBottomColor:'#dfdfdf',
     marginBottom:15,
   },
@@ -307,7 +307,7 @@ var styles = StyleSheet.create({
     height:50,
     backgroundColor:'#fff',
     // justifyContent:'center',
-    borderBottomWidth:0.5,
+    borderBottomWidth:Util.pixel,
     borderBottomColor:'#dfdfdf',
     marginBottom:15,
   },
@@ -324,7 +324,7 @@ var styles = StyleSheet.create({
     bottom:68,
     width:Dimensions.get('window').width,
     height:68,
-    borderTopWidth:0.5,
+    borderTopWidth:Util.pixel,
     borderTopColor:'#dfdfdf',
     backgroundColor:'#fff',
   },

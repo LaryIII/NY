@@ -361,7 +361,7 @@ var styles = StyleSheet.create({
   navigatorx:{
     backgroundColor:'#fff',
     height:50,
-    borderWidth:0.5,
+    borderWidth:Util.pixel,
     borderColor:'#dfdfdf',
   },
   tabs:{

@@ -141,7 +141,7 @@ var styles = StyleSheet.create({
     paddingRight:15,
     height:44,
     backgroundColor:'#fff',
-    borderBottomWidth:0.5,
+    borderBottomWidth:Util.pixel,
     borderBottomColor:'#dfdfdf',
   },
   warningimg:{
@@ -158,7 +158,7 @@ var styles = StyleSheet.create({
   beizhu:{
     flex:1,
     backgroundColor:'#fff',
-    borderBottomWidth:0.5,
+    borderBottomWidth:Util.pixel,
     borderBottomColor:'#dfdfdf',
   },
   bz_header:{

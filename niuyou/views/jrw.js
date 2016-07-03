@@ -45,6 +45,17 @@ var Jrw = React.createClass({
       // that._checkSessionKey();
       that.refs.receive.refresh();
     });
+    //从applytask回来的时候，刷新页面
+    this.props.navigator.navigationContext.addListener('didfocus', (event) => {
+      // this.currentRoute will go away
+      // event.data.route will be focused
+      console.log(event.data.route);
+      if(event.data.route.title == '接任务'){
+        that.refs.alltask.refresh();
+        that.refs.receive.refresh();
+      }
+
+    });
   },
   _gotoTaskDetail:function(id,type){
     var that = this;
@@ -106,7 +117,7 @@ var Jrw = React.createClass({
     return (
       <View style={styles.bigcontainer}>
       <ScrollableTabView style={styles.container} renderTabBar={() =><JRWTabBar />} onChangeTab={(item)=>this._changeTab(item)}>
-        <AllTask tabLabel="所有任务" onRowPress={(id)=>{
+        <AllTask ref="alltask" tabLabel="所有任务" onRowPress={(id)=>{
           this._gotoTaskDetail(id,'all');
         }} />
         <ReceiveTask ref="receive" tabLabel="可接任务" refreshFlag={this.state.refreshReceive} onRowPress={(id)=>{

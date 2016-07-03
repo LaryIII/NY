@@ -90,7 +90,7 @@ var styles = StyleSheet.create({
   textinput:{
     flex:1,
     height:180,
-    borderBottomWidth:0.5,
+    borderBottomWidth:Util.pixel,
     borderBottomColor:'#dfdfdf',
     paddingTop:10,
     paddingLeft:15,
@@ -105,9 +105,9 @@ var styles = StyleSheet.create({
   textinput2:{
     flex:1,
     height:44,
-    borderBottomWidth:0.5,
+    borderBottomWidth:Util.pixel,
     borderBottomColor:'#dfdfdf',
-    borderTopWidth:0.5,
+    borderTopWidth:Util.pixel,
     borderTopColor:'#dfdfdf',
     paddingLeft:15,
     paddingRight:15,

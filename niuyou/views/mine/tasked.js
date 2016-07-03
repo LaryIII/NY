@@ -3,6 +3,7 @@
  */
 
 import React, { Component } from 'react';
+import Util from './../utils';
 import TaskDetail from './../jrw/taskdetail';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import JRWTabBar from './../jrw/jrwtabbar';
@@ -165,7 +166,7 @@ var styles = StyleSheet.create({
   navigatorx:{
     backgroundColor:'#fff',
     height:50,
-    borderWidth:0.5,
+    borderWidth:Util.pixel,
     borderColor:'#dfdfdf',
   },
   tabs:{

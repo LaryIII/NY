@@ -52,6 +52,15 @@ var Home = React.createClass({
   },
   componentDidMount: function() {
     var that = this;
+
+    //从applytask回来的时候，刷新页面
+    this.props.navigator.navigationContext.addListener('didfocus', (event) => {
+      console.log(event.data.route);
+      if(event.data.route.title == '主页'){
+        that.getIndexData();
+      }
+    });
+
     this.addListenerOn(this.eventEmitter, 'locate_success',  function(args){
       console.log('locate_success');
       that.setState({
