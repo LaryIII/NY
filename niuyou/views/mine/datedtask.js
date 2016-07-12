@@ -7,8 +7,8 @@ import Util from './../utils';
 import TaskDetail from './../jrw/taskdetail';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import JRWTabBar from './../jrw/jrwtabbar';
-import NotSettledTask from './notsettledtask';
-import SettledTask from './settledtask';
+import NoPassTask from './nopasstask';
+import InvalidTask from './invalidtask';
 import {
   View,
   Text,
@@ -26,7 +26,7 @@ var Tasked = React.createClass({
       items: items,
     };
   },
-  _gotoTaskDetail: function(){
+  _gotoTaskDetail: function(taskId){
     this.props.navigator.push({
       title: '任务详情',
       component: TaskDetail,
@@ -47,10 +47,10 @@ var Tasked = React.createClass({
     return (
       <View style={styles.bigcontainer}>
         <ScrollableTabView style={styles.container} renderTabBar={() =><JRWTabBar />}>
-          <NotSettledTask tabLabel="审核不通过" onRowPress={(id)=>{
+          <NoPassTask tabLabel="审核不通过" onRowPress={(id)=>{
             this._gotoTaskDetail(id);
           }} />
-          <SettledTask ref="receive" tabLabel="失效的任务" refreshFlag={this.state.refreshReceive} onRowPress={(id)=>{
+          <InvalidTask tabLabel="失效的任务" onRowPress={(id)=>{
             this._gotoTaskDetail(id);
           }} />
         </ScrollableTabView>
