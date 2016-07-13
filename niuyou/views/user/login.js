@@ -62,7 +62,12 @@ var Login = React.createClass({
         AsyncStorage.setItem('userinfo',JSON.stringify(data.data.response),function(err){
           if(!err){
               that.props.events.emit('login_success', {});
-              that.props.navigator.popToTop();
+              if(that.props.type=='taskdetail'){
+                that.props.navigator.pop();
+              }else{
+                that.props.navigator.popToTop();
+              }
+
           }
         })
       }else{

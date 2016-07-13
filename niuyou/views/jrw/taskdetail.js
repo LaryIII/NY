@@ -11,6 +11,7 @@ import qiniu from 'react-native-qiniu';
 import Modal from 'react-native-simple-modal';
 import CameraPicker from './../mine/camerapicker';
 import ImageResizer from 'react-native-image-resizer';
+import UpdateImg from './../mine/updateimg';
 var EventEmitter = require('EventEmitter');
 var Subscribable = require('Subscribable');
 window.EventEmitter = EventEmitter;
@@ -98,17 +99,6 @@ var TaskDetail = React.createClass({
       id:this.props.id
     });
     this.getDetail();
-  },
-  componentDidMount:function(){
-    var that = this;
-    this.props.navigator.navigationContext.addListener('didfocus', (event) => {
-      // this.currentRoute will go away
-      // event.data.route will be focused
-      console.log(event.data.route);
-      if(event.data.route.title == '任务详情'){
-        that.getDetail();
-      }
-    });
   },
   getDetail:function(){
     var that = this;
@@ -202,21 +192,7 @@ var TaskDetail = React.createClass({
                            that.setState({
                              open:false,
                            })
-                           Util.get(Service.host + Service.sureOrder, {
-                             taskId:taskId
-                           }, function(data){
-                             console.log(data);
-                             if(data.code == 200){
-                               AlertIOS.alert('提醒',
-                               '任务提交成功, 请耐心等待审核',
-                               [
-                                 {text: '确认', onPress: () => that.getDetail()},
-                               ]
-                             );
-                             }else{
-                               AlertIOS.alert('提醒',data.messages[0].message);
-                             }
-                           });
+
                          }
                        }else{
 
@@ -234,6 +210,11 @@ var TaskDetail = React.createClass({
 
         })(args.images[i],args.taskId)
       }
+    });
+
+    this.addListenerOn(this.eventEmitter, 'login_success',  function(args){
+      console.log('login_success');
+      that.getDetail();
     });
 
     //从applytask回来的时候，刷新页面
@@ -281,6 +262,10 @@ var TaskDetail = React.createClass({
           leftButtonTitle: "返回",
           leftButtonIcon:require('image!back1'),
           onLeftButtonPress: ()=>that.props.navigator.pop(),
+          passProps: {
+              events: that.eventEmitter,
+              type:'taskdetail'
+          }
         });
       }else{
         // 500 提示错误信息
@@ -288,6 +273,7 @@ var TaskDetail = React.createClass({
 
           if(data2.code == 200 && data2.data.response.personalInfo){
             var result = data2.data.response.personalInfo.status;
+            var nopassResult = data2.data.response.personalInfo.nopassResult;
             console.log(result);
             if(result == 1){
               AlertIOS.alert(
@@ -308,7 +294,7 @@ var TaskDetail = React.createClass({
                 '用户资料申请已被驳回，不能接单。',
                 [
                   {text: '取消', onPress: () => {}},
-                  {text: '去认证', onPress: () => {
+                  {text: '继续认证', onPress: () => {
                     if(that.props.event){
                       that.props.event.emit('gotomine', {});
                     }
@@ -416,6 +402,24 @@ var TaskDetail = React.createClass({
 
 
   },
+  _uploadImg:function(taskId){
+    var that = this;
+    that.props.navigator.push({
+      title: '请上传证明图片',
+      component: UpdateImg,
+      navigationBarHidden:false,
+      barTintColor:'#f9f9f9',
+      // backButtonTitle: "返回",
+      // backButtonIcon: require('image!back'),
+      leftButtonTitle: "返回",
+      leftButtonIcon:require('image!back1'),
+      onLeftButtonPress: ()=>that.props.navigator.pop(),
+      passProps:{
+        taskId:taskId,
+        taskOrderPhotoList:that.state.taskOrderPhotoList,
+      }
+    });
+  },
   _uploadZM:function(taskId){
     var that = this;
     var title = '';
@@ -493,9 +497,6 @@ var TaskDetail = React.createClass({
           imgs.push(
             <View style={styles.uploadimg}>
             <Image resizeMode={'contain'} style={styles.zmimg2} source={{uri:that.state.taskOrderPhotoList[n]}}></Image>
-              <TouchableOpacity onPress={()=>that._delimg(n)}>
-                <Text style={styles.delimg}>删除</Text>
-              </TouchableOpacity>
             </View>
           );
         })(i)
@@ -541,7 +542,7 @@ var TaskDetail = React.createClass({
     }else if(this.state.status == 2){
       applybtn.push(
         <View style={styles.applybtn}>
-          <TouchableOpacity onPress={()=>this._uploadZM(this.props.id)}>
+          <TouchableOpacity onPress={()=>this._uploadImg(this.props.id)}>
             <View style={styles.bluebtn}>
               <Text style={styles.bluebtntext}>上传证明图片</Text>
             </View>
@@ -645,7 +646,6 @@ var TaskDetail = React.createClass({
     return (
       <View style={[styles.container,]}>
         <ScrollView style={[styles.scrollbox,]} contentContainerStyle={{paddingBottom:scrollbottom}}>
-          {statusxdom}
           <View style={styles.header}>
             <Image resizeMode={'contain'} style={styles.faces} source={{uri:this.state.merchantInfoDto.merchantLogo+'?imageView2/1/w/120/h/120'}}></Image>
             <Text style={styles.facesname}>{this.state.merchantInfoDto.merchantName}</Text>
