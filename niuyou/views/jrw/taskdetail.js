@@ -284,8 +284,11 @@ var TaskDetail = React.createClass({
         });
       }else{
         // 500 提示错误信息
-        AsyncStorage.getItem('personstatus',function(err,result){
-          if(!err){
+        Util.get(Service.host + Service.getInfo, {}, function(data2){
+
+          if(data2.code == 200 && data2.data.response.personalInfo){
+            var result = data2.data.response.personalInfo.status;
+            console.log(result);
             if(result == 1){
               AlertIOS.alert(
                 '提醒',
@@ -320,7 +323,6 @@ var TaskDetail = React.createClass({
               AlertIOS.alert('提醒',data.messages[0].message);
             }
           }
-
         });
       }
     });

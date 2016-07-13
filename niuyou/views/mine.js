@@ -128,7 +128,7 @@ var Mine = React.createClass({
               status:data.data.response.personalInfo.status,
               nopassResult:data.data.response.personalInfo.nopassResult,
             });
-            AsyncStorage.setItem('personstatus',data.data.response.personalInfo.status);
+            AsyncStorage.setItem('personstatus',data.data.response.personalInfo.status+'');
             if(that.state.showNopassResult){
               that.setState({
                 showNopassResult:false,
