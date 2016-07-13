@@ -41,7 +41,7 @@ var Authinfo2 = React.createClass({
         // 如果成功，返回原页面，且刷新页面
         if(data.code == 200){
           that.props.navigator.push({
-            title: '生活照认证',
+            title: '第四步: 生活照认证',
             component: Authinfo3,
             navigationBarHidden:false,
             // backButtonTitle: "返回",
@@ -69,13 +69,13 @@ var Authinfo2 = React.createClass({
       customButtons: {},
       cameraType: 'back', // 'front' or 'back'
       mediaType: 'photo', // 'photo' or 'video'
-      videoQuality: 'high', // 'low', 'medium', or 'high'
+      videoQuality: 'medium', // 'low', 'medium', or 'high'
       durationLimit: 10, // video recording max time in seconds
-      maxWidth: 1280, // photos only
-      maxHeight: 720, // photos only
+      maxWidth: 400, // photos only
+      maxHeight: 300, // photos only
       aspectX: 2, // android only - aspectX:aspectY, the cropping image's ratio of width to height
       aspectY: 1, // android only - aspectX:aspectY, the cropping image's ratio of width to height
-      quality: 0.6, // 0 to 1, photos only
+      quality: 0.5, // 0 to 1, photos only
       angle: 0, // android only, photos only
       allowsEditing: false, // Built in functionality to resize/reposition the image after selection
       noData: false, // photos only - disables the base64 `data` field from being generated (greatly improves performance on large photos)
@@ -160,7 +160,7 @@ var Authinfo2 = React.createClass({
           </View>
           <View style={styles.bz_content2}>
             <View style={styles.bbox}>
-              <Image resizeMode={'contain'} style={styles.bimg} source={require('./../../res/mine/contactnum_min.png')}></Image>
+              <Image resizeMode={'contain'} style={styles.bimg} source={require('./../../res/mine/contactnum_min.jpg')}></Image>
             </View>
           </View>
           <TouchableOpacity onPress={this._uploadImg}>
@@ -196,6 +196,7 @@ var Authinfo2 = React.createClass({
          modalDidOpen={() => console.log('modal did open')}
          modalDidClose={() => undefined}
          style={{alignItems: 'center'}}
+         closeOnTouchOutside={false}
          overlayOpacity={0.3}>
          <View style={styles.modalbox}>
             <ActivityIndicatorIOS style={styles.modalindicator} color="#999" />

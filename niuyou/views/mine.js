@@ -14,6 +14,7 @@ import Setting from './mine/setting';
 import Login from './user/login';
 import SelectCity from './home/selectcity';
 import qiniu from 'react-native-qiniu';
+import UpdateAvatar from './user/updateavatar';
 qiniu.conf.ACCESS_KEY = '0cWE2Ci38evF_wbXbHSAUt-5vXMZgqN3idgyvvMy';
 qiniu.conf.SECRET_KEY = '3kBcjCfTbqEVKWZttKLae_RM0zEbYc3-Q-STnXkw';
 
@@ -45,11 +46,12 @@ var Mine = React.createClass({
       nickname:'匿名',
       status:1,
       nopassResult:'',
+      showNopassResult:true,
     };
   },
   componentWillMount:function(){
     this.eventEmitter = new EventEmitter();
-    this._checkSessionKey();
+    // this._checkSessionKey();
   },
   componentDidMount:function(){
     var that = this;
@@ -87,7 +89,6 @@ var Mine = React.createClass({
       }
 
     });
-
   },
   _checkSessionKey:function(){
     var that = this;
@@ -127,6 +128,24 @@ var Mine = React.createClass({
               status:data.data.response.personalInfo.status,
               nopassResult:data.data.response.personalInfo.nopassResult,
             });
+            AsyncStorage.setItem('personstatus',data.data.response.personalInfo.status);
+            if(that.state.showNopassResult){
+              that.setState({
+                showNopassResult:false,
+              });
+              if(that.state.status == 4){
+                Alert.alert(
+                  '您的申请已被驳回',
+                  '驳回原因: '+that.state.nopassResult,
+                  [
+                    {text: '我知道了', onPress: () => console.log('OK Pressed!')},
+                  ]
+                );
+
+              }
+
+            }
+
           }else{
             that.setState({
               avatar:require('./../res/mine/pic_wo_moren@3x.png'),
@@ -177,7 +196,7 @@ var Mine = React.createClass({
     }else if(this.state.status == 2){
       Alert.alert(
             '提醒',
-            '请的申请正在审核中, 请耐心等待',
+            '您的申请正在审核中, 请耐心等待',
             [
               {text: '确定', onPress: () => console.log('OK Pressed!')},
             ]
@@ -194,7 +213,7 @@ var Mine = React.createClass({
     }else if(this.state.status == 4){
       Alert.alert(
             '您的申请已被驳回',
-            '驳回原因: '+this.state.noPassReason,
+            '驳回原因: '+this.state.nopassResult,
             [
               {text: '我知道了，重新提交', onPress: () => this._gotoRZ()},
             ]
@@ -209,7 +228,7 @@ var Mine = React.createClass({
          cityInfo = result?result:'';
       }
       that.props.navigator.push({
-        title: '请选择城市',
+        title: '第一步: 选择城市',
         component: SelectCity,
         navigationBarHidden:false,
         barTintColor:'#f9f9f9',
@@ -237,6 +256,22 @@ var Mine = React.createClass({
       // leftButtonTitle: "返回",
       // leftButtonIcon:require('image!back1'),
       // onLeftButtonPress: ()=>that.props.navigator.pop(),
+    });
+  },
+  _updateAvatar:function(){
+    this.props.navigator.push({
+      title: '修改头像和昵称',
+      component: UpdateAvatar,
+      navigationBarHidden:false,
+      // backButtonTitle: "返回",
+      // backButtonIcon: require('image!back'),
+      leftButtonTitle: "返回",
+      leftButtonIcon:require('image!back1'),
+      onLeftButtonPress: ()=>this.props.navigator.pop(),
+      passProps:{
+        nickname:this.state.nickname,
+        avatar:this.state.avatar,
+      }
     });
   },
   render: function(){
@@ -301,10 +336,12 @@ var Mine = React.createClass({
             <Image resizeMode={'contain'} style={styles.setting} source={require('./../res/mine/ico_wo_setting@3x.png')}></Image>
           </TouchableOpacity>
         </View>
-        <View style={styles.infos}>
-            <Image resizeMode={'contain'} style={styles.avatar} source={this.state.avatar}></Image>
-            <Text style={styles.avatarname}>{this.state.nickname}</Text>
-        </View>
+        <TouchableOpacity onPress={this._updateAvatar}>
+          <View style={styles.infos}>
+              <Image resizeMode={'contain'} style={styles.avatar} source={this.state.avatar}></Image>
+              <Text style={styles.avatarname}>{this.state.nickname}</Text>
+          </View>
+        </TouchableOpacity>
         <View style={styles.borderbottom}></View>
       </View>
       <ScrollView style={styles.container}>

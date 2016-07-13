@@ -6,6 +6,7 @@ import Service from './../service';
 import CameraPicker from './camerapicker';
 import qiniu from 'react-native-qiniu';
 import Modal from 'react-native-simple-modal';
+import ImageResizer from 'react-native-image-resizer';
 
 var EventEmitter = require('EventEmitter');
 var Subscribable = require('Subscribable');
@@ -85,48 +86,54 @@ var Authinfo3 = React.createClass({
       });
       for(var i=0;i<imgs.length;i++){
         (function(img){
-          Util.get(Service.host + Service.getToken, {bucketName:'ny-personal-photo'}, function(data){
-            console.log(data);
-            if(data.code == 200){
-              var token = data.data.response.token;
-              var url = data.data.response.url;
-              var key = data.data.response.key;
-              qiniu.rpc.uploadImage(img, key, token, function (resp) {
-                 console.log(resp);
-                 console.log(url);
-                 if(resp.status == 200 && resp.ok == true){
-                   that.state.lifeimgs.push(url);
-                   that.state.displaylifeimgs.push(url+'?imageView2/1/w/170/h/170');
-                   that.setState({
-                     lifeimgs: that.state.lifeimgs,
-                     displaylifeimgs:that.state.displaylifeimgs,
-                   });
+          ImageResizer.createResizedImage(img, 400, 300, 'JPEG', 50)
+          .then((resizedImageUri) => {
+            Util.get(Service.host + Service.getToken, {bucketName:'ny-personal-photo'}, function(data){
+              console.log(data);
+              if(data.code == 200){
+                var token = data.data.response.token;
+                var url = data.data.response.url;
+                var key = data.data.response.key;
+                qiniu.rpc.uploadImage(resizedImageUri, key, token, function (resp) {
+                   console.log(resp);
+                   console.log(url);
+                   if(resp.status == 200 && resp.ok == true){
+                     that.state.lifeimgs.push(url);
+                     that.state.displaylifeimgs.push(url+'?imageView2/1/w/170/h/170');
+                     that.setState({
+                       lifeimgs: that.state.lifeimgs,
+                       displaylifeimgs:that.state.displaylifeimgs,
+                     });
 
-                   // 保存到服务器
-                   Util.get(Service.host + Service.uploadPersonalPhoto, {
-                     photoUrl:url
-                   }, function(data){
-                     console.log(data);
-                     if(data.code == 200){
-                       var num = that.state.imguploaded;
-                       num = num+1;
-                       console.log(num);
-                       that.setState({
-                         imguploaded:num,
-                       });
-                       if(that.state.imguploaded == that.state.shouldbeupload){
+                     // 保存到服务器
+                     Util.get(Service.host + Service.uploadPersonalPhoto, {
+                       photoUrl:url
+                     }, function(data){
+                       console.log(data);
+                       if(data.code == 200){
+                         var num = that.state.imguploaded;
+                         num = num+1;
+                         console.log(num);
                          that.setState({
-                           open:false,
+                           imguploaded:num,
                          });
+                         if(that.state.imguploaded == that.state.shouldbeupload){
+                           that.setState({
+                             open:false,
+                           });
+                         }
                        }
-                     }
-                   });
-                 }
-              });
-            }else{
+                     });
+                   }
+                });
+              }else{
 
-            }
+              }
+            });
+          }).catch((err) => {
+            console.log(err);
           });
+
         })(imgs[i])
       }
     });
@@ -285,6 +292,7 @@ var Authinfo3 = React.createClass({
          modalDidOpen={() => console.log('modal did open')}
          modalDidClose={() => undefined}
          style={{alignItems: 'center'}}
+         closeOnTouchOutside={false}
          overlayOpacity={0.3}>
          <View style={styles.modalbox}>
             <ActivityIndicatorIOS style={styles.modalindicator} color="#999" />

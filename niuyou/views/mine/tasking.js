@@ -167,8 +167,20 @@ var Tasking = React.createClass({
       }
     });
   },
-  _gotoTaskDetail:function(taskId){
+  _gotoTaskDetail:function(rowData){
     var that = this;
+    var taskStatus = '';
+    if(rowData.status==0){
+      taskStatus = '上传图片证明';
+    }else if(rowData.status == 1){
+      taskStatus = '已上传图片证明成功，待审核';
+    }else if(rowData.status == 2){
+      taskStatus = '';
+    }else if(rowData.status == 3){
+      taskStatus = '未通过审核，原因：'+rowData.nopassResult;
+    }else if(rowData.status == 4){
+      taskStatus = '未能在规定时间内完成任务';
+    }
     that.props.navigator.push({
       title: '任务详情',
       component: TaskDetail,
@@ -179,7 +191,9 @@ var Tasking = React.createClass({
       leftButtonIcon:require('image!back1'),
       onLeftButtonPress: ()=>this.props.navigator.pop(),
       passProps: {
-        id:taskId,
+        id:rowData.taskId,
+        taskStatus:taskStatus,
+        statusx:rowData.status,
       }
     });
   },
@@ -234,14 +248,14 @@ var Tasking = React.createClass({
       );
     }
     return (
-      <TouchableOpacity onPress={()=>this._gotoTaskDetail(rowData.taskId)}>
+      <TouchableOpacity onPress={()=>this._gotoTaskDetail(rowData)}>
         <View style={styles.item}>
           <Image resizeMode={'cover'} style={styles.itemimg} source={{uri:rowData.mainPhotoUrl+'?imageView2/1/w/690/h/360'}}></Image>
           <View style={styles.itemtext}>
             <Image resizeMode={'contain'} style={styles.avater} source={genderimg}></Image>
             <Text style={styles.avatername}>{rowData.merchantName}</Text>
             <Text style={styles.statusx}>{moment(rowData.taskEndTime).format('YYYY-MM-DD HH:mm')}</Text>
-            <Text style={styles.itemtitle}>{rowData.taskName}</Text>
+            <Text style={styles.itemtitle} numberOfLines={1}>{rowData.taskName}</Text>
             <Text style={styles.itemprice}>{rowData.price}元/次</Text>
             {btndom}
           </View>
@@ -505,6 +519,8 @@ var styles = StyleSheet.create({
     textAlign:'center',
     marginTop:50,
     fontWeight:'bold',
+    paddingLeft:10,
+    paddingRight:10,
   },
   itemprice:{
     fontSize:12,

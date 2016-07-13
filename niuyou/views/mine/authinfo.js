@@ -41,7 +41,7 @@ var Authinfo = React.createClass({
         // 如果成功，返回原页面，且刷新页面
         if(data.code == 200){
           that.props.navigator.push({
-            title: '联系人数量认证',
+            title: '第三步: 联系人数量认证',
             component: Authinfo2,
             navigationBarHidden:false,
             // backButtonTitle: "返回",
@@ -55,7 +55,7 @@ var Authinfo = React.createClass({
         }
       });
     }else{
-      AlertIOS.alert('提醒','请先上传你的持证照片!');
+      AlertIOS.alert('提醒','请先上传你的举牌照片!');
     }
 
   },
@@ -70,13 +70,13 @@ var Authinfo = React.createClass({
       customButtons: {},
       cameraType: 'back', // 'front' or 'back'
       mediaType: 'photo', // 'photo' or 'video'
-      videoQuality: 'high', // 'low', 'medium', or 'high'
+      videoQuality: 'medium', // 'low', 'medium', or 'high'
       durationLimit: 10, // video recording max time in seconds
-      maxWidth: 1280, // photos only
-      maxHeight: 720, // photos only
+      maxWidth: 400, // photos only
+      maxHeight: 300, // photos only
       aspectX: 2, // android only - aspectX:aspectY, the cropping image's ratio of width to height
       aspectY: 1, // android only - aspectX:aspectY, the cropping image's ratio of width to height
-      quality: 0.6, // 0 to 1, photos only
+      quality: 0.5, // 0 to 1, photos only
       angle: 0, // android only, photos only
       allowsEditing: false, // Built in functionality to resize/reposition the image after selection
       noData: false, // photos only - disables the base64 `data` field from being generated (greatly improves performance on large photos)
@@ -150,7 +150,7 @@ var Authinfo = React.createClass({
       <ScrollView style={styles.scrollbox}>
         <View style={styles.warning}>
           <Image resizeMode={'contain'} style={styles.warningimg} source={require('image!log_tip')}></Image>
-          <Text style={styles.warningtext}>请上传单手持证照片</Text>
+          <Text style={styles.warningtext}>请上传举牌照片</Text>
         </View>
         <View style={styles.beizhu}>
           <View style={styles.bz_header}>
@@ -161,7 +161,7 @@ var Authinfo = React.createClass({
           </View>
           <View style={styles.bz_content2}>
             <View style={styles.bbox}>
-              <Image resizeMode={'contain'} style={styles.bimg} source={require('./../../res/mine/pic_wo_sl1@2x.png')}></Image>
+              <Image resizeMode={'contain'} style={styles.bimg2} source={require('./../../res/mine/jupaizhao.jpg')}></Image>
             </View>
           </View>
           <TouchableOpacity onPress={this._uploadImg}>
@@ -174,7 +174,7 @@ var Authinfo = React.createClass({
           <View style={styles.bz_header}>
             <View style={styles.box_title}>
               <Image resizeMode={'contain'} style={styles.box_title_img} source={require('image!tupian')}></Image>
-              <Text style={styles.box_title_text}>我的持证照片</Text>
+              <Text style={styles.box_title_text}>我的举牌照片</Text>
             </View>
           </View>
           <View style={styles.bz_content2}>
@@ -197,6 +197,7 @@ var Authinfo = React.createClass({
          modalDidOpen={() => console.log('modal did open')}
          modalDidClose={() => undefined}
          style={{alignItems: 'center'}}
+         closeOnTouchOutside={false}
          overlayOpacity={0.3}>
          <View style={styles.modalbox}>
             <ActivityIndicatorIOS style={styles.modalindicator} color="#999" />
@@ -288,6 +289,11 @@ var styles = StyleSheet.create({
   },
   bimg:{
     flex:1,
+  },
+  bimg2:{
+    flex:1,
+    width:335,
+    height:400,
   },
   circle:{
     flex:1,

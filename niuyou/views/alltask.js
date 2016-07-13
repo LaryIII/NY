@@ -63,7 +63,7 @@ var AllTask = React.createClass({
             <Image resizeMode={'contain'} style={styles.avater} source={genderimg}></Image>
             <Text style={styles.avatername}>{rowData.merchantName}</Text>
             <Text style={styles.statusx}>发布了任务</Text>
-            <Text style={styles.itemtitle}>{rowData.taskName}</Text>
+            <Text style={styles.itemtitle} numberOfLines={1}>{rowData.taskName}</Text>
             <Text style={styles.itemprice}>{rowData.price}元/次  性别限制:{rowData.gender==1?'男':'女'}</Text>
             <Text style={styles.itemdesc}>地区限制:{rowData.publicCity}</Text>
             <Text style={styles.itemdesc}>{moment(rowData.showEndTime).format('YYYY-MM-DD HH:mm')}</Text>
@@ -316,6 +316,8 @@ var styles = StyleSheet.create({
     textAlign:'center',
     marginTop:50,
     fontWeight:'bold',
+    paddingLeft:10,
+    paddingRight:10,
   },
   itemprice:{
     fontSize:12,

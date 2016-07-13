@@ -60,7 +60,7 @@ var InvalidTask = React.createClass({
             <Image resizeMode={'contain'} style={styles.avater} source={genderimg}></Image>
             <Text style={styles.avatername}>{rowData.merchantName}</Text>
             <Text style={styles.statusx}>截止日期: {moment(rowData.showEndTime).format('YYYY-MM-DD HH:mm')}</Text>
-            <Text style={styles.itemtitle}>{rowData.taskName}</Text>
+            <Text style={styles.itemtitle} numberOfLines={1}>{rowData.taskName}</Text>
             <Text style={styles.itemprice}>{rowData.price}元/次</Text>
             <View style={styles.statusbtn}>
               <Text style={styles.statustext}>{rowData.noPassReason}</Text>
@@ -314,6 +314,8 @@ var styles = StyleSheet.create({
     textAlign:'center',
     marginTop:50,
     fontWeight:'bold',
+    paddingLeft:10,
+    paddingRight:10,
   },
   itemprice:{
     fontSize:12,

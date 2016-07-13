@@ -10,6 +10,7 @@ import moment from 'moment';
 import qiniu from 'react-native-qiniu';
 import Modal from 'react-native-simple-modal';
 import CameraPicker from './../mine/camerapicker';
+import ImageResizer from 'react-native-image-resizer';
 var EventEmitter = require('EventEmitter');
 var Subscribable = require('Subscribable');
 window.EventEmitter = EventEmitter;
@@ -37,6 +38,7 @@ var TaskDetail = React.createClass({
   mixins: [Subscribable.Mixin],
   getInitialState: function(){
     return {
+      showNopassResult:true,
       merchantInfoDto:{
         id:0,
         merchantLevel:0,
@@ -83,6 +85,8 @@ var TaskDetail = React.createClass({
 
       open: false,
       offset:150,
+      open2: false,
+      offset2:150,
       lifeimgs:[],
       zmimgs:[],
       uploaded:0,
@@ -94,6 +98,17 @@ var TaskDetail = React.createClass({
       id:this.props.id
     });
     this.getDetail();
+  },
+  componentDidMount:function(){
+    var that = this;
+    this.props.navigator.navigationContext.addListener('didfocus', (event) => {
+      // this.currentRoute will go away
+      // event.data.route will be focused
+      console.log(event.data.route);
+      if(event.data.route.title == '任务详情'){
+        that.getDetail();
+      }
+    });
   },
   getDetail:function(){
     var that = this;
@@ -118,6 +133,22 @@ var TaskDetail = React.createClass({
           imgs:data.data.response.taskPhotoList,
           content:data.data.response.task.taskText,
         });
+        if(that.state.showNopassResult){
+          that.setState({
+            showNopassResult:false,
+          });
+          if(that.state.task.status == 2){
+            Alert.alert(
+              '您的任务审核不通过',
+              '驳回原因: '+that.state.task.noPassReason,
+              [
+                {text: '我知道了', onPress: () => console.log('OK Pressed!')},
+              ]
+            );
+
+          }
+
+        }
       }else{
         AlertIOS.alert('提醒',data.messages[0].message);
       }
@@ -133,67 +164,74 @@ var TaskDetail = React.createClass({
       });
       for(var i=0;i<args.images.length;i++){
         (function(img,taskId){
-          Util.get(Service.host + Service.getToken, {bucketName:'ny-task-photo'}, function(data){
-            console.log(data);
-            if(data.code == 200){
-              var token = data.data.response.token;
-              var url = data.data.response.url;
-              var key = data.data.response.key;
-              qiniu.rpc.uploadImage(img, key, token, function (resp) {
-                 console.log(resp);
-                 console.log(url);
-                 if(resp.status == 200 && resp.ok == true){
-                   that.state.zmimgs.push({uri:url});
-                   that.state.taskOrderPhotoList.push(url+'?imageView2/1/w/170/h/170');
-                   that.setState({
-                     zmimgs: that.state.zmimgs,
-                     taskOrderPhotoList:that.state.taskOrderPhotoList
-                   });
-                   // 保存图片地址到服务器
-                   Util.get(Service.host + Service.uploadOrderPhoto, {
-                     taskId:taskId,
-                     photoUrl:url,
-                   }, function(data){
-                     console.log(data);
-                     console.log('上传成功:'+url);
-                     if(data.code == 200){
-                       var num = that.state.uploaded;
-                       num = num+1;
-                       console.log(num);
-                       that.setState({
-                         uploaded:num,
-                       });
-                       if(that.state.uploaded == that.state.zmimgs.length){
-                         // 保存完毕之后提交认证
+          console.log(img);
+          ImageResizer.createResizedImage(img, 400, 300, 'JPEG', 50)
+          .then((resizedImageUri) => {
+            Util.get(Service.host + Service.getToken, {bucketName:'ny-task-photo'}, function(data){
+              console.log(data);
+              if(data.code == 200){
+                var token = data.data.response.token;
+                var url = data.data.response.url;
+                var key = data.data.response.key;
+                qiniu.rpc.uploadImage(resizedImageUri, key, token, function (resp) {
+                   console.log(resp);
+                   console.log(url);
+                   if(resp.status == 200 && resp.ok == true){
+                     that.state.zmimgs.push({uri:url});
+                     that.state.taskOrderPhotoList.push(url+'?imageView2/1/w/170/h/170');
+                     that.setState({
+                       zmimgs: that.state.zmimgs,
+                       taskOrderPhotoList:that.state.taskOrderPhotoList
+                     });
+                     // 保存图片地址到服务器
+                     Util.get(Service.host + Service.uploadOrderPhoto, {
+                       taskId:taskId,
+                       photoUrl:url,
+                     }, function(data){
+                       console.log(data);
+                       console.log('上传成功:'+url);
+                       if(data.code == 200){
+                         var num = that.state.uploaded;
+                         num = num+1;
+                         console.log(num);
                          that.setState({
-                           open:false,
-                         })
-                         Util.get(Service.host + Service.sureOrder, {
-                           taskId:taskId
-                         }, function(data){
-                           console.log(data);
-                           if(data.code == 200){
-                             AlertIOS.alert('提醒',
-                             '任务提交成功, 请耐心等待审核',
-                             [
-                               {text: '确认', onPress: () => that.render()},
-                             ]
-                           );
-                           }else{
-                             AlertIOS.alert('提醒',data.messages[0].message);
-                           }
+                           uploaded:num,
                          });
+                         if(that.state.uploaded == that.state.zmimgs.length){
+                           // 保存完毕之后提交认证
+                           that.setState({
+                             open:false,
+                           })
+                           Util.get(Service.host + Service.sureOrder, {
+                             taskId:taskId
+                           }, function(data){
+                             console.log(data);
+                             if(data.code == 200){
+                               AlertIOS.alert('提醒',
+                               '任务提交成功, 请耐心等待审核',
+                               [
+                                 {text: '确认', onPress: () => that.getDetail()},
+                               ]
+                             );
+                             }else{
+                               AlertIOS.alert('提醒',data.messages[0].message);
+                             }
+                           });
+                         }
+                       }else{
+
                        }
-                     }else{
+                     });
+                   }
+                });
+              }else{
 
-                     }
-                   });
-                 }
-              });
-            }else{
-
-            }
+              }
+            });
+          }).catch((err) => {
+            console.log(err);
           });
+
         })(args.images[i],args.taskId)
       }
     });
@@ -246,19 +284,44 @@ var TaskDetail = React.createClass({
         });
       }else{
         // 500 提示错误信息
-          AlertIOS.alert(
-            '提醒',
-            '用户资料还没有认证，不能接单。',
-            [
-              {text: '取消', onPress: () => {}},
-              {text: '去认证', onPress: () => {
-                if(that.props.event){
-                  that.props.event.emit('gotomine', {});
-                }
-              }},
-            ]
-          )
+        AsyncStorage.getItem('personstatus',function(err,result){
+          if(!err){
+            if(result == 1){
+              AlertIOS.alert(
+                '提醒',
+                '用户资料还没有认证，不能接单。',
+                [
+                  {text: '取消', onPress: () => {}},
+                  {text: '去认证', onPress: () => {
+                    if(that.props.event){
+                      that.props.event.emit('gotomine', {});
+                    }
+                  }},
+                ]
+              )
+            }else if(result == 4){
+              AlertIOS.alert(
+                '提醒',
+                '用户资料申请已被驳回，不能接单。',
+                [
+                  {text: '取消', onPress: () => {}},
+                  {text: '去认证', onPress: () => {
+                    if(that.props.event){
+                      that.props.event.emit('gotomine', {});
+                    }
+                  }},
+                ]
+              )
+            }else if(data.messages[0].message){
+              AlertIOS.alert('提醒',data.messages[0].message);
+            }
+          }else{
+            if(data.messages[0].message){
+              AlertIOS.alert('提醒',data.messages[0].message);
+            }
+          }
 
+        });
       }
     });
   },
@@ -298,6 +361,7 @@ var TaskDetail = React.createClass({
     // }
   },
   _download:function(){
+    var that = this;
     // for(var i=0;i<this.state.imgs.length;i++){
     //   var URL = this.state.imgs[i].photoUrl;
     //   var DEST = RNFS.DocumentDirectoryPath;
@@ -327,6 +391,9 @@ var TaskDetail = React.createClass({
     // }
     var count = this.state.imgs.length;
     var c = 0;
+    that.setState({
+      open2:true,
+    });
     for(var i=0;i<this.state.imgs.length;i++){
       var URL = this.state.imgs[i].photoUrl;
       (function(url){
@@ -334,6 +401,9 @@ var TaskDetail = React.createClass({
           console.log(data);
           c++;
           if(c == count){
+            that.setState({
+              open2:false,
+            });
             Alert.alert('下载成功');
           }
         }, function(err) {
@@ -412,6 +482,7 @@ var TaskDetail = React.createClass({
     var scrollbottom = 0;
     var paddingBottom = 0;
     var applynumBottom = 15;
+    var statusxdom = [];
     // 这边搞错了，taskPhotoList是用户需要分享的图片，而不是证明图片
     if(this.state.taskOrderPhotoList && this.state.taskOrderPhotoList.length>0){
       for(var i=0; i< this.state.taskOrderPhotoList.length;i++){
@@ -457,6 +528,11 @@ var TaskDetail = React.createClass({
           </TouchableOpacity>
         </View>
       );
+      statusxdom.push(
+        <View style={styles.statusxbar}>
+          <Text style={styles.statusxtext}>赶快来申请任务吧</Text>
+        </View>
+      );
       scrollbottom=135;
       paddingBottom = 135;
       applynumBottom = 15;
@@ -470,12 +546,51 @@ var TaskDetail = React.createClass({
           </TouchableOpacity>
         </View>
       );
+      statusxdom.push(
+        <View style={styles.statusxbar}>
+          <Text style={styles.statusxtext}>已领取该任务，请上传证明图片吧</Text>
+        </View>
+      );
       scrollbottom=135;
       paddingBottom = 135;
       applynumBottom = 15;
     }else{
       applybtn.push(<View />);
       paddingBottom = 135;
+      if(this.state.task.status == 0){
+        statusxdom.push(
+          <View style={styles.statusxbar}>
+            <Text style={styles.statusxtext}>已上传证明图片，待审核</Text>
+          </View>
+        );
+      }else if(this.state.task.status == 1){
+        if(this.state.task.isSettle == 0){
+          statusxdom.push(
+            <View style={styles.statusxbar}>
+              <Text style={styles.statusxtext}>审核已通过，尚未结算</Text>
+            </View>
+          );
+        }else if(this.state.task.isSettle == 1){
+          statusxdom.push(
+            <View style={styles.statusxbar}>
+              <Text style={styles.statusxtext}>审核已通过，已结算</Text>
+            </View>
+          );
+        }else{
+          statusxdom.push(
+            <View style={styles.statusxbar}>
+              <Text style={styles.statusxtext}>审核已通过</Text>
+            </View>
+          );
+        }
+
+      }else if(this.state.task.status == 2){
+        statusxdom.push(
+          <View style={styles.statusxbar}>
+            <Text style={styles.statusxtext}>审核不通过，原因: {this.state.task.noPassReason}</Text>
+          </View>
+        );
+      }
     }
 
     if(this.state.status == 1){
@@ -528,6 +643,7 @@ var TaskDetail = React.createClass({
     return (
       <View style={[styles.container,]}>
         <ScrollView style={[styles.scrollbox,]} contentContainerStyle={{paddingBottom:scrollbottom}}>
+          {statusxdom}
           <View style={styles.header}>
             <Image resizeMode={'contain'} style={styles.faces} source={{uri:this.state.merchantInfoDto.merchantLogo+'?imageView2/1/w/120/h/120'}}></Image>
             <Text style={styles.facesname}>{this.state.merchantInfoDto.merchantName}</Text>
@@ -634,10 +750,25 @@ var TaskDetail = React.createClass({
            modalDidOpen={() => console.log('modal did open')}
            modalDidClose={() => undefined}
            style={{alignItems: 'center'}}
+           closeOnTouchOutside={false}
            overlayOpacity={0.3}>
            <View style={styles.modalbox}>
               <ActivityIndicatorIOS style={styles.modalindicator} color="#999" />
               <Text style={styles.modaltext}>正在上传图片...</Text>
+           </View>
+        </Modal>
+
+        <Modal
+           offset={this.state.offset2}
+           open={this.state.open2}
+           modalDidOpen={() => console.log('modal did open')}
+           modalDidClose={() => undefined}
+           style={{alignItems: 'center'}}
+           closeOnTouchOutside={false}
+           overlayOpacity={0.3}>
+           <View style={styles.modalbox}>
+              <ActivityIndicatorIOS style={styles.modalindicator} color="#999" />
+              <Text style={styles.modaltext}>正在下载图片...</Text>
            </View>
         </Modal>
       </View>
@@ -927,6 +1058,16 @@ var styles = StyleSheet.create({
     color:'#f02626',
     fontSize:15,
     marginTop:4,
+  },
+  statusxbar:{
+    height:32,
+    backgroundColor:'#51a7ff',
+    alignItems:'center',
+    justifyContent:'center',
+  },
+  statusxtext:{
+    color:'#fff',
+    fontSize:13,
   },
 });
 

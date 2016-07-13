@@ -17,6 +17,7 @@
     "react-native-gifted-form": "0.0.6",
     "react-native-gifted-listview": "0.0.15",
     "react-native-image-picker": "^0.18.17",
+    "react-native-image-resizer": "0.0.6",
     "react-native-local-image-manager": "^1.0.1",
     "react-native-qiniu": "^0.1.0",
     "react-native-refreshable-listview": "^2.0.0-beta4",

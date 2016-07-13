@@ -4,6 +4,7 @@ import {GiftedForm, GiftedFormManager} from 'react-native-gifted-form';
 import Util from './../utils';
 import FileDownload from 'react-native-file-download';
 import RNFS from 'react-native-fs';
+import Modal from 'react-native-simple-modal';
 import {
   View,
   TextInput,
@@ -16,6 +17,8 @@ import {
   Dimensions,
   Clipboard,
   Alert,
+  ActivityIndicatorIOS,
+  CameraRoll,
 } from 'react-native';
 
 var ApplyTask = React.createClass({
@@ -35,34 +38,29 @@ var ApplyTask = React.createClass({
     Alert.alert("复制成功!");
   },
   _download:function(){
+    var that  = this;
+    var count = this.props.imgs.length;
+    var c = 0;
+    that.setState({
+      open2:true,
+    });
     for(var i=0;i<this.props.imgs.length;i++){
       var URL = this.props.imgs[i].photoUrl;
-      var DEST = RNFS.DocumentDirectoryPath;
-      var arrs = URL.split('.');
-      var fileName = new Date().getTime()+i*10000+'.'+arrs[arrs.length-1];
-      console.log(fileName);
-      var headers = {
-        'Accept-Language':'zh-CN'
-      };
-      (function(URL,DEST,fileName,headers,n,length){
-        var flag = false;
-        console.log(n,length);
-        if(n==length-1){
-          flag = true;
-        }
-        FileDownload.download(URL, DEST, fileName, headers)
-        .then((response) => {
-          if(flag){
+      (function(url){
+        CameraRoll.saveImageWithTag(url, function(data) {
+          console.log(data);
+          c++;
+          if(c == count){
+            that.setState({
+              open2:false,
+            });
             Alert.alert('下载成功');
           }
-          console.log(`downloaded! file saved to: ${response}`)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-      })(URL,DEST,fileName,headers,i,this.props.imgs.length)
+        }, function(err) {
+          console.log(err);
+        });
+      })(URL);
     }
-
   },
   render: function(){
     // 需要增加数量的显示，对照UI
@@ -123,6 +121,19 @@ var ApplyTask = React.createClass({
             </View>
           </TouchableOpacity>
         </View>
+        <Modal
+           offset={this.state.offset2}
+           open={this.state.open2}
+           modalDidOpen={() => console.log('modal did open')}
+           modalDidClose={() => undefined}
+           style={{alignItems: 'center'}}
+           closeOnTouchOutside={false}
+           overlayOpacity={0.3}>
+           <View style={styles.modalbox}>
+              <ActivityIndicatorIOS style={styles.modalindicator} color="#999" />
+              <Text style={styles.modaltext}>正在下载图片...</Text>
+           </View>
+        </Modal>
       </ScrollView>
     );
   },
@@ -239,6 +250,20 @@ var styles = StyleSheet.create({
     justifyContent:'center',
     width:(Dimensions.get('window').width-30)/4,
     height:(Dimensions.get('window').width-30)/4,
+  },
+  modalbox:{
+    flex:1,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+    width:Dimensions.get('window').width-70,
+  },
+  modalindicator:{
+    marginRight:15,
+  },
+  modaltext:{
+    color:'#666',
+    fontSize:15,
   },
 });
 

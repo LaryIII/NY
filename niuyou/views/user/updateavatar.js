@@ -23,15 +23,15 @@ import {
   ActivityIndicatorIOS,
 } from 'react-native';
 
-var Startny = React.createClass({
+var UpdateAvatar = React.createClass({
   getInitialState: function(){
     return {
       open: false,
       offset:150,
-      avatarurl:require('image!paishe'),
+      avatarurl:this.props.avatar,
       nanstatus:'#999',
       nvstatus:'#333',
-      nickname:'',
+      nickname:this.props.nickname,
       gender:2, // 1是男，2是女
       isLoading:false,
     };
@@ -144,7 +144,7 @@ var Startny = React.createClass({
       gender:2,
     });
   },
-  _saveBasicInfo:function(nickname,gender){
+  _saveBasicInfo:function(nickname){
     var that = this;
     Util.get(Service.host + Service.saveBasicInfo, {
       photoUrl:this.state.avatarurl.uri?this.state.avatarurl.uri:'',
@@ -212,16 +212,8 @@ var Startny = React.createClass({
             placeholder='请输入昵称，2-10个字符'
             clearButtonMode='while-editing'
             onChangeText={this._onChange}
+            value={this.state.nickname}
           />
-          <GiftedForm.TextInputWidget
-            name='gender' // mandatory
-            title='性别'
-            placeholder=''
-          />
-          <View style={styles.warning}>
-            <Image resizeMode={'contain'} style={styles.warningimg} source={require('image!log_tip')}></Image>
-            <Text style={styles.warningtext}>性别选择之后将无法修改~</Text>
-          </View>
           <GiftedForm.SubmitWidget
             title='完成'
             isLoading = {this.state.isLoading}
@@ -234,25 +226,11 @@ var Startny = React.createClass({
               if (isValid === true) {
                 // prepare object
                 // 登录
-                this._saveBasicInfo(values.nickname,values.gender);
+                this._saveBasicInfo(values.nickname);
               }
             }}
           />
         </GiftedForm>
-        </View>
-        <View style={styles.selectsex}>
-          <TouchableOpacity onPress={this._selectNan}>
-            <View style={styles.selectsexnan}>
-                <Image resizeMode={'contain'} style={styles.selectsexnanimg} source={require('image!log_nan')}></Image>
-                <Text style={styles.selectsexnantext,{color:this.state.nanstatus}}>男</Text>
-              </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this._selectNv}>
-              <View style={styles.selectsexnv}>
-                <Image resizeMode={'contain'} style={styles.selectsexnvimg} source={require('image!log_nv')}></Image>
-                <Text style={styles.selectsexnvtext,{color:this.state.nvstatus}}>女</Text>
-              </View>
-          </TouchableOpacity>
         </View>
         <Modal
            offset={this.state.offset}
@@ -416,4 +394,4 @@ var styles = StyleSheet.create({
   }
 });
 
-module.exports = Startny;
+module.exports = UpdateAvatar;
