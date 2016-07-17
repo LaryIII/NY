@@ -212,7 +212,7 @@ _renderSeparatorView() {
         rowView={this._renderRowView}
         onFetch={this._onFetch}
         firstLoader={true} // display a loader for the first fetching
-        pagination={false} // enable infinite scrolling using touch to load more
+        pagination={true} // enable infinite scrolling using touch to load more
         refreshable={true} // enable pull-to-refresh for iOS and touch-to-refresh for Android
         withSections={false} // enable sections
         customStyles={{

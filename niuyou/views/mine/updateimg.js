@@ -60,7 +60,7 @@ var UpdateImg = React.createClass({
       if(data.code == 200){
         var temp = [];
         var disptemp = [];
-        if(data.data.response.taskOrderPhotoList){
+        if(data.data.response.taskOrderPhotoList && data.data.response.taskOrderPhotoList.length>0){
           for(var i=0;i<data.data.response.taskOrderPhotoList.length;i++){
             temp.push({uri:data.data.response.taskOrderPhotoList[i].photoUrl});
             disptemp.push(data.data.response.taskOrderPhotoList[i].photoUrl+'?imageView2/1/w/170/h/170');
@@ -93,7 +93,7 @@ var UpdateImg = React.createClass({
       for(var i=0;i<args.images.length;i++){
         (function(img,taskId){
           console.log(img);
-          ImageResizer.createResizedImage(img, 400, 300, 'JPEG', 50)
+          ImageResizer.createResizedImage(img, 800, 600, 'JPEG', 60)
           .then((resizedImageUri) => {
             Util.get(Service.host + Service.getToken, {bucketName:'ny-task-photo'}, function(data){
               console.log(data);
@@ -373,10 +373,10 @@ var UpdateImg = React.createClass({
           </View>
           <View style={styles.bz_content3}>
             <View style={styles.zmimgs}>
-              <Image resizeMode={'contain'} style={styles.zmimg} source={require('./../../res/mine/lifeimg1.jpg')}></Image>
-              <Image resizeMode={'contain'} style={styles.zmimg} source={require('./../../res/mine/lifeimg2.jpg')}></Image>
-              <Image resizeMode={'contain'} style={styles.zmimg} source={require('./../../res/mine/lifeimg3.jpg')}></Image>
-              <Image resizeMode={'contain'} style={styles.zmimg} source={require('./../../res/mine/lifeimg4.jpg')}></Image>
+              <Image resizeMode={'contain'} style={styles.zmimg} source={require('./../../res/mine/zmtp1.jpg')}></Image>
+              <Image resizeMode={'contain'} style={styles.zmimg} source={require('./../../res/mine/zmtp2.png')}></Image>
+              <Image resizeMode={'contain'} style={styles.zmimg} source={require('./../../res/mine/zmtp3.jpg')}></Image>
+              <Image resizeMode={'contain'} style={styles.zmimg} source={require('./../../res/mine/zmtp4.jpg')}></Image>
             </View>
           </View>
         </View>

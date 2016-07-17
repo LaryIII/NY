@@ -50,6 +50,7 @@ var Authinfo3 = React.createClass({
       console.log(data);
       if(data.code == 200){
         var imgs = data.data.response.list;
+        var tempimgs = [];
         var displayimgs = [];
         for(var i=0;i<imgs.length;i++){
           if(imgs[i].photoUrl == "[object Object]"){
@@ -62,12 +63,13 @@ var Authinfo3 = React.createClass({
               }
             });
           }else{
+            tempimgs.push(imgs[i].photoUrl);
             displayimgs.push(imgs[i].photoUrl+'?imageView2/1/w/170/h/170');
           }
 
         }
         that.setState({
-          lifeimgs:imgs,
+          lifeimgs:tempimgs,
           displaylifeimgs:displayimgs,
         });
       }
@@ -86,7 +88,7 @@ var Authinfo3 = React.createClass({
       });
       for(var i=0;i<imgs.length;i++){
         (function(img){
-          ImageResizer.createResizedImage(img, 400, 300, 'JPEG', 50)
+          ImageResizer.createResizedImage(img, 800, 600, 'JPEG', 60)
           .then((resizedImageUri) => {
             Util.get(Service.host + Service.getToken, {bucketName:'ny-personal-photo'}, function(data){
               console.log(data);
@@ -199,7 +201,7 @@ var Authinfo3 = React.createClass({
       }else{
         // 向服务端删除图片
         Util.get(Service.host + Service.deletePersonalPhoto, {
-          photoUrl:this.state.lifeimgs[i]
+          photoUrl:this.state.lifeimgs[i],
         }, function(data){
           console.log(data);
           if(data.code == 200){

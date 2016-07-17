@@ -41,7 +41,7 @@ var Authinfo = React.createClass({
         // 如果成功，返回原页面，且刷新页面
         if(data.code == 200){
           that.props.navigator.push({
-            title: '第三步: 联系人数量认证',
+            title: '3/4: 联系人数量认证',
             component: Authinfo2,
             navigationBarHidden:false,
             // backButtonTitle: "返回",

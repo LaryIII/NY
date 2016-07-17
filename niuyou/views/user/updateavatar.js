@@ -181,7 +181,7 @@ var UpdateAvatar = React.createClass({
         </View>
         <View style={styles.form}>
         <GiftedForm
-          formName='signupForm' // GiftedForm instances that use the same name will also share the same states
+          formName='signupForm4' // GiftedForm instances that use the same name will also share the same states
           openModal={(route) => {
             this.props.navigator.push(route); // The ModalWidget will be opened using this method. Tested with ExNavigator
           }}
@@ -196,7 +196,7 @@ var UpdateAvatar = React.createClass({
             */
           }}
           validators={{
-            nickname: {
+            nickname4: {
               title: '昵称',
               validate: [{
                 validator: 'isLength',
@@ -207,7 +207,7 @@ var UpdateAvatar = React.createClass({
           }}
         >
           <GiftedForm.TextInputWidget
-            name='nickname'
+            name='nickname4'
             title='昵称'
             placeholder='请输入昵称，2-10个字符'
             clearButtonMode='while-editing'
@@ -226,7 +226,7 @@ var UpdateAvatar = React.createClass({
               if (isValid === true) {
                 // prepare object
                 // 登录
-                this._saveBasicInfo(values.nickname);
+                this._saveBasicInfo(values.nickname4);
               }
             }}
           />

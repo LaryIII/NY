@@ -19,6 +19,7 @@ import {
   Alert,
   ActivityIndicatorIOS,
   CameraRoll,
+  AlertIOS,
 } from 'react-native';
 
 var ApplyTask = React.createClass({
@@ -35,7 +36,8 @@ var ApplyTask = React.createClass({
   },
   _copy:function(){
     Clipboard.setString(this.state.content);
-    Alert.alert("复制成功!");
+    //去微信发朋友圈吧，至少保持2小时候后才能截图哦。
+    AlertIOS.alert('复制成功!','去微信发朋友圈吧，至少保持2小时候后才能截图哦。');
   },
   _download:function(){
     var that  = this;
@@ -79,7 +81,7 @@ var ApplyTask = React.createClass({
       <ScrollView style={styles.container}>
         <View style={styles.warning}>
           <Image resizeMode={'contain'} style={styles.warningimg} source={require('image!log_tip')}></Image>
-          <Text style={styles.warningtext}>1,请下载所有图片至手机相册!</Text>
+          <Text style={styles.warningtext}><Text style={styles.emtext}>1</Text>,请下载所有图片至手机相册!</Text>
         </View>
         <View style={styles.beizhu}>
           <View style={styles.bz_header}>
@@ -101,7 +103,7 @@ var ApplyTask = React.createClass({
         </View>
         <View style={styles.warning}>
           <Image resizeMode={'contain'} style={styles.warningimg} source={require('image!log_tip')}></Image>
-          <Text style={styles.warningtext}>2,请复制文字并与图片一起发送至朋友圈</Text>
+          <Text style={styles.warningtext}><Text style={styles.emtext}>2</Text>,请复制文字并与图片一起发送至朋友圈</Text>
         </View>
         <View style={styles.beizhu}>
           <View style={styles.bz_header}>
@@ -159,12 +161,13 @@ var styles = StyleSheet.create({
     width:16,
     height:16,
     marginRight:4,
-    marginTop:12,
+    marginTop:16,
   },
   warningtext:{
     marginTop:12,
-    color:'#333',
-    fontSize:15,
+    color:'#51a7ff',
+    fontSize:16,
+    fontWeight:'bold',
   },
   beizhu:{
     flex:1,
@@ -264,6 +267,11 @@ var styles = StyleSheet.create({
   modaltext:{
     color:'#666',
     fontSize:15,
+  },
+  emtext:{
+    color:'#51a7ff',
+    fontSize:21,
+    fontWeight:'bold',
   },
 });
 

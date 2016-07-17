@@ -181,7 +181,7 @@ var Startny = React.createClass({
         </View>
         <View style={styles.form}>
         <GiftedForm
-          formName='signupForm' // GiftedForm instances that use the same name will also share the same states
+          formName='signupForm3' // GiftedForm instances that use the same name will also share the same states
           openModal={(route) => {
             this.props.navigator.push(route); // The ModalWidget will be opened using this method. Tested with ExNavigator
           }}

@@ -41,7 +41,7 @@ var Authinfo2 = React.createClass({
         // 如果成功，返回原页面，且刷新页面
         if(data.code == 200){
           that.props.navigator.push({
-            title: '第四步: 生活照认证',
+            title: '4/4: 生活照认证',
             component: Authinfo3,
             navigationBarHidden:false,
             // backButtonTitle: "返回",

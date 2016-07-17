@@ -228,7 +228,7 @@ var Mine = React.createClass({
          cityInfo = result?result:'';
       }
       that.props.navigator.push({
-        title: '第一步: 选择城市',
+        title: '1/4: 选择城市',
         component: SelectCity,
         navigationBarHidden:false,
         barTintColor:'#f9f9f9',

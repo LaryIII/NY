@@ -10,6 +10,7 @@ import CameraPicker from './camerapicker';
 import qiniu from 'react-native-qiniu';
 import moment from 'moment';
 import Modal from 'react-native-simple-modal';
+import UpdateImg from './updateimg';
 
 var EventEmitter = require('EventEmitter');
 var Subscribable = require('Subscribable');
@@ -25,6 +26,7 @@ import {
   TouchableOpacity,
   ListView,
   ActivityIndicatorIOS,
+  TouchableHighlight,
 } from 'react-native';
 // 任务状态:0接单；1待确认；2通过；3驳回；4失效
 var Tasking = React.createClass({
@@ -138,6 +140,23 @@ var Tasking = React.createClass({
   _onPress(rowData) {
     console.log(rowData+' pressed');
   },
+  _uploadImg:function(taskId){
+    var that = this;
+    that.props.navigator.push({
+      title: '请上传证明图片',
+      component: UpdateImg,
+      navigationBarHidden:false,
+      barTintColor:'#f9f9f9',
+      // backButtonTitle: "返回",
+      // backButtonIcon: require('image!back'),
+      leftButtonTitle: "返回",
+      leftButtonIcon:require('image!back1'),
+      onLeftButtonPress: ()=>that.props.navigator.pop(),
+      passProps:{
+        taskId:taskId,
+      }
+    });
+  },
   _uploadZM:function(taskId){
     var that = this;
     var title = '';
@@ -208,7 +227,7 @@ var Tasking = React.createClass({
     // 4显示“未能在规定时间内完成任务”
     if(rowData.status == 0){
       btndom.push(
-        <TouchableOpacity style={styles.tbtn} onPress={()=>this._uploadZM(rowData.taskId)}>
+        <TouchableOpacity style={styles.tbtn} onPress={()=>this._uploadImg(rowData.taskId)}>
           <View style={styles.statusbtn}>
             <Text style={styles.statustext}>上传图片证明</Text>
           </View>

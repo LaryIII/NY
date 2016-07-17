@@ -8,6 +8,7 @@ import Service from './../service';
 import City from './city';
 import AuthInfo from './../mine/authinfo';
 import SQLite from 'react-native-sqlite-storage';
+import RNGeocoder from 'react-native-geocoder';
 SQLite.DEBUG(true);
 // SQLite.enablePromise(true);
 SQLite.enablePromise(false);
@@ -78,11 +79,11 @@ var SelectCity = React.createClass({
       dataSource:dataSource.cloneWithRowsAndSections(dataBlob, sectionIDs, rowIDs),
       headerPressCount: 0,
       letters:[],
-      cities:[]
+      cities:[],
+      locateCityName:'loading',
     };
   },
   componentWillMount:function(){
-
   },
   componentDidMount:function(){
     var that = this;
@@ -130,8 +131,8 @@ var SelectCity = React.createClass({
               dataBlob[letter] = letter;
               rowIDs.push([]);
             }
-            rowIDs[rowIDs.length-1].push(`${row.city_id};${row.city};${row.father};${row.py}`);
-            dataBlob[`${row.city_id}`] = `${row.city_id};${row.city};${row.father};${row.py}`;
+            rowIDs[rowIDs.length-1].push(`${row.city_id};${row.city.split('市')[0]};${row.father};${row.py}`);
+            dataBlob[`${row.city_id}`] = `${row.city_id};${row.city.split('市')[0]};${row.father};${row.py}`;
           }
           console.log(rowIDs);
           that.setState({
@@ -147,6 +148,93 @@ var SelectCity = React.createClass({
     this.errorCB,function() {
         console.log("Transaction is now finished");
     });
+
+    navigator.geolocation.getCurrentPosition(
+      (initialPosition) => {
+        console.log(initialPosition);
+        this.setState({initialPosition});
+        var loc = {
+          latitude:initialPosition.coords.latitude,
+          longitude:initialPosition.coords.longitude
+        }
+        // TODO:模拟器测试的时候先用这个，真机测试的时候要删掉
+        // var NJ = {
+        //   latitude: 32.031231,
+        //   longitude: 118.461231
+        // };
+        RNGeocoder.reverseGeocodeLocation(loc, (err, data) => {
+            if (err) {
+              console.log(err);
+              return;
+            }
+            console.log(data);
+          //获取城市
+           var city = data[0].locality;
+           if (!city) {
+             //四大直辖市的城市信息无法通过locality获得，只能通过获取省份的方法来获得（如果city为空，则可知为直辖市）
+             city = data[0].administrativeArea;
+           }
+           that.setState({
+             city:city.split('市')[0]
+           });
+
+           // 查找city_id
+           function errorCB(err) {
+             console.log("SQL Error: " + err);
+           };
+
+           function successCB() {
+             console.log("SQL executed fine");
+           };
+
+           function openCB() {
+             console.log("Database OPENED");
+           };
+           var db = SQLite.openDatabase("resource.db", "1.0", "resource", 200000, openCB, errorCB);
+           db.transaction((tx) => {
+               console.log(tx);
+             tx.executeSql("SELECT * FROM sys_city WHERE city=?", [city], (tx, results) => {
+                 console.log("Query completed");
+
+                 var len = results.rows.length;
+                 var city_id = '';
+                 var city_name = '';
+                 var province_id = '';
+                 for (let i = 0; i < len; i++) {
+                   let row = results.rows.item(i);
+                   city_id += `${row.city_id}`;
+                   city_name += `${row.city}`;
+                   province_id += `${row.father}`;
+                 }
+                 console.log(city_id);
+                 var city = city_id+';'+city_name.split('市')[0]+';'+province_id;
+                 that.setState({
+                   locateCityName:city,
+                 });
+                 // 把city存到全局
+                //  var city = city_id+';'+city_name+';'+province_id;
+                //  AsyncStorage.setItem('city',city,function(err){})
+                 // 请求首页数据
+                //  that.getIndexData();
+
+                 db.close(closeCB,errorCB);
+               });
+           },
+           this.errorCB,function() {
+               console.log("Transaction is now finished");
+           });
+        });
+      },
+      (error) => {
+        console.log(error.message);
+        // alert(error.message)},
+        // that.getIndexData()},
+        that.setState({
+          locateCityName:'',
+        });
+      },
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+    );
   },
 
   _renderHotCities:function(){
@@ -262,7 +350,7 @@ var SelectCity = React.createClass({
             // 如果成功，返回原页面，且刷新页面
             if(data.code == 200){
               that.props.navigator.push({
-                title: '第二步: 举牌照片',
+                title: '2/4: 举牌照片',
                 component: AuthInfo,
                 navigationBarHidden:false,
                 // backButtonTitle: "返回",
@@ -287,14 +375,21 @@ var SelectCity = React.createClass({
 
   render: function(){
     var locatecitydom = [];
-    if(this.props.cityInfo){
-      var cityName = this.props.cityInfo.split(';')[1];
+    console.log(this.state.locateCityName);
+    if(this.state.locateCityName && this.state.locateCityName != 'loading'){
+      var cityName = this.state.locateCityName.split(';')[1];
       locatecitydom.push(
-        <TouchableOpacity onPress={()=>this._selectCity(this.props.cityInfo)}>
+        <TouchableOpacity onPress={()=>this._selectCity(this.state.locateCityName)}>
           <View style={styles.citybtn}>
             <Text style={styles.citybtntext}>{cityName}</Text>
           </View>
         </TouchableOpacity>
+      );
+    }else if(this.state.locateCityName && this.state.locateCityName == 'loading'){
+      locatecitydom.push(
+        <View style={styles.nocitybtn}>
+          <Text style={styles.nocitybtntext}>正在定位中...</Text>
+        </View>
       );
     }else{
       locatecitydom.push(

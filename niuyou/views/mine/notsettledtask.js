@@ -14,6 +14,7 @@ import {
   Dimensions,
   TouchableOpacity,
   ListView,
+  TouchableHighlight,
 } from 'react-native';
 
 var NotSettledTask = React.createClass({
@@ -58,7 +59,7 @@ var NotSettledTask = React.createClass({
           <View style={styles.itemtext}>
             <Image resizeMode={'contain'} style={styles.avater} source={genderimg}></Image>
             <Text style={styles.avatername}>{rowData.merchantName}</Text>
-            <Text style={styles.statusx}>截止日期: {moment(rowData.showEndTime).format('YYYY-MM-DD HH:mm')}</Text>
+            <Text style={styles.statusx}>截止日期: {moment(rowData.taskEndTime).format('YYYY-MM-DD HH:mm')}</Text>
             <Text style={styles.itemtitle} numberOfLines={1}>{rowData.taskName}</Text>
             <Text style={styles.itemprice}>{rowData.price}元/次</Text>
           </View>

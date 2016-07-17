@@ -340,7 +340,8 @@ var TaskDetail = React.createClass({
   },
   _copy:function(){
     Clipboard.setString(this.state.content);
-    Alert.alert("复制成功!");
+    // Alert.alert("复制成功!");
+    AlertIOS.alert('复制成功!','去微信发朋友圈吧，至少保持2小时候后才能截图哦。');
     // try {
     //   var content = Clipboard.getString();
     //   this.setState({content:content});

@@ -50,7 +50,7 @@ var Tasked = React.createClass({
           <NoPassTask tabLabel="审核不通过" onRowPress={(id)=>{
             this._gotoTaskDetail(id);
           }} />
-          <InvalidTask tabLabel="失效的任务" onRowPress={(id)=>{
+          <InvalidTask ref="invalid" tabLabel="失效的任务" onRowPress={(id)=>{
             this._gotoTaskDetail(id);
           }} />
         </ScrollableTabView>

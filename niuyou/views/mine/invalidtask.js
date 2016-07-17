@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import Util from './../utils';
 import Service from './../service';
-import TaskDetail from './../jrw/taskdetail';
 import GiftedListView from 'react-native-gifted-listview';
 import GiftedSpinner from 'react-native-gifted-spinner';
 import moment from 'moment';
@@ -15,6 +14,7 @@ import {
   Dimensions,
   TouchableOpacity,
   ListView,
+  TouchableHighlight,
 } from 'react-native';
 
 var InvalidTask = React.createClass({
@@ -31,7 +31,7 @@ var InvalidTask = React.createClass({
     }, function(data){
       console.log(data);
       if(data.code == 200){
-        var rows = data.data.response.list;
+        var rows = (data.data.response.list && data.data.response.list.length>0)?data.data.response.list:[];
         if(rows.length==10){
           callback(rows);
         }else if(rows.length<10){
@@ -52,6 +52,14 @@ var InvalidTask = React.createClass({
 
   _renderRowView(rowData) {
     var genderimg = rowData.gender==1?require('image!ph_nan'):require('image!ph_nv');
+    var nopassdom = [];
+    if(rowData.nopassResult){
+      nopassdom.push(
+        <View style={styles.statusbtn}>
+          <Text style={styles.statustext}>{rowData.nopassResult}</Text>
+        </View>
+      );
+    }
     return (
       <TouchableOpacity onPress={()=>this.props.onRowPress(rowData.taskId)}>
         <View style={styles.item}>
@@ -59,12 +67,10 @@ var InvalidTask = React.createClass({
           <View style={styles.itemtext}>
             <Image resizeMode={'contain'} style={styles.avater} source={genderimg}></Image>
             <Text style={styles.avatername}>{rowData.merchantName}</Text>
-            <Text style={styles.statusx}>截止日期: {moment(rowData.showEndTime).format('YYYY-MM-DD HH:mm')}</Text>
+            <Text style={styles.statusx}>截止日期: {moment(rowData.taskEndTime).format('YYYY-MM-DD HH:mm')}</Text>
             <Text style={styles.itemtitle} numberOfLines={1}>{rowData.taskName}</Text>
             <Text style={styles.itemprice}>{rowData.price}元/次</Text>
-            <View style={styles.statusbtn}>
-              <Text style={styles.statustext}>{rowData.noPassReason}</Text>
-            </View>
+            {nopassdom}
           </View>
         </View>
       </TouchableOpacity>
@@ -207,7 +213,7 @@ _renderSeparatorView() {
         rowView={this._renderRowView}
         onFetch={this._onFetch}
         firstLoader={true} // display a loader for the first fetching
-        pagination={false} // enable infinite scrolling using touch to load more
+        pagination={true} // enable infinite scrolling using touch to load more
         refreshable={true} // enable pull-to-refresh for iOS and touch-to-refresh for Android
         withSections={false} // enable sections
         customStyles={{

@@ -84,7 +84,7 @@ var Register = React.createClass({
     }
     var that  = this;
     // 1.检查手机号是否可注册
-    var mobile = GiftedFormManager.getValue('signupForm', 'username');
+    var mobile = GiftedFormManager.getValue('signupForm2', 'username2');
     Util.get(Service.host + Service.checkMobile, {
       mobile:mobile,
     }, function(data){
@@ -175,7 +175,7 @@ var Register = React.createClass({
       <ScrollView style={styles.container}>
         <View style={styles.form}>
         <GiftedForm
-          formName='signupForm' // GiftedForm instances that use the same name will also share the same states
+          formName='signupForm2' // GiftedForm instances that use the same name will also share the same states
           openModal={(route) => {
             this.props.navigator.push(route); // The ModalWidget will be opened using this method. Tested with ExNavigator
           }}
@@ -190,7 +190,7 @@ var Register = React.createClass({
             */
           }}
           validators={{
-            username: {
+            username2: {
               title: '账号',
               validate: [{
                 validator: 'matches',
@@ -206,7 +206,7 @@ var Register = React.createClass({
                 message: '{TITLE} 必须是6个字符'
               }]
             },
-            password: {
+            password2: {
               title: '密码',
               validate: [{
                 validator: 'isLength',
@@ -225,7 +225,7 @@ var Register = React.createClass({
           }}
         >
           <GiftedForm.TextInputWidget
-            name='username'
+            name='username2'
             value=''
             title='账号'
             placeholder='请输入手机号码'
@@ -233,7 +233,7 @@ var Register = React.createClass({
             onChangeText = {this._onChangeMobile}
             onTextInputFocus={(currentText = '') => {
               if (!currentText) {
-                let fullName = GiftedFormManager.getValue('signupForm', 'username');
+                let fullName = GiftedFormManager.getValue('signupForm2', 'username2');
                 if (fullName) {
                   return fullName.replace(/[^a-zA-Z0-9-_]/g, '');
                 }
@@ -250,7 +250,7 @@ var Register = React.createClass({
           />
 
           <GiftedForm.TextInputWidget
-            name='password' // mandatory
+            name='password2' // mandatory
             value=''
             title='密码'
             placeholder='请输入密码'
@@ -279,7 +279,7 @@ var Register = React.createClass({
               //   values.birthday = moment(values.birthday).format('YYYY-MM-DD');
               // }
               if(isValid === true){
-                this._register(values.username, values.verifycode, values.password, values.confirmpassword);
+                this._register(values.username2, values.verifycode, values.password2, values.confirmpassword);
               }
 
             }}

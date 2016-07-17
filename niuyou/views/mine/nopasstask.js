@@ -5,6 +5,7 @@ import Util from './../utils';
 import Service from './../service';
 import GiftedListView from 'react-native-gifted-listview';
 import GiftedSpinner from 'react-native-gifted-spinner';
+import moment from 'moment';
 import {
   View,
   Text,
@@ -13,6 +14,7 @@ import {
   Dimensions,
   TouchableOpacity,
   ListView,
+  TouchableHighlight,
 } from 'react-native';
 
 var NoPassTask = React.createClass({
@@ -29,7 +31,7 @@ var NoPassTask = React.createClass({
     }, function(data){
       console.log(data);
       if(data.code == 200){
-        var rows = data.data.response.list;
+        var rows = (data.data.response.list && data.data.response.list.length>0)?data.data.response.list:[];
         if(rows.length==10){
           callback(rows);
         }else if(rows.length<10){
@@ -50,6 +52,20 @@ var NoPassTask = React.createClass({
 
   _renderRowView(rowData) {
     var genderimg = rowData.gender==1?require('image!ph_nan'):require('image!ph_nv');
+    var nopassdom = [];
+    if(rowData.nopassResult.length>=38){
+      nopassdom.push(
+        <View style={[styles.statusbtn,{height:60,}]}>
+          <Text style={styles.statustext} numberOfLines={3}>{rowData.nopassResult}</Text>
+        </View>
+      );
+    }else{
+      nopassdom.push(
+        <View style={styles.statusbtn}>
+          <Text style={styles.statustext}>{rowData.nopassResult}</Text>
+        </View>
+      );
+    }
     return (
       <TouchableOpacity onPress={()=>this.props.onRowPress(rowData.taskId)}>
         <View style={styles.item}>
@@ -57,23 +73,21 @@ var NoPassTask = React.createClass({
           <View style={styles.itemtext}>
             <Image resizeMode={'contain'} style={styles.avater} source={genderimg}></Image>
             <Text style={styles.avatername}>{rowData.merchantName}</Text>
-            <Text style={styles.statusx}>截止日期: {moment(rowData.showEndTime).format('YYYY-MM-DD HH:mm')}</Text>
+            <Text style={styles.statusx}>截止日期: {moment(rowData.taskEndTime).format('YYYY-MM-DD HH:mm')}</Text>
             <Text style={styles.itemtitle} numberOfLines={1}>{rowData.taskName}</Text>
             <Text style={styles.itemprice}>{rowData.price}元/次</Text>
-            <View style={styles.statusbtn}>
-              <Text style={styles.statustext}>{rowData.noPassReason}</Text>
-            </View>
+            {nopassdom}
           </View>
         </View>
       </TouchableOpacity>
     );
   },
   /**
- * Render the refreshable view when waiting for refresh
- * On Android, the view should be touchable to trigger the refreshCallback
- * @param {function} refreshCallback The function to call to refresh the listview
- */
-_renderRefreshableWaitingView(refreshCallback) {
+  * Render the refreshable view when waiting for refresh
+  * On Android, the view should be touchable to trigger the refreshCallback
+  * @param {function} refreshCallback The function to call to refresh the listview
+  */
+  _renderRefreshableWaitingView(refreshCallback) {
   if (Platform.OS !== 'android') {
     return (
       <View style={customStyles.refreshableView}>
@@ -85,7 +99,7 @@ _renderRefreshableWaitingView(refreshCallback) {
   } else {
     return (
       <TouchableHighlight
-        underlayColor='#c8c7cc'
+        underlayColor='#fff'
         onPress={refreshCallback}
         style={customStyles.refreshableView}
       >
@@ -95,13 +109,13 @@ _renderRefreshableWaitingView(refreshCallback) {
       </TouchableHighlight>
     );
   }
-},
+  },
 
-/**
- * Render the refreshable view when the pull to refresh has been activated
- * @platform ios
- */
-_renderRefreshableWillRefreshView() {
+  /**
+  * Render the refreshable view when the pull to refresh has been activated
+  * @platform ios
+  */
+  _renderRefreshableWillRefreshView() {
   return (
     <View style={customStyles.refreshableView}>
       <Text style={customStyles.actionsLabel}>
@@ -109,27 +123,27 @@ _renderRefreshableWillRefreshView() {
       </Text>
     </View>
   );
-},
+  },
 
-/**
- * Render the refreshable view when fetching
- */
-_renderRefreshableFetchingView() {
+  /**
+  * Render the refreshable view when fetching
+  */
+  _renderRefreshableFetchingView() {
   return (
     <View style={customStyles.refreshableView}>
       <GiftedSpinner style={customStyles.spinner} />
     </View>
   );
-},
+  },
 
-/**
- * Render the pagination view when waiting for touch
- * @param {function} paginateCallback The function to call to load more rows
- */
-_renderPaginationWaitingView(paginateCallback) {
+  /**
+  * Render the pagination view when waiting for touch
+  * @param {function} paginateCallback The function to call to load more rows
+  */
+  _renderPaginationWaitingView(paginateCallback) {
   return (
     <TouchableHighlight
-      underlayColor='#c8c7cc'
+      underlayColor='#fff'
       onPress={paginateCallback}
       style={customStyles.paginationView}
     >
@@ -138,23 +152,23 @@ _renderPaginationWaitingView(paginateCallback) {
       </Text>
     </TouchableHighlight>
   );
-},
+  },
 
-/**
- * Render the pagination view when fetching
- */
-_renderPaginationFetchigView() {
+  /**
+  * Render the pagination view when fetching
+  */
+  _renderPaginationFetchigView() {
   return (
     <View style={customStyles.paginationView}>
       <GiftedSpinner style={customStyles.spinner} />
     </View>
   );
-},
+  },
 
-/**
- * Render the pagination view when end of list is reached
- */
-_renderPaginationAllLoadedView() {
+  /**
+  * Render the pagination view when end of list is reached
+  */
+  _renderPaginationAllLoadedView() {
   return (
     <View style={customStyles.paginationView}>
       <Text style={customStyles.actionsLabel}>
@@ -162,13 +176,13 @@ _renderPaginationAllLoadedView() {
       </Text>
     </View>
   );
-},
+  },
 
-/**
- * Render a view when there is no row to display at the first fetch
- * @param {function} refreshCallback The function to call to refresh the listview
- */
-_renderEmptyView(refreshCallback) {
+  /**
+  * Render a view when there is no row to display at the first fetch
+  * @param {function} refreshCallback The function to call to refresh the listview
+  */
+  _renderEmptyView(refreshCallback) {
   return (
     <View style={customStyles.defaultView}>
       <Text style={customStyles.defaultViewTitle}>
@@ -176,7 +190,7 @@ _renderEmptyView(refreshCallback) {
       </Text>
 
       <TouchableHighlight
-        underlayColor='#c8c7cc'
+        underlayColor='#fff'
         onPress={refreshCallback}
       >
         <Text>
@@ -185,27 +199,28 @@ _renderEmptyView(refreshCallback) {
       </TouchableHighlight>
     </View>
   );
-},
+  },
 
-/**
- * Render a separator between rows
- */
-_renderSeparatorView() {
+  /**
+  * Render a separator between rows
+  */
+  _renderSeparatorView() {
   return (
     <View style={customStyles.separator} />
   );
-},
+  },
   render() {
     return (
       // <View>
       //   {this._getSpinner()}
       // </View>
       <GiftedListView
+        ref="listview"
         contentContainerStyle = {styles.innercontainer}
         rowView={this._renderRowView}
         onFetch={this._onFetch}
         firstLoader={true} // display a loader for the first fetching
-        pagination={false} // enable infinite scrolling using touch to load more
+        pagination={true} // enable infinite scrolling using touch to load more
         refreshable={true} // enable pull-to-refresh for iOS and touch-to-refresh for Android
         withSections={false} // enable sections
         customStyles={{
@@ -231,7 +246,7 @@ _renderSeparatorView() {
 
         renderSeparator={this._renderSeparatorView}
         PullToRefreshViewAndroidProps={{
-          colors: ['#efefef'],
+          colors: ['#fff'],
           progressBackgroundColor: '#003e82',
         }}
         {...this.props}
@@ -388,6 +403,8 @@ var styles = StyleSheet.create({
     alignItems:'center',
     justifyContent:'center',
     backgroundColor:'#eedd1b',
+    paddingLeft:15,
+    paddingRight:15,
   },
   statustext:{
     color:'#333',
