@@ -88,7 +88,7 @@ var Authinfo3 = React.createClass({
       });
       for(var i=0;i<imgs.length;i++){
         (function(img){
-          ImageResizer.createResizedImage(img, 800, 600, 'JPEG', 60)
+          ImageResizer.createResizedImage(img, 1280, 720, 'JPEG', 80)
           .then((resizedImageUri) => {
             Util.get(Service.host + Service.getToken, {bucketName:'ny-personal-photo'}, function(data){
               console.log(data);

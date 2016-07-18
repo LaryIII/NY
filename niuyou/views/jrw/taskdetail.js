@@ -155,7 +155,7 @@ var TaskDetail = React.createClass({
       for(var i=0;i<args.images.length;i++){
         (function(img,taskId){
           console.log(img);
-          ImageResizer.createResizedImage(img, 400, 300, 'JPEG', 50)
+          ImageResizer.createResizedImage(img, 1280, 720, 'JPEG', 80)
           .then((resizedImageUri) => {
             Util.get(Service.host + Service.getToken, {bucketName:'ny-task-photo'}, function(data){
               console.log(data);
